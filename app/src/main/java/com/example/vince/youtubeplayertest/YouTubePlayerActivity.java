@@ -35,8 +35,7 @@ public class YouTubePlayerActivity extends YouTubeBaseActivity implements YouTub
         if (!b) {
             Bundle extras = getIntent().getExtras();
             String video_id = extras.getString("video_id");
-            //youTubePlayer.loadVideo(video_id);
-            //youTubePlayer.play();
+            youTubePlayer.loadVideo(video_id);
         }
     }
 }
