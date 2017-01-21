@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">YoutubePlayerTest</string>
+    <string name="API_key">AIzaSyDtCJTBSLt9M1Xi_EBr49Uk4W8q4HhFHPU</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
