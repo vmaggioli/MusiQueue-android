@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
     android:orientation="vertical"
-    tools:context="com.example.vince.youtubeplayertest.QueueActivity">
+    tools:context="com.example.vince.youtubeplayertest.Activities.QueueActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -22,38 +22,32 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <android.support.design.widget.FloatingActionButton
-        android:id="@+id/fab"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentRight="true"
-        android:layout_margin="@dimen/fab_margin"
-        app:srcCompat="@android:drawable/ic_input_add"
-        android:background="#FFFFFF"/>
-
-    <EditText
-        android:hint="URL"
-        android:id="@+id/url2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true" />
-
-    <Button
-        android:text="PLAY VIDEO"
-        android:layout_below="@id/url2"
-        android:layout_centerInParent="true"
-        android:id="@+id/url_button2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
-
     <fragment
         android:id="@+id/youtube_player"
         android:name="com.google.android.youtube.player.YouTubePlayerFragment"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_centerHorizontal="true"
-        android:layout_alignParentTop="true"/>
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true" />
+
+    <EditText
+        android:padding="16dp"
+        android:id="@+id/url"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentLeft="true"
+        android:hint="Insert URL Here"
+        android:layout_toLeftOf="@+id/url_button"
+        android:layout_toStartOf="@+id/url_button" />
+
+    <Button
+        android:id="@+id/url_button"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:padding="16dp"
+        android:text="PLAY VIDEO"
+        android:layout_width="120dp"
+        android:layout_height="50dp" />
 
 </RelativeLayout>
