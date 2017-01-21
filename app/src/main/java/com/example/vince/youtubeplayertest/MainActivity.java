@@ -15,35 +15,50 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerFragment;
 import com.google.android.youtube.player.YouTubePlayerView;
 
 public class MainActivity extends AppCompatActivity {
-    private String video_id = "";
+    private final String API_KEY = "AIzaSyDtCJTBSLt9M1Xi_EBr49Uk4W8q4HhFHPU";
+    YouTubePlayerFragment myYouTubePlayerFragment;
+    YouTubePlayer mYouTubePlayer;
 
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Button url_button = (Button) findViewById(R.id.url_button);
+        // initialize YouTube player
+        myYouTubePlayerFragment = (YouTubePlayerFragment)
+                getFragmentManager().findFragmentById(R.id.youtube_player);
+        myYouTubePlayerFragment.initialize(API_KEY, new YouTubePlayer.OnInitializedListener() {
+            @Override
+            public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
 
+            }
+
+            @Override
+            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+                mYouTubePlayer = youTubePlayer;
+            }
+        });
+
+        // initialize other fields
+        final EditText url_text = (EditText) findViewById(R.id.url);
+        Button url_button = (Button) findViewById(R.id.url_button);
         url_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // get video_id and send it as extra in new intent
-                EditText url_text = (EditText) findViewById(R.id.url);
                 String url = url_text.getText().toString();
-                if (url.contains("=")) {
-                    int n = url.length();
-                    for (int i = 0; i < n; i++) {
-                        if (url.substring(i,i+1).equals("=")) {
-                            video_id = url.substring(i+1,n);
-                            break;
-                        }
+                String video_id = "";
+                int n = url.length();
+                for (int i = 0; i < n; i++) {
+                    if (url.substring(i,i+1).equals("=")) {
+                        video_id = url.substring(i+1,n);
+                        break;
                     }
-
-                Intent intent = new Intent(MainActivity.this, YouTubePlayerActivity.class);
-                intent.putExtra("video_id", video_id);
-                startActivity(intent);
+                }
+                mYouTubePlayer.loadVideo(video_id);
             }
         });
     }
