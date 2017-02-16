@@ -1,4 +1,7 @@
 <resources>
     <string name="app_name">MusiQueue</string>
     <string name="title_activity_queue">Queue</string>
+    <string name="create_name">CREATE A NAME</string>
+    <string name="username">Username</string>
+    <string name="submit">SUBMIT</string>
 </resources>

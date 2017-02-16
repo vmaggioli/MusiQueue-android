@@ -1,4 +1,4 @@
-package com.example.vince.youtubeplayertest.Activities;
+package com.example.vince.youtubeplayertest.Activities.hub_admin_only;
 
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;

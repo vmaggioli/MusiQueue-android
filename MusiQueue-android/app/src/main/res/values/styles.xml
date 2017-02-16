@@ -17,4 +17,14 @@
 
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
+    <style name="MusiQueue" parent="AppTheme">
+        <item name="android:background">@color/colorPrimary</item>
+        <item name="android:actionBarStyle">@style/MusiQueueActionBar</item>
+    </style>
+
+    <style name="MusiQueueActionBar" parent="MusiQueue">
+        <item name="android:background">@color/white</item>
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
+
 </resources>

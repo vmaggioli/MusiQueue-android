@@ -5,12 +5,13 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".Activities.helper_classes.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".Activities.MainActivity">
+        android:theme="@style/MusiQueue"
+        android:supportsRtl="true">
+        <activity android:name=".Activities.starting_activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,9 +27,11 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".Activities.QueueActivity"
-            android:label="@string/title_activity_queue"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:name=".Activities.hub_admin_only.QueueActivity"
+            android:theme="@style/MusiQueue"
+            android:label="@string/title_activity_queue"/>
+        <activity android:name=".Activities.starting_activities.GettingStarted"
+            android:theme="@style/MusiQueue"/>
     </application>
 
 </manifest>
