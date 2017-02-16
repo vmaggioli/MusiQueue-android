@@ -29,6 +29,7 @@
             android:name=".Activities.QueueActivity"
             android:label="@string/title_activity_queue"
             android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Activities.BackendTestActivity"/>
     </application>
 
 </manifest>

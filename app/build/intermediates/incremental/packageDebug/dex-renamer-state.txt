@@ -1,0 +1,7 @@
+#Sat Jan 28 14:39:07 EST 2017
+base.0=C\:\\Users\\Brian\\AndroidStudioProjects\\MusiQueue\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10\\instant-run-bootstrap_e40fdc160ed9c784c6fb18185453d35e48513649
+renamed.1=classes2.dex
+renamed.0=classes.dex
+file.1=C\:\\Users\\Brian\\AndroidStudioProjects\\MusiQueue\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10\\instant-run_16f849cfdc5c52cfd781fc28556eeb4089306a4f\\classes.dex
+base.1=C\:\\Users\\Brian\\AndroidStudioProjects\\MusiQueue\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10\\instant-run_16f849cfdc5c52cfd781fc28556eeb4089306a4f
+file.0=C\:\\Users\\Brian\\AndroidStudioProjects\\MusiQueue\\app\\build\\intermediates\\transforms\\dex\\debug\\folders\\1000\\10\\instant-run-bootstrap_e40fdc160ed9c784c6fb18185453d35e48513649\\classes.dex
