@@ -11,11 +11,11 @@
     tools:context="com.example.vince.youtubeplayertest.Activities.starting_activities.MainActivity">
 
     <TextView
-        android:layout_marginTop="16dp"
         android:id="@+id/create_name_text_view"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
+        android:layout_marginTop="16dp"
         android:text="@string/create_name"
         android:textColor="#FFFFFF"
         android:textSize="32sp" />
@@ -44,4 +44,21 @@
         android:text="@string/submit"
         android:textColor="@color/colorPrimaryDark" />
 
+    <Button
+        android:id="@+id/test_button_search_hubs"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/submit_username"
+        android:layout_centerHorizontal="true"
+        android:text="TEST SEARCH HUBS"
+        android:textColor="@color/colorPrimaryDark" />
+
+    <Button
+        android:id="@+id/test_button_database"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/test_button_search_hubs"
+        android:layout_centerHorizontal="true"
+        android:text="TEST DATABASE"
+        android:textColor="@color/colorPrimaryDark" />
 </RelativeLayout>
