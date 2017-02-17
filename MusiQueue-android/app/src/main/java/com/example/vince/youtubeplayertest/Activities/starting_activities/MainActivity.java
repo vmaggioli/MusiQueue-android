@@ -1,7 +1,6 @@
 package com.example.vince.youtubeplayertest.Activities.starting_activities;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -9,8 +8,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
-import com.example.vince.youtubeplayertest.Activities.helper_classes.MyApplication;
-import com.example.vince.youtubeplayertest.Activities.hub_admin_only.QueueActivity;
+import com.example.vince.youtubeplayertest.Activities.helper_classes.Hub;
 import com.example.vince.youtubeplayertest.R;
 
 public class MainActivity extends AppCompatActivity {
@@ -27,7 +25,7 @@ public class MainActivity extends AppCompatActivity {
         usernameText = (EditText) findViewById(R.id.username_entry);
 
         // get global application for global variables
-        final MyApplication appState = ((MyApplication)getApplicationContext());
+        final Hub appState = ((Hub)getApplicationContext());
 
         // set username button
         usernameButton = (Button) findViewById(R.id.submit_username);

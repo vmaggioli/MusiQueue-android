@@ -6,7 +6,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.vince.youtubeplayertest.Activities.helper_classes.MyApplication;
+import com.example.vince.youtubeplayertest.Activities.helper_classes.Hub;
 import com.example.vince.youtubeplayertest.R;
 
 public class GettingStarted extends AppCompatActivity {
@@ -39,7 +39,7 @@ public class GettingStarted extends AppCompatActivity {
             }
         });
 
-        final MyApplication appState = ((MyApplication)getApplicationContext());
+        final Hub appState = ((Hub)getApplicationContext());
 
 
     }

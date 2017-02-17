@@ -4,4 +4,14 @@
     <string name="create_name">CREATE A NAME</string>
     <string name="username">Username</string>
     <string name="submit">SUBMIT</string>
+    <string name="create_hub">CREATE A HUB</string>
+    <string name="hub_name">Hub Name</string>
+    <string name="pass_pin">4-Digit Pass Pin</string>
+    <string name="name">Name</string>
+    <string name="four_digit_pass_pin">1234</string>
+    <string name="create">CREATE</string>
+    <string name="hub_coord">Hub Coordinator</string>
+    <string name="enter_pin_to_join">Enter 4-Digit Hub Pin To Join</string>
+    <string name="join">JOIN</string>
+    <string name="search">SEARCH</string>
 </resources>
