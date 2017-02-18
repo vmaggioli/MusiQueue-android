@@ -35,8 +35,9 @@
             android:theme="@style/MusiQueue" />
         <activity android:name=".Activities.hub_admin_only.CreateHub" />
         <activity android:name=".Activities.users_only.JoinHub" />
-        <activity android:name=".Activities.users_only.SearchHub"></activity>
-            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".Activities.users_only.SearchHub" />
+        <activity android:name=".Activities.BackendTestActivity"/>
+        <activity android:name=".Activities.users_only.SearchHub" />
         <activity android:name=".Activities.BackendTestActivity"/>
     </application>
 

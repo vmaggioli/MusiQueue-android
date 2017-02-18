@@ -42,6 +42,7 @@ public class BackendTestActivity extends AppCompatActivity {
         String addr = addrET.getText().toString();
         String type = "test";
 
+        // CREATE A BACKGROUND WORKER TO TELL THE SERVER TO UPDATE THE DATABASE
         BackgroundWorker backgroundWorker = new BackgroundWorker(this);
         backgroundWorker.execute(type, name, addr);
 

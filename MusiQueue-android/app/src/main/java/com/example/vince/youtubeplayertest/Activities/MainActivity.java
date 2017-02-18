@@ -19,23 +19,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        backendButton = (Button) findViewById(R.id.backend_button);
+       /* Button button = (Button) findViewById(R.id.create_queue_button);
+        button.setOnClickListener(new View.OnClickListener() {
         backendButton = (Button) findViewById(R.id.test_button_database);
         backendButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, QueueActivity.class));
             }
-        });
+        });*/
 
-        testSearchButton = (Button) findViewById(R.id.test_button_search_hubs);
-        testSearchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(MainActivity.this, SearchHub.class));
-            }
-        });
-
-        submit = (Button) findViewById(R.id.submit_username);
     }
 
     public void toBack(View view) {
