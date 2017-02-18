@@ -40,4 +40,5 @@
         <activity android:name=".Activities.BackendTestActivity"/>
     </application>
 
+
 </manifest>
