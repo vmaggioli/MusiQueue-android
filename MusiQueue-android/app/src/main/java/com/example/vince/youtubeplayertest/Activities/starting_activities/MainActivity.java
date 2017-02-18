@@ -9,6 +9,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.vince.youtubeplayertest.Activities.BackendTestActivity;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.Hub;
 import com.example.vince.youtubeplayertest.Activities.users_only.SearchHub;
 import com.example.vince.youtubeplayertest.R;
@@ -19,6 +20,8 @@ public class MainActivity extends AppCompatActivity {
     Button usernameButton;
     Button testSearchButton;
     Button testDatabaseButton;
+    Button backendButton;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
         // set textView and editText
         createName = (TextView) findViewById(R.id.create_name_text_view);
         usernameText = (EditText) findViewById(R.id.username_entry);
+        backendButton = (Button) findViewById(R.id.backend_button);
 
         // get global application for global variables
         final Hub appState = ((Hub)getApplicationContext());
@@ -60,4 +64,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    public void toBack(View view) {
+        startActivity(new Intent(this, BackendTestActivity.class));
+    }
+
 }
