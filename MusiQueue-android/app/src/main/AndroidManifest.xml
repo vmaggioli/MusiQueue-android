@@ -29,7 +29,6 @@
         <activity
             android:name=".Activities.hub_admin_only.QueueActivity"
             android:label="@string/title_activity_queue"
-<<<<<<< HEAD
             android:theme="@style/MusiQueue" />
         <activity
             android:name=".Activities.starting_activities.GettingStarted"
@@ -37,13 +36,9 @@
         <activity android:name=".Activities.hub_admin_only.CreateHub" />
         <activity android:name=".Activities.users_only.JoinHub" />
         <activity android:name=".Activities.users_only.SearchHub"></activity>
-=======
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Activities.BackendTestActivity"/>
-<<<<<<< HEAD
->>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
-=======
->>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
     </application>
+
 
 </manifest>
