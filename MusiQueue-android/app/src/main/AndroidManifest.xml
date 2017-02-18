@@ -5,12 +5,13 @@
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
+        android:name=".Activities.helper_classes.Hub"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <activity android:name=".Activities.MainActivity">
+        android:theme="@style/MusiQueue">
+        <activity android:name=".Activities.starting_activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -26,9 +27,15 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".Activities.QueueActivity"
+            android:name=".Activities.hub_admin_only.QueueActivity"
             android:label="@string/title_activity_queue"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/MusiQueue" />
+        <activity
+            android:name=".Activities.starting_activities.GettingStarted"
+            android:theme="@style/MusiQueue" />
+        <activity android:name=".Activities.hub_admin_only.CreateHub" />
+        <activity android:name=".Activities.users_only.JoinHub" />
+        <activity android:name=".Activities.users_only.SearchHub"></activity>
     </application>
 
 </manifest>
