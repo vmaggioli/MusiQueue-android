@@ -2,10 +2,13 @@
 <project version="4">
   <component name="ChangeListManager">
 <<<<<<< HEAD
+<<<<<<< HEAD
     <list default="true" id="b64951a1-f0cd-4df5-95b7-3062de748cf9" name="Default" comment="" />
     <ignored path="MusiQueue.iws" />
     <ignored path=".idea/workspace.xml" />
 =======
+=======
+>>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
     <list default="true" id="accc941d-a768-4767-bea5-2d4ab9c7a97a" name="Default" comment="">
       <change type="DELETED" beforePath="$PROJECT_DIR$/gradle.properties" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/gradle.xml" afterPath="$PROJECT_DIR$/.idea/gradle.xml" />
@@ -17,6 +20,9 @@
     <ignored path=".idea/workspace.xml" />
     <ignored path="$PROJECT_DIR$/.gradle/" />
     <ignored path="$PROJECT_DIR$/build/classes/" />
+<<<<<<< HEAD
+>>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
+=======
 >>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -31,7 +37,10 @@
   </component>
   <component name="ExecutionTargetManager" SELECTED_TARGET="default_target" />
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
+=======
+>>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
       <state>
@@ -39,6 +48,9 @@
       </state>
     </system>
   </component>
+<<<<<<< HEAD
+>>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
+=======
 >>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
   <component name="FavoritesManager">
     <favorites_list name="MusiQueue" />
@@ -53,15 +65,21 @@
   </component>
   <component name="ProjectFrameBounds">
 <<<<<<< HEAD
+<<<<<<< HEAD
     <option name="x" value="-8" />
     <option name="y" value="-8" />
     <option name="width" value="1936" />
     <option name="height" value="1056" />
 =======
+=======
+>>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
     <option name="x" value="1358" />
     <option name="y" value="-8" />
     <option name="width" value="1696" />
     <option name="height" value="1026" />
+<<<<<<< HEAD
+>>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
+=======
 >>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="false">
@@ -74,6 +92,7 @@
     <ConfirmationsSetting value="0" id="Add" />
     <ConfirmationsSetting value="0" id="Remove" />
   </component>
+<<<<<<< HEAD
 <<<<<<< HEAD
   <component name="ProjectView">
     <navigator currentView="AndroidView" proportions="" version="1">
@@ -115,6 +134,10 @@
     <property name="settings.editor.selected.configurable" value="android.sdk-updates" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+=======
+  <component name="PropertiesComponent">
+    <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/sdk" />
+>>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
 =======
   <component name="PropertiesComponent">
     <property name="android.sdk.path" value="$USER_HOME$/AppData/Local/Android/sdk" />
@@ -210,6 +233,7 @@
     <option name="remove_strategy" value="false" />
   </component>
 <<<<<<< HEAD
+<<<<<<< HEAD
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -221,6 +245,8 @@
       <option name="presentableId" value="Default" />
       <updated>1486330134567</updated>
 =======
+=======
+>>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
       <changelist id="accc941d-a768-4767-bea5-2d4ab9c7a97a" name="Default" comment="" />
@@ -228,11 +254,15 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1486232852585</updated>
+<<<<<<< HEAD
+>>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
+=======
 >>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
     </task>
     <servers />
   </component>
   <component name="ToolWindowManager">
+<<<<<<< HEAD
 <<<<<<< HEAD
     <frame x="-8" y="-8" width="1936" height="1056" extended-state="6" />
     <editor active="false" />
@@ -259,6 +289,8 @@
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="true" content_ui="tabs" />
 =======
+=======
+>>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
     <frame x="1358" y="-8" width="1696" height="1026" extended-state="6" />
     <editor active="true" />
     <layout>
@@ -285,11 +317,15 @@
       <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="-1" side_tool="true" content_ui="tabs" />
+<<<<<<< HEAD
+>>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
+=======
 >>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+<<<<<<< HEAD
 <<<<<<< HEAD
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -306,12 +342,17 @@
     </option>
   </component>
 =======
+=======
+>>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
+<<<<<<< HEAD
+>>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
+=======
 >>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
   <component name="VcsContentAnnotationSettings">
     <option name="myLimit" value="2678400000" />

@@ -40,6 +40,9 @@
 =======
             android:theme="@style/AppTheme.NoActionBar" />
         <activity android:name=".Activities.BackendTestActivity"/>
+<<<<<<< HEAD
+>>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
+=======
 >>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
     </application>
 

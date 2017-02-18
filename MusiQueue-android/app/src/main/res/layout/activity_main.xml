@@ -9,6 +9,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
 <<<<<<< HEAD
+<<<<<<< HEAD
     tools:context="com.example.vince.youtubeplayertest.Activities.starting_activities.MainActivity">
 
     <TextView
@@ -45,6 +46,8 @@
         android:text="@string/submit"
         android:textColor="@color/colorPrimaryDark" />
 =======
+=======
+>>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
     android:gravity="center"
     android:orientation="vertical"
     tools:context="com.example.vince.youtubeplayertest.Activities.MainActivity">
@@ -81,4 +84,7 @@
         />
 
 </LinearLayout>
+<<<<<<< HEAD
+>>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
+=======
 >>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
