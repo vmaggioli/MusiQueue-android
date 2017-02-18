@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vince.youtubeplayertest.Activities.BackendTestActivity;
+import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.Hub;
 import com.example.vince.youtubeplayertest.Activities.users_only.SearchHub;
 import com.example.vince.youtubeplayertest.R;
@@ -40,8 +41,21 @@ public class MainActivity extends AppCompatActivity {
         usernameButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // PROMPT USER IF S/HE HAS NOT INPUT A USERNAME
+                if (usernameText.getText().length() == 0) {
+                    Toast.makeText(appState, "Must Have Username", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
                 // sets username to global app
                 appState.setUsername(usernameText.getText().toString());
+
+                // CREATE BACKGROUND WORKER TO ADD USER TO THE DATABASE
+                // FIRST PARAMATER TELLS THE BACKGROUND WORKER WHICH TASK TO EXECUTE
+                // REMAINING PARAMETERS MUST EACH BE OF THE SAME TYPE
+                BackgroundWorker backgroundWorker = new BackgroundWorker(getApplicationContext());
+                backgroundWorker.execute("addUser", usernameText.getText().toString());
+
                 startActivity(new Intent(MainActivity.this, GettingStarted.class));
             }
         });
@@ -64,6 +78,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+    // FUNCTION CALLED WHEN THE TEST BACKEND BUTTON IS PRESSED
     public void toBack(View view) {
         startActivity(new Intent(this, BackendTestActivity.class));
     }

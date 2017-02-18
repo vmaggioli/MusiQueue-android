@@ -15,6 +15,8 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  * Created by Brian on 2/16/2017.
@@ -31,7 +33,7 @@ import java.net.URL;
 public class BackgroundWorker extends AsyncTask<String, Void, String> {
     // ALLOW ACCESS TO THE ACTIVITY THAT STARTED THE TASK
     Context context;
-    BackgroundWorker(Context context) { this.context = context; }
+    public BackgroundWorker(Context context) { this.context = context; }
     String type;
 
     // TODO: NONE OF THE FOLLOWING FUNCTIONS SHOULD EVER BE CALLED MANUALLY FROM AN ACTIVITY
@@ -41,6 +43,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
     protected String doInBackground(String... params) {
         type = params[0];
         String testUrl = "http://ec2-52-14-107-232.us-east-2.compute.amazonaws.com/backendTest.php";
+        String addUserUrl = "http://ec2-52-14-107-232.us-east-2.compute.amazonaws.com/addUser.php";
 
         if (type.equals("test")) {
             try {
@@ -94,6 +97,59 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                 return "exception";
             }
         }
+        else if (type.equals("addUser")) {
+            try {
+                String username = params[1];
+                Log.d("blah", username);
+                URL url = new URL(addUserUrl);
+
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+
+                OutputStream os = httpURLConnection.getOutputStream();
+                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+
+                Date date = new Date(System.currentTimeMillis());
+                // TODO: send a parameter for the user's phone id
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("username", username)
+                        .appendQueryParameter("dateTime", String.valueOf(date));
+                String post_data = builder.build().getEncodedQuery();
+                Log.d("post_data: ", post_data);
+                bw.write(post_data);
+                bw.flush();
+                bw.close();
+                os.close();
+                httpURLConnection.connect();
+
+                // CHECK RESPONSE CODE FOR ANY ERRORS
+                int responseCode = httpURLConnection.getResponseCode();
+                Log.d("response: ", String.valueOf(responseCode));
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    InputStream is = httpURLConnection.getInputStream();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(is,"iso-8859-1"));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        result.append(line + "\n");
+                    }
+                    httpURLConnection.disconnect();
+
+                    // Pass data to onPostExecute method
+                    return(result.toString());
+
+                }else {
+                    httpURLConnection.disconnect();
+                    return ("unsuccessful");
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "exception";
+            }
+        }
         return null;
     }
     @Override
@@ -109,6 +165,9 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
             Intent intent = new Intent(context, BackendTestActivity.class);
             intent.putExtra("result", result);
             context.startActivity(intent);
+        }
+        else if (type.equals("addUser")) {
+            Log.d("\t\t\tresults: ", result);
         }
     }
     @Override
