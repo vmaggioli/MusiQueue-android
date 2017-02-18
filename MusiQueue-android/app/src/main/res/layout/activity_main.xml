@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
@@ -8,8 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-<<<<<<< HEAD
-<<<<<<< HEAD
+
     tools:context="com.example.vince.youtubeplayertest.Activities.starting_activities.MainActivity">
 
     <TextView
@@ -45,19 +44,11 @@
         android:layout_marginBottom="64dp"
         android:text="@string/submit"
         android:textColor="@color/colorPrimaryDark" />
-=======
-=======
->>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
-    android:gravity="center"
-    android:orientation="vertical"
-    tools:context="com.example.vince.youtubeplayertest.Activities.MainActivity">
->>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
 
     <Button
         android:id="@+id/test_button_search_hubs"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-<<<<<<< HEAD
         android:layout_above="@id/submit_username"
         android:layout_centerHorizontal="true"
         android:text="TEST SEARCH HUBS"
@@ -72,19 +63,3 @@
         android:text="TEST DATABASE"
         android:textColor="@color/colorPrimaryDark" />
 </RelativeLayout>
-=======
-        android:text="CREATE QUEUE"
-        android:layout_centerInParent="true" />
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TEST BACKEND"
-        android:onClick="toBack"
-        android:id="@+id/backend_button"
-        />
-
-</LinearLayout>
-<<<<<<< HEAD
->>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
-=======
->>>>>>> 81f7a8f22d57e1834837cb7cd77e146595852593
