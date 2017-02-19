@@ -102,6 +102,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
         else if (type.equals("addUser")) {
             try {
                 String username = params[1];
+                String userId = params[2];
                 Log.d("blah", username);
                 URL url = new URL(addUserUrl);
 
@@ -117,6 +118,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                 // TODO: send a parameter for the user's phone id
                 Uri.Builder builder = new Uri.Builder()
                         .appendQueryParameter("username", username)
+                        .appendQueryParameter("userId", userId)
                         .appendQueryParameter("dateTime", String.valueOf(date));
                 String post_data = builder.build().getEncodedQuery();
                 Log.d("post_data: ", post_data);

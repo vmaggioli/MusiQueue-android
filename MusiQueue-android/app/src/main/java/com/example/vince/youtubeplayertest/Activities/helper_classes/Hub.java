@@ -29,18 +29,18 @@ public class Hub extends Application {
         this.username = username;
     }
 
-    public int getUserID() {
+    public String getUserID() {
         return id;
     }
 
-    public void setUserID(int id) {
+    public void setUserID(String id) {
         this.id = id;
     }
 
     private String username;
     private String hubName;
     private String passPin;
-    private int id;
+    private String id;
 
 
 }
