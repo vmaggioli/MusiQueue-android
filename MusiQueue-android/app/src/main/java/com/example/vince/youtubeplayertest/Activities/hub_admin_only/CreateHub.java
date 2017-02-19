@@ -7,7 +7,9 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.Hub;
 import com.example.vince.youtubeplayertest.R;
 
@@ -33,6 +35,18 @@ public class CreateHub extends AppCompatActivity {
         createHubButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (hubNameText.getText().length() == 0) {
+                    Toast.makeText(appState, "Must Have Hub Name", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                else if (passPin.getText().length() != 4) {
+                    Toast.makeText(appState, "Pass Pin Must Be 4 Digits", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                BackgroundWorker backgroundWorker = new BackgroundWorker(getApplicationContext());
+                backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUsername());
+
                 appState.setHubName(hubNameText.getText().toString());
                 startActivity(new Intent(CreateHub.this, QueueActivity.class));
             }

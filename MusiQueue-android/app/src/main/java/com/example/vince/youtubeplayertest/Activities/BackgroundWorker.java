@@ -44,6 +44,8 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
         type = params[0];
         String testUrl = "http://ec2-52-14-107-232.us-east-2.compute.amazonaws.com/backendTest.php";
         String addUserUrl = "http://ec2-52-14-107-232.us-east-2.compute.amazonaws.com/addUser.php";
+        String createHubUrl = "http://ec2-52-14-107-232.us-east-2.compute.amazonaws.com/createHub.php";
+
 
         if (type.equals("test")) {
             try {
@@ -150,6 +152,62 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                 return "exception";
             }
         }
+        else if (type.equals("createHub")) {
+            try {
+                String hubName = params[1];
+                String passPin = params[2];
+                String creatorId = params[3];
+                Log.d("blah", hubName);
+                URL url = new URL(createHubUrl);
+
+                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+                httpURLConnection.setRequestMethod("POST");
+                httpURLConnection.setDoOutput(true);
+                httpURLConnection.setDoInput(true);
+
+                OutputStream os = httpURLConnection.getOutputStream();
+                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+
+                Date date = new Date(System.currentTimeMillis());
+                // TODO: send a parameter for the user's phone id
+                Uri.Builder builder = new Uri.Builder()
+                        .appendQueryParameter("hubName", hubName)
+                        .appendQueryParameter("passPin", passPin)
+                        .appendQueryParameter("creatorId", creatorId);
+                String post_data = builder.build().getEncodedQuery();
+                Log.d("post_data: ", post_data);
+                bw.write(post_data);
+                bw.flush();
+                bw.close();
+                os.close();
+                httpURLConnection.connect();
+
+                // CHECK RESPONSE CODE FOR ANY ERRORS
+                int responseCode = httpURLConnection.getResponseCode();
+                Log.d("response: ", String.valueOf(responseCode));
+                if (responseCode == HttpURLConnection.HTTP_OK) {
+                    InputStream is = httpURLConnection.getInputStream();
+                    BufferedReader br = new BufferedReader(new InputStreamReader(is,"iso-8859-1"));
+                    StringBuilder result = new StringBuilder();
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        result.append(line + "\n");
+                    }
+                    httpURLConnection.disconnect();
+
+                    // Pass data to onPostExecute method
+                    return(result.toString());
+
+                }else {
+                    httpURLConnection.disconnect();
+                    return ("unsuccessful");
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                return "exception";
+            }
+        }
         return null;
     }
     @Override
@@ -167,6 +225,9 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
             context.startActivity(intent);
         }
         else if (type.equals("addUser")) {
+            Log.d("\t\t\tresults: ", result);
+        }
+        else if (type.equals("createHub")) {
             Log.d("\t\t\tresults: ", result);
         }
     }

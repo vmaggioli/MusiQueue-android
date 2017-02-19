@@ -29,9 +29,18 @@ public class Hub extends Application {
         this.username = username;
     }
 
+    public int getUserID() {
+        return id;
+    }
+
+    public void setUserID(int id) {
+        this.id = id;
+    }
+
     private String username;
     private String hubName;
     private String passPin;
+    private int id;
 
 
 }

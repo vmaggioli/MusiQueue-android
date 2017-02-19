@@ -1,5 +1,6 @@
 package com.example.vince.youtubeplayertest.Activities.starting_activities;
 
+import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -7,6 +8,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.vince.youtubeplayertest.Activities.helper_classes.Hub;
+import com.example.vince.youtubeplayertest.Activities.hub_admin_only.CreateHub;
 import com.example.vince.youtubeplayertest.R;
 
 public class GettingStarted extends AppCompatActivity {
@@ -29,6 +31,7 @@ public class GettingStarted extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // TODO: send new Intent to creating a hub
+                startActivity(new Intent(GettingStarted.this, CreateHub.class));
             }
         });
 

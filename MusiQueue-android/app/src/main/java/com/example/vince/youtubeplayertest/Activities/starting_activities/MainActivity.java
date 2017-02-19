@@ -50,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
                 // sets username to global app
                 appState.setUsername(usernameText.getText().toString());
 
+
                 // CREATE BACKGROUND WORKER TO ADD USER TO THE DATABASE
                 // FIRST PARAMATER TELLS THE BACKGROUND WORKER WHICH TASK TO EXECUTE
                 // REMAINING PARAMETERS MUST EACH BE OF THE SAME TYPE
