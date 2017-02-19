@@ -1,8 +1,10 @@
 package com.example.vince.youtubeplayertest.Activities.starting_activities;
 
 import android.content.Intent;
+import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -15,6 +17,8 @@ import com.example.vince.youtubeplayertest.Activities.helper_classes.Hub;
 import com.example.vince.youtubeplayertest.Activities.users_only.SearchHub;
 import com.example.vince.youtubeplayertest.R;
 
+import static java.security.AccessController.getContext;
+
 public class MainActivity extends AppCompatActivity {
     TextView createName;
     EditText usernameText;
@@ -22,6 +26,13 @@ public class MainActivity extends AppCompatActivity {
     Button testSearchButton;
     Button testDatabaseButton;
     Button backendButton;
+
+    /*
+        UPON ENTERING THIS ACTIVITY, WE NEED TO CHECK IF THE USER'S
+        DEVICE ID IS ALREADY PRESENT WITHIN OUR DATABASE RECORDS. IF
+        IT IS THEN WE NEED TO TELL THE BACKEND TO UPDATE THE USERNAME
+        INSTEAD OF CREATING A NEW USERNAME WITH THAT SAME ID.
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,13 +60,14 @@ public class MainActivity extends AppCompatActivity {
 
                 // sets username to global app
                 appState.setUsername(usernameText.getText().toString());
-
+                String android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+                appState.setUserID(android_id);
 
                 // CREATE BACKGROUND WORKER TO ADD USER TO THE DATABASE
                 // FIRST PARAMATER TELLS THE BACKGROUND WORKER WHICH TASK TO EXECUTE
                 // REMAINING PARAMETERS MUST EACH BE OF THE SAME TYPE
                 BackgroundWorker backgroundWorker = new BackgroundWorker(getApplicationContext());
-                backgroundWorker.execute("addUser", usernameText.getText().toString());
+                backgroundWorker.execute("addUser", usernameText.getText().toString(), android_id);
 
                 startActivity(new Intent(MainActivity.this, GettingStarted.class));
             }
