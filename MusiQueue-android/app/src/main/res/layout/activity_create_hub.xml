@@ -84,6 +84,7 @@
         android:layout_margin="64dp"
         android:background="@color/white"
         android:text="@string/create"
+        android:id="@+id/create_hub_button"
         android:textColor="@color/colorPrimaryDark"
         android:textSize="20sp" />
 </RelativeLayout>
