@@ -14,4 +14,6 @@
     <string name="enter_pin_to_join">Enter 4-Digit Hub Pin To Join</string>
     <string name="join">JOIN</string>
     <string name="search">SEARCH</string>
+    <string name="failed">Failed to initialize Youtube Player</string>
+
 </resources>
