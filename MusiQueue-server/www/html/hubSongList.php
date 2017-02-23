@@ -25,6 +25,12 @@ require_once "assert/userConnectedToHub.php";
 
 $hubId = mysqli_real_escape_string($conn, $_REQUEST['hubId']);
 
+// We do an inner join here to convert Users.phone_id into the
+// more anonymous `Users`.`id`, the id of the connection between
+// the user who added the song and this hub. The logic being
+// that we don't want to shout user's phone id out to the public,
+// and all the info the client needs to kick somebody is their
+// `Users`.`id`. We also add the pretty user_name. Woo.
 $result = $conn->query("
 	SELECT
 		Songs.id,
