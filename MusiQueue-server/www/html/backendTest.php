@@ -1,10 +1,5 @@
-<?php include "../inc/dbinfo.inc"; ?>
 <?php
-  $conn = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
-  if (mysqli_connect_errno()) {
-    echo "Failed to connect to MySQL: " . mysqli_connect_error();
-    exit();
-  }
+require_once "connection.php";
 
   $name = isset($_POST['name']) ? $_POST['name'] : '';
   $addr = isset($_POST['addr']) ? $_POST['addr'] : '';

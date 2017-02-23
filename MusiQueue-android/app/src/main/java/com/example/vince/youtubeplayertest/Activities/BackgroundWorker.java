@@ -42,10 +42,10 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... params) {
         type = params[0];
-        String testUrl = "http://ec2-52-14-107-232.us-east-2.compute.amazonaws.com/backendTest.php";
-        String addUserUrl = "http://ec2-52-14-107-232.us-east-2.compute.amazonaws.com/addUser.php";
-        String createHubUrl = "http://ec2-52-14-107-232.us-east-2.compute.amazonaws.com/createHub.php";
 
+        String testUrl = "http://52.14.50.251/backendTest.php";
+        String addUserUrl = "http://52.14.50.251/addUser.php";
+        String createHubUrl = "http://52.14.50.251/createHub.php";
 
         if (type.equals("test")) {
             try {

@@ -1,10 +1,5 @@
-<?php include "../inc/dbinfo.inc"; ?>
 <?php
-  $conn = mysqli_connect(DB_SERVER, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
-  if (mysqli_connect_errno()) {
-    echo "Failed to connect to MySQL: " . mysqli_connect_error();
-    exit();
-  }
+require_once "connection.php";
 
   $phoneid = isset($_POST['userId']) ? $_POST['userId'] : '';
   $username = isset($_POST['username']) ? $_POST['username'] : '';
@@ -14,7 +9,7 @@
 
   //$time = isset($_POST['dateTime']) ? $_POST['username'] : '';
   //$dateTime = new DateTime($time);
-  //$dateTime = $dateTime->format('Y-m-d H:i:s'); 
+  //$dateTime = $dateTime->format('Y-m-d H:i:s');
   echo "checking if user exists\n";
 
   $result = mysqli_query($conn, "SELECT name FROM Users WHERE phone_id = '$phoneid'");
