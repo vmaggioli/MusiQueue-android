@@ -1,5 +1,17 @@
 <?php
 require_once "connection.php";
+
+apiDocs("
+addSong:
+	Params:
+		hubId - the hub the song is getting added to
+		phoneId - the phone id of the user adding the song
+		songId - the youtube string id for the video being added
+		songTitle - title of the song being added
+	Returns on success:
+		See hubSongList endpoint.
+");
+
 require_once "assert/hubExists.php";
 require_once "assert/userConnectedToHub.php";
 require_once "assert/songGiven.php";
