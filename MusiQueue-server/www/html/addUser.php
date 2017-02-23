@@ -1,5 +1,5 @@
-<?php include "connection.php"; ?>
 <?php
+require_once "connection.php";
 
   $phoneid = isset($_POST['userId']) ? $_POST['userId'] : '';
   $username = isset($_POST['username']) ? $_POST['username'] : '';
