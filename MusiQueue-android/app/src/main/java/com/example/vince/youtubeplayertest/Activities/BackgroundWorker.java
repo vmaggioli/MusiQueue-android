@@ -43,9 +43,9 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
     protected String doInBackground(String... params) {
         type = params[0];
 
-        String testUrl = "http://52.14.50.251/backendTest.php";
-        String addUserUrl = "http://52.14.50.251/addUser.php";
-        String createHubUrl = "http://52.14.50.251/createHub.php";
+        String testUrl = "http://52.14.50.251/api/backendTest.php";
+        String addUserUrl = "http://52.14.50.251/api/addUser.php";
+        String createHubUrl = "http://52.14.50.251/api/createHub.php";
 
         if (type.equals("test")) {
             try {
