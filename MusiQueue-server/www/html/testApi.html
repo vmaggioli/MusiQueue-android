@@ -125,6 +125,14 @@ message("Testing user 2 adding song");
 testEndpoint('api/addSong.php', {
 	hubId: hubId,
 	phoneId: phoneId2,
+	songId: songId2,
+	songTitle: songTitle2
+});
+
+message("Testing user 2 adding another song");
+testEndpoint('api/addSong.php', {
+	hubId: hubId,
+	phoneId: phoneId2,
 	songId: songId,
 	songTitle: songTitle
 });
@@ -137,17 +145,40 @@ testEndpointError('api/addSong.php', {
 	songTitle: songTitle
 }, "USER_NOT_CONNECTED");
 
+message("Testing user 1 voting on song 2");
+var s2Id = testEndpoint('api/hubSongList.php', {
+	hubId: hubId,
+	phoneId: phoneId1
+}).result[1].id;
+testEndpoint('api/voteUpSong.php', {
+	hubId: hubId,
+	phoneId: phoneId1,
+	songId: s2Id,
+});
+testEndpoint('api/voteUpSong.php', {
+	hubId: hubId,
+	phoneId: phoneId1,
+	songId: s2Id,
+});
+testEndpoint('api/voteDownSong.php', {
+	hubId: hubId,
+	phoneId: phoneId1,
+	songId: s2Id,
+});
+
 message("Testing user 2 listing songs");
 var songs = testEndpoint('api/hubSongList.php', {
 	hubId: hubId,
 	phoneId: phoneId2
 }).result;
-if(songs.length != 1) {
+if(songs.length != 2) {
 	error("song listing incorrect - wrong number of songs");
 	error(JSON.stringify(songs));
 }else if(songs[0].song_id != songId || songs[0].song_title != songTitle) {
 	error("song listing incorrect - song 1 wrong");
 	error(JSON.stringify(songs));
+}else if(songs[0].up_votes != 2 || songs[0].down_votes != 1) {
+	error("song listing incorrect - song 1 has the wrong vote totals");
 }else{
 	success("song listing correct");
 }
