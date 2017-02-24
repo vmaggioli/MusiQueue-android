@@ -1,5 +1,5 @@
 <?php
-require_once "connection.php";
+require_once "api/connection.php";
 
   $name = isset($_POST['name']) ? $_POST['name'] : '';
   $addr = isset($_POST['addr']) ? $_POST['addr'] : '';

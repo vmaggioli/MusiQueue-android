@@ -1,6 +1,7 @@
 
 
 // This file should probably be removed in favor of joinHub.php
+<br/>
 
 
 <?php
