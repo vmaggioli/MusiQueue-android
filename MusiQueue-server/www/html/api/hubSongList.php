@@ -42,10 +42,9 @@ $result = $conn->query("
         Users.id as user_id,
         Users.name as user_name
 	FROM Songs
-	INNER JOIN Users on Users.phone_id = Songs.phone_id
+	INNER JOIN Users on Users.id = Songs.user_id
 	WHERE
 		Songs.hub_id='$hubId'
-		AND Users.hub_id='$hubId'
 ");
 
 $arr = array();

@@ -32,8 +32,10 @@ $songTitle = mysqli_real_escape_string($conn, $_REQUEST['songTitle']);
 
 $result = $conn->query("
 	INSERT INTO
-	Songs (`hub_id`, `phone_id`, `song_id`, `song_title`)
-	VALUES ('$hubId', '$phoneId', '$songId', '$songTitle')
+	Songs (`hub_id`, `user_id`, `song_id`, `song_title`)
+	VALUES ('$hubId', (
+		SELECT `id` FROM `Users` WHERE `phone_id` = '$phoneId' AND `hub_id` = '$hubId' LIMIT 1
+	), '$songId', '$songTitle')
 ");
 
 // seemes successful, return the list of songs in the hub
