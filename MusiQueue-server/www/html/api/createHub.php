@@ -52,13 +52,33 @@ if($taken) {
 	// reopen the hub
 	$hubId = $hub['id'];
 
-	mysqli_query($conn, "
+	// update hub info
+	$result = mysqli_query($conn, "
 		UPDATE Hubs
 		SET
 			closed = 0,
-			time_last_active = CURRENT_TIME()
-		WHERE name = '$hubName'
+			time_last_active = CURRENT_TIME(),
+			hub_pin = ".($hasPin ? "'$hubPin'" : 'NULL')."
+		WHERE hub_name = '$hubName'
 	");
+
+	if(!$result) {
+		respondError("DB_ISSUE", "Could not update hub info to reopen");
+	}
+
+	// update creator info
+	$result = mysqli_query($conn, "
+		UPDATE Users
+		SET
+			name = '$username',
+			last_active = CURRENT_TIME()
+		WHERE phone_id = '$phoneId'
+		AND hub_id = '$hubId'
+	");
+
+	if(!$result) {
+		respondError("DB_ISSUE", "Could not update creator info");
+	}
 }else{
 	// create the hub
 	$result = mysqli_query($conn, "
