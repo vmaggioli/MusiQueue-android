@@ -66,7 +66,7 @@ if(mysqli_num_rows($result)) {
     // the user is not in the hub
     // check if the hub pin is correct
 
-    if($hub['hub_pin'] != $hubPin && $hub['hub_pin'] != 'NULL') {
+    if($hub['hub_pin'] != $hubPin && $hub['hub_pin'] != null) {
         respondError('HUB_PIN_WRONG', "The pin provided for this hub is not correct.");
     }
     // add the user to the hub
