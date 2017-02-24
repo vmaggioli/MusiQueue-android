@@ -15,6 +15,7 @@ joinHub:
         }
     Common errors:
         HUB_NOT_FOUND
+        HUB_CLOSED
         USER_KICKED - the user cannot join the hub because they were kicked
         HUB_PIN_WRONG
 ");
@@ -22,6 +23,7 @@ joinHub:
 assertGiven("phoneId");
 assertGiven("username");
 require_once "assert/hubNameExists.php";
+require_once "assert/hubNameOpen.php";
 
 $phoneId = mysqli_real_escape_string($conn, $_REQUEST['phoneId']);
 $username = mysqli_real_escape_string($conn, $_REQUEST['username']);

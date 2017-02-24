@@ -9,6 +9,12 @@
 		color: #090;
 	}
 
+	.good a,
+	.bad a{
+		color: inherit;
+		text-decoration: none;
+	}
+
 	.indent{
 		padding-left: 15px;
 	}
@@ -27,10 +33,24 @@ function testEndpoint(url, params) {
         data: params,
         dataType: 'json'
     }).responseJSON;
+
+    var href = url + '?pretty&' + $.param(params);
+
     if(response.error) {
-    	document.getElementById('output').innerHTML += "<div class='bad indent'>Error: <pre>"+url+' '+JSON.stringify(params)+"</pre> - <pre>"+response.errorCode+"</pre></div>";
+    	document.getElementById('output').innerHTML +=
+    		"<div class='bad indent'><a href='"
+    		+href
+    		+"'>Error: <pre>"
+    		+url
+    		+' '
+    		+JSON.stringify(params)
+    		+"</pre> - <pre>"
+    		+response.errorCode
+    		+' ('
+    		+response.errorMessage
+    		+")</pre></a></div>";
     }else{
-    	document.getElementById('output').innerHTML += "<div class='good indent'>No error: <pre>"+url+' '+JSON.stringify(params)+"</pre></div>";
+    	document.getElementById('output').innerHTML += "<div class='good indent'><a href='"+href+"'>No error: <pre>"+url+' '+JSON.stringify(params)+"</pre></a></div>";
     }
     return response;
 }
@@ -77,6 +97,8 @@ var username2 = 'testUser2_'+ts;
 var username3 = 'testUser3_'+ts;
 var songId = 'jofNR_WkoCE';
 var songTitle = 'Test Song '+ts;
+var songId2 = 'song2';
+var songTitle2 = 'Test Song 2 '+ts;
 
 message("Testing User 1 creating a hub with no pin");
 hubId = testEndpoint('api/createHub.php', {
@@ -143,6 +165,49 @@ testEndpointError('api/createHub.php', {
 	username: username3
 }, 'HUB_NAME_TAKEN');
 
+message("Testing user 2 closing the hub");
+testEndpointError('api/closeHub.php', {
+	hubId: hubId,
+	phoneId: phoneId2,
+}, 'NOT_HUB_CREATOR');
+
+message("Testing user 1 closing the hub");
+testEndpoint("api/closeHub.php", {
+	hubId: hubId,
+	phoneId: phoneId1
+});
+
+message("Testing user 3 joining a closed hub");
+testEndpointError('api/joinHub.php', {
+	hubName: hubName1,
+	phoneId: phoneId3,
+	username: username3
+}, "HUB_CLOSED");
+
+message("Testing user 2 adding song");
+testEndpointError('api/addSong.php', {
+	hubId: hubId,
+	phoneId: phoneId2,
+	songId: songId2,
+	songTitle: songTitle2
+}, "HUB_CLOSED");
+
+message("Testing User 1 opening the hub again");
+testEndpoint('api/createHub.php', {
+	hubName: hubName1,
+	phoneId: phoneId1,
+	username: 'new username',
+	hubPin: '1234'
+});
+
+message("Testing user 3 joing hub with changed pin");
+testEndpointError('api/joinHub.php', {
+	hubName: hubName1,
+	phoneId: phoneId3,
+	username: username3,
+	hubPin: '0000'
+}, "HUB_PIN_WRONG");
+
 
 message("Testing user 1 creating hub with pin");
 hubId = testEndpoint('api/createHub.php', {
@@ -174,6 +239,8 @@ testEndpointError('api/joinHub.php', {
 	username: username3,
 	hubPin: '0000'
 }, 'HUB_PIN_WRONG');
+
+message("<h2>Testing Complete</h2>");
 
 
 </script>

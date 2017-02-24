@@ -14,6 +14,7 @@ addSong:
 
 require_once "assert/hubExists.php";
 require_once "assert/userConnectedToHub.php";
+require_once "assert/hubIdOpen.php";
 require_once "assert/songGiven.php";
 
 // check for duplicates
