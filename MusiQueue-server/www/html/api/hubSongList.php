@@ -17,6 +17,7 @@ hubSongList:
             down_votes - int,
             user_id - The id of the Users table entry of the user who added the song,
             user_name - The name of the user who added the song
+            rank - The song's rank. Higher is better
 		}
 ");
 
@@ -41,11 +42,13 @@ $result = $conn->query("
 		Songs.up_votes,
 		Songs.down_votes,
         Users.id as user_id,
-        Users.name as user_name
+        Users.name as user_name,
+        (-UNIX_TIMESTAMP(Songs.time_added) + (Songs.up_votes - Songs.down_votes)*60) as rank
 	FROM Songs
 	INNER JOIN Users on Users.id = Songs.user_id
 	WHERE
 		Songs.hub_id='$hubId'
+	ORDER BY rank DESC
 ");
 
 $arr = array();
