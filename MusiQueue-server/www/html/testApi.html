@@ -1,0 +1,179 @@
+<div id="output"></div>
+<script src="jquery-3.1.1.min.js"></script>
+<style type="text/css">
+	.bad{
+		color: #900;
+	}
+
+	.good{
+		color: #090;
+	}
+
+	.indent{
+		padding-left: 15px;
+	}
+
+	pre{
+		display: inline;
+	}
+</style>
+<script>
+// for testing an endpoint that should work
+function testEndpoint(url, params) {
+    var response = $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: params,
+        dataType: 'json'
+    }).responseJSON;
+    if(response.error) {
+    	document.getElementById('output').innerHTML += "<div class='bad indent'>Error: <pre>"+url+' '+JSON.stringify(params)+"</pre> - <pre>"+response.errorCode+"</pre></div>";
+    }else{
+    	document.getElementById('output').innerHTML += "<div class='good indent'>No error: <pre>"+url+' '+JSON.stringify(params)+"</pre></div>";
+    }
+    return response;
+}
+
+// for testing if an endpoint gives the correct error message
+function testEndpointError(url, params, errorCode) {
+    var response = $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: params,
+        dataType: 'json'
+    }).responseJSON;
+    if(!response.error) {
+    	document.getElementById('output').innerHTML += "<div class='bad indent'>No error - expected <pre>'"+errorCode+"'</pre>: <pre>"+url+' '+JSON.stringify(params)+"</pre></div>";
+    }else if(response.errorCode == errorCode){
+    	document.getElementById('output').innerHTML += "<div class='good indent'>Correct error: <pre>"+url+' '+JSON.stringify(params)+"</pre> - <pre>"+response.errorCode+"</pre></div>";
+    }else{
+    	document.getElementById('output').innerHTML += "<div class='bad indent'>Unexpected error - expected <pre>'"+errorCode+"'</pre>: <pre>"+url+' '+JSON.stringify(params)+"</pre> - <pre>"+response.errorCode+"</pre></div>";
+    }
+    return response;
+}
+
+function message(m) {
+	document.getElementById('output').innerHTML += "<div>"+m+"</div>";
+}
+
+function error(m) {
+	document.getElementById('output').innerHTML += "<div class='bad indent'>"+m+"</div>";
+}
+
+function success(m) {
+	document.getElementById('output').innerHTML += "<div class='good indent'>"+m+"</div>";
+}
+
+var ts = +(new Date());
+var hubName1 = 'testHub_'+ts;
+var hubName2 = 'testHub2_'+ts;
+var phoneId1 = 'testPhone_'+ts;
+var phoneId2 = 'testPhone2_'+ts;
+var phoneId3 = 'testPhone3_'+ts;
+var username = 'testUser_'+ts;
+var username2 = 'testUser2_'+ts;
+var username3 = 'testUser3_'+ts;
+var songId = 'jofNR_WkoCE';
+var songTitle = 'Test Song '+ts;
+
+message("Testing User 1 creating a hub with no pin");
+hubId = testEndpoint('api/createHub.php', {
+	hubName: hubName1,
+	phoneId: phoneId1,
+	username: username
+}).result.hub_id;
+
+message("Testing user 2 joining hub with wrong name");
+testEndpointError('api/joinHub.php', {
+	hubName: hubName1 + 'wrong',
+	phoneId: phoneId2,
+	username: username2
+}, 'HUB_NOT_FOUND');
+
+message("Testing user 2 joining hub");
+testEndpoint('api/joinHub.php', {
+	hubName: hubName1,
+	phoneId: phoneId2,
+	username: username2
+});
+
+message("Testing user 2 adding song");
+testEndpoint('api/addSong.php', {
+	hubId: hubId,
+	phoneId: phoneId2,
+	songId: songId,
+	songTitle: songTitle
+});
+
+message("Testing user 3 adding song");
+testEndpointError('api/addSong.php', {
+	hubId: hubId,
+	phoneId: phoneId3,
+	songId: songId,
+	songTitle: songTitle
+}, "USER_NOT_CONNECTED");
+
+message("Testing user 2 listing songs");
+var songs = testEndpoint('api/hubSongList.php', {
+	hubId: hubId,
+	phoneId: phoneId2
+}).result;
+if(songs.length != 1) {
+	error("song listing incorrect - wrong number of songs");
+	error(JSON.stringify(songs));
+}else if(songs[0].song_id != songId || songs[0].song_title != songTitle) {
+	error("song listing incorrect - song 1 wrong");
+	error(JSON.stringify(songs));
+}else{
+	success("song listing correct");
+}
+
+message("Testing user 3 listing songs");
+testEndpointError('api/hubSongList.php', {
+	hubId: hubId,
+	phoneId: phoneId3
+}, "USER_NOT_CONNECTED");
+
+message("Testing user 3 creating hub with same name");
+testEndpointError('api/createHub.php', {
+	hubName: hubName1,
+	phoneId: phoneId3,
+	username: username3
+}, 'HUB_NAME_TAKEN');
+
+
+message("Testing user 1 creating hub with pin");
+hubId = testEndpoint('api/createHub.php', {
+	hubName: hubName2,
+	phoneId: phoneId1,
+	username: username,
+	hubPin: '1234'
+}).result.hub_id;
+
+message("Testing user 2 joining hub with pin");
+testEndpoint('api/joinHub.php', {
+	hubName: hubName2,
+	phoneId: phoneId2,
+	username: username2,
+	hubPin: '1234'
+});
+
+message("Testing user 3 joining hub without pin");
+testEndpointError('api/joinHub.php', {
+	hubName: hubName2,
+	phoneId: phoneId3,
+	username: username3
+}, 'HUB_PIN_WRONG');
+
+message("Testing user 3 joining hub with wrong pin");
+testEndpointError('api/joinHub.php', {
+	hubName: hubName2,
+	phoneId: phoneId3,
+	username: username3,
+	hubPin: '0000'
+}, 'HUB_PIN_WRONG');
+
+
+</script>

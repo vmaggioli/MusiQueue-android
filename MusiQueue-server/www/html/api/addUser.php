@@ -1,3 +1,9 @@
+
+
+// This file should probably be removed in favor of joinHub.php
+<br/>
+
+
 <?php
 require_once "connection.php";
 
