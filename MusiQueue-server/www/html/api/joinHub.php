@@ -2,9 +2,9 @@
 require_once "connection.php";
 
 apiDocs("
-addUser:
+joinHub:
     Params:
-        hubName - the hub id of the hub the user is joining
+        hubName - the hub name of the hub the user is joining
         hubPin (optional) - the pin required for joining the hub
         phoneId - the user's phoneId
         username - the name the user wants to be called
