@@ -22,6 +22,7 @@ hubSongList:
 
 require_once "assert/hubExists.php";
 require_once "assert/userConnectedToHub.php";
+require_once "assert/hubIdOpen.php";
 
 $hubId = mysqli_real_escape_string($conn, $_REQUEST['hubId']);
 

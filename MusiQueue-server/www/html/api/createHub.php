@@ -34,37 +34,54 @@ if(isset($_REQUEST['hubPin'])) {
 
 // check if this hub name is available
 $result = mysqli_query($conn, "
-	SELECT COUNT(*) as total
+	SELECT
+		`Hubs`.*,
+		`Users`.`phone_id` as creator_phone_id
 	FROM Hubs
+	INNER JOIN `Users` ON `Users`.`id` = `Hubs`.`hub_creator_id`
 	WHERE `hub_name` = '$hubName'
+	LIMIT 1
 ");
-$taken = mysqli_fetch_assoc($result)['total'];
+$taken = mysqli_num_rows($result);
 
 if($taken) {
-	respondError("HUB_NAME_TAKEN", "That hub name is already taken. Please choose a different name.");
+	$hub = mysqli_fetch_assoc($result);
+	if($hub['creator_phone_id'] != $_REQUEST['phoneId']) {
+		respondError("HUB_NAME_TAKEN", "That hub name is already taken. Please choose a different name.");
+	}
+	// reopen the hub
+	$hubId = $hub['id'];
+
+	mysqli_query($conn, "
+		UPDATE Hubs
+		SET
+			closed = 0,
+			time_last_active = CURRENT_TIME()
+		WHERE name = '$hubName'
+	");
+}else{
+	// create the hub
+	$result = mysqli_query($conn, "
+		INSERT INTO Hubs
+		(hub_name, time_last_active, hub_pin)
+		VALUES ('$hubName', CURRENT_TIME(), ".($hasPin ? "'$hubPin'" : 'NULL').")
+	");
+	$hubId = mysqli_insert_id($conn);
+
+	// create the user
+	$result = mysqli_query($conn, "
+	    INSERT INTO Users (phone_id, hub_id, name)
+	    VALUES ('$phoneId', '".$hubId."', '$username')
+	");
+	$userId = mysqli_insert_id($conn);
+
+	// update the hub owner
+	$result = mysqli_query($conn, "
+		UPDATE Hubs
+		SET hub_creator_id = $userId
+		WHERE id = $hubId
+	");
 }
-
-// create the hub
-$result = mysqli_query($conn, "
-	INSERT INTO Hubs
-	(hub_name, time_last_active, hub_pin)
-	VALUES ('$hubName', CURRENT_TIME(), ".($hasPin ? "'$hubPin'" : 'NULL').")
-");
-$hubId = mysqli_insert_id($conn);
-
-// create the user
-$result = mysqli_query($conn, "
-    INSERT INTO Users (phone_id, hub_id, name)
-    VALUES ('$phoneId', '".$hubId."', '$username')
-");
-$userId = mysqli_insert_id($conn);
-
-// update the hub owner
-$result = mysqli_query($conn, "
-	UPDATE Hubs
-	SET hub_creator_id = $userId
-	WHERE id = $hubId
-");
 
 // return
 respondSuccess(array(
