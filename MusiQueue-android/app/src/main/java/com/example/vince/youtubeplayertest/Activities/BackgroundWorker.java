@@ -6,6 +6,10 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -17,6 +21,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.sql.Date;
 import java.sql.Timestamp;
+import java.util.ArrayList;
 
 /**
  * Created by Brian on 2/16/2017.
@@ -36,6 +41,15 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
 
     public BackgroundWorker(Context context) {
         this.context = context;
+    }
+
+
+    public interface AsyncResponse {
+        void processFinish(String output);
+    }
+    public AsyncResponse delegate = null;
+    public BackgroundWorker(AsyncResponse delegate) {
+        this.delegate = delegate;
     }
 
     String type;
@@ -195,8 +209,17 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                     }
                     httpURLConnection.disconnect();
 
+                    ArrayList<String> names = new ArrayList<String>();
+                    JSONObject json = new JSONObject(result.toString());
+                    JSONArray jsonArray = json.getJSONArray("result");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jObj = jsonArray.getJSONObject(i);
+                        String hub_name = jObj.getString("hub_name");
+                        names.add(hub_name);
+                    }
                     // Pass data to onPostExecute method
-                    return (result.toString());
+
+                    return (names.toString().substring(1, names.toString().length()-1));
 
                 } else {
                     httpURLConnection.disconnect();
@@ -206,6 +229,8 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
             } catch (IOException e) {
                 e.printStackTrace();
                 return "exception";
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
         } else if (type.equals("createHub")) {
             try {
@@ -330,6 +355,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         // RECEIVES THE RESULT FROM 'doInBackgroung()' AS ITS PARAMATER
+        // TODO: remove the debug print statements from each condition
         if (type.equals("test")) {
             Log.d("\t\t\tresults: ", result);
             Intent intent = new Intent(context, BackendTestActivity.class);
@@ -343,6 +369,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
             Log.d("\t\t\tresults: ", result);
         } else if (type.equals("searchHub")) {
             Log.d("\t\t\tresults: ", result);
+            delegate.processFinish(result);
         }
     }
 
