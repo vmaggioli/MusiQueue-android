@@ -13,6 +13,7 @@ import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListAdapter;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListItem;
 import com.example.vince.youtubeplayertest.R;
@@ -56,6 +57,10 @@ public class SearchHub extends AppCompatActivity {
     void search(View view) {
         if (enterHub.length() != 0) {
             String contents = enterHub.getText().toString();
+
+            BackgroundWorker backgroundWorker = new BackgroundWorker(this);
+            backgroundWorker.execute("searchHub", contents);
+
             HubsListAdapter hubsListAdapter = new HubsListAdapter(this, hubs);
             Log.d("poop", contents);
             hubsList.setAdapter(hubsListAdapter);

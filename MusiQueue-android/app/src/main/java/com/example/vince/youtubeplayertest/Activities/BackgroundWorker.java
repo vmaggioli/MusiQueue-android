@@ -341,6 +341,8 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
             Log.d("\t\t\tresults: ", result);
         } else if (type.equals("joinHub")) {
             Log.d("\t\t\tresults: ", result);
+        } else if (type.equals("searchHub")) {
+            Log.d("\t\t\tresults: ", result);
         }
     }
 
