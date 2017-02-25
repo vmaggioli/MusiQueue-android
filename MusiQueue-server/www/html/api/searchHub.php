@@ -13,13 +13,12 @@ searchHub:
 $hubName = mysqli_real_escape_string($conn, $_REQUEST['hubName']);
 
 $result = mysqli_query($conn, "SELECT hub_name FROM Hubs WHERE hub_name LIKE '%$hubName%';");
+$arr = array();
 
 if ($result->num_rows == 0) {
-  echo "nothing found\n";
-  exit;
+  respondSuccess($arr);
 }
 
-$arr = array();
 while($assoc = mysqli_fetch_assoc($result)) {
 	$arr[] = $assoc;
 }
