@@ -32,9 +32,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:background="@color/colorPrimaryDark"
-            android:text="@string/search" />
+            android:text="@string/search"
+            android:onClick="search"
+            />
     </LinearLayout>
-    
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/hubs_list"
         android:layout_below="@id/search_bar_hubs"

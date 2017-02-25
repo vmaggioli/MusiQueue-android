@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.example.vince.youtubeplayertest.Activities.helper_classes.Hub;
 import com.example.vince.youtubeplayertest.Activities.hub_admin_only.CreateHub;
+import com.example.vince.youtubeplayertest.Activities.users_only.SearchHub;
 import com.example.vince.youtubeplayertest.R;
 
 public class GettingStarted extends AppCompatActivity {
@@ -39,6 +40,7 @@ public class GettingStarted extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 // TODO: send new Intent to creating a hub
+                startActivity(new Intent(getApplicationContext(), SearchHub.class));
             }
         });
 
