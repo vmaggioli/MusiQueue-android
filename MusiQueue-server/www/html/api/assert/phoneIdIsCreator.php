@@ -1,4 +1,8 @@
 <?php
+
+apiDocsCouldError("NOT_HUB_CREATOR", "If the given phoneId is not the hub creator.");
+apiDocsCouldError("DB_ISSUE");
+
 assertGiven("hubId");
 assertGiven("phoneId");
 

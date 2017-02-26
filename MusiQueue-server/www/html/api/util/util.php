@@ -1,8 +1,13 @@
 <?php
 define("PRETTY_PRINT", isset($_REQUEST["pretty"]));
-if(!isset($GLOBALS['_apiDocsString'])) $GLOBALS['_apiDocsString'] = "";
+
+if(!isset($GLOBALS['_apiDocsString'])) {
+	$GLOBALS['_apiDocsString'] = "";
+	$GLOBALS['_apiDocsErrors'] = array();
+}
 
 function assertGiven($param) {
+	apiDocsCouldError("INVALID_REQUEST", "If a required parameter was not given.");
 	if(!isset($_REQUEST[$param]))
 		respondError("INVALID_REQUEST", "You must provide a `" . $param . "`");
 }
@@ -13,6 +18,11 @@ function apiDocs($string) {
 	if(!PRETTY_PRINT) return;
 
 	$GLOBALS['_apiDocsString'] .= $string . "\n";
+}
+
+function apiDocsCouldError($errorCode, $desc = '') {
+	if(!PRETTY_PRINT) return;
+	$GLOBALS['_apiDocsErrors'][] = $errorCode . ($desc == '' ? '' : (' - '.$desc));
 }
 
 // wrapper for respondJson when we want to give an object back
@@ -42,11 +52,31 @@ function respondError($errorCode, $message = '') {
 // }
 function respondJson($obj) {
 	if(PRETTY_PRINT) {
+		echo "<style>
+				.docs{
+					border: 1px solid #ddd;
+					background: #eee;
+					border-radius: 5px;
+					padding: 10px;
+				}
+			</style>";
+		echo "<pre class='docs'>";
+
+		echo "<a href='.'>Back to API Overview</a>\n";
+
 		if($GLOBALS['_apiDocsString'] != "") {
-			echo "<pre>";
 			echo str_replace("\t", "    ", $GLOBALS['_apiDocsString']);
-			echo "</pre>";
 		}
+
+		if(count($GLOBALS['_apiDocsErrors'])) {
+			echo "    Possible Errors:\n";
+			foreach(array_unique($GLOBALS['_apiDocsErrors']) as $errorCode) {
+				echo "        ";
+				echo $errorCode . "\n";
+			}
+		}
+
+		echo "</pre>";
 
 		echo "<pre>";
 		echo json_encode($obj, JSON_PRETTY_PRINT);

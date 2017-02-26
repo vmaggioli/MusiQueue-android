@@ -1,4 +1,7 @@
 <?php
+
+apiDocsCouldError("SONG_NOT_FOUND");
+
 assertGiven('hubId');
 assertGiven('songId');
 
