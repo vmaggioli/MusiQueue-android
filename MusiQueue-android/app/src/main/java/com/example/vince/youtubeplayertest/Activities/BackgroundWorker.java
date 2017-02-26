@@ -64,7 +64,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
         String testUrl = "http://52.14.50.251/api/backendTest.php";
         String addUserUrl = "http://52.14.50.251/api/addUser.php";
         String createHubUrl = "http://52.14.50.251/api/createHub.php";
-        String songListUrl = "get from that doc";
+        String songListUrl = "http://52.14.50.251/api/hubSongList.php";
         String joinHubUrl = "http://52.14.50.251/api/joinHub.php";
         String searchHubUrl = "http://52.14.50.251/api/searchHub.php";
 
@@ -347,8 +347,8 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
         else if(type.equals("songList")) {
             try {
                 String hubName = params[1];
-                String passPin = params[2];
-                String creatorId = params[3];
+                String phoneID = params[2];
+
                 Log.d("blah", hubName);
                 URL url = new URL(createHubUrl);
 
@@ -363,9 +363,8 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                 Date date = new Date(System.currentTimeMillis());
                 // TODO: send a parameter for the user's phone id
                 Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("hubName", hubName)
-                        .appendQueryParameter("passPin", passPin)
-                        .appendQueryParameter("creatorId", creatorId);
+                        .appendQueryParameter("hubId", hubName)
+                        .appendQueryParameter("phoneId", phoneID);
                 String post_data = builder.build().getEncodedQuery();
                 Log.d("post_data: ", post_data);
                 bw.write(post_data);
