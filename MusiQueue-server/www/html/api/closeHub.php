@@ -8,11 +8,10 @@ closeHub:
         phoneId - the creator's phoneId
     Returns on success:
         true
-    Common errors:
-        HUB_NOT_FOUND
-        NOT_HUB_CREATOR
-
 ");
+apiDocsCouldError('HUB_NOT_FOUND');
+apiDocsCouldError('NOT_HUB_CREATOR');
+
 
 require_once "assert/hubExists.php";
 require_once "assert/phoneIdIsCreator.php";

@@ -10,6 +10,7 @@ voteDownSong:
 	Returns on success:
 		See hubSongList endpoint.
 ");
+apiDocsCouldError("DB_ISSUE");
 
 require_once "assert/hubExists.php";
 require_once "assert/userConnectedToHub.php";

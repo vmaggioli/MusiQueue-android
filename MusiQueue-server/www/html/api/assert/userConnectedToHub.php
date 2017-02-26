@@ -1,5 +1,7 @@
 <?php
 
+apiDocsCouldError("USER_NOT_CONNECTED", "If the user is not connected to the hub.");
+
 assertGiven('phoneId');
 assertGiven('hubId');
 
