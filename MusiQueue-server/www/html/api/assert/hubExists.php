@@ -1,4 +1,6 @@
 <?php
+apiDocsCouldError("HUB_NOT_FOUND", "If a hub with that id cannot be found.");
+
 assertGiven('hubId');
 
 $hubId = mysqli_real_escape_string($conn, $_REQUEST['hubId']);

@@ -1,4 +1,6 @@
 <?php
+apiDocsCouldError("HUB_CLOSED", "If the hub with that id is closed.");
+
 assertGiven('hubId');
 $result = mysqli_query($conn, "
 	SELECT `closed` FROM Hubs

@@ -13,12 +13,11 @@ joinHub:
         {
             hub_id - int
         }
-    Common errors:
-        HUB_NOT_FOUND
-        HUB_CLOSED
-        USER_KICKED - the user cannot join the hub because they were kicked
-        HUB_PIN_WRONG
 ");
+apiDocsCouldError("HUB_NOT_FOUND");
+apiDocsCouldError("HUB_CLOSED");
+apiDocsCouldError("USER_KICKED", "If the user cannot join the hub because they were kicked");
+apiDocsCouldError("HUB_PIN_WRONG");
 
 assertGiven("phoneId");
 assertGiven("username");

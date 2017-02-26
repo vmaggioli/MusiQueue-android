@@ -8,15 +8,14 @@ createHub:
         hubPin (optional) - the pin required for joining the hub
         phoneId - the user's phoneId
         username - the name the user wants to be called
+    	// TODO: add hub location?
     Returns on success:
         info about the hub we connect to:
         {
             hub_id - int
         }
-    Common errors:
-        HUB_NAME_TAKEN
-    // TODO: add hub location?
 ");
+apiDocsCouldError('HUB_NAME_TAKEN');
 
 assertGiven("hubName");
 assertGiven("phoneId");
