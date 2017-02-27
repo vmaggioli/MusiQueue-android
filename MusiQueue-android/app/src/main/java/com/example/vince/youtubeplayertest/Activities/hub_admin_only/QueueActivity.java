@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
+import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
 import com.example.vince.youtubeplayertest.Activities.SearchActivity;
 import com.example.vince.youtubeplayertest.R;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -29,6 +30,10 @@ public class QueueActivity extends AppCompatActivity {
 
         final EditText url_text = (EditText) findViewById(R.id.url);
         Button url_button = (Button) findViewById(R.id.url_button);
+
+        //need data to run this to test
+        BackgroundWorker bw = new BackgroundWorker(getApplicationContext());
+        bw.execute("songList", "47","30");
 
         // initialize YouTube player
         YouTubePlayerFragment mYouTubePlayerFragment = (YouTubePlayerFragment)

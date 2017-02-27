@@ -4,7 +4,7 @@ package com.example.vince.youtubeplayertest.Activities.users_only;
  * Created by Sam on 2/26/2017.
  */
 
-public class QueueItem {
+public class QueueSong {
     private String title;
     private int upVotes;
     private int downVotes;

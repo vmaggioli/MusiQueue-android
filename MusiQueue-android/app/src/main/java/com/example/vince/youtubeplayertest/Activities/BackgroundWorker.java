@@ -2,9 +2,12 @@ package com.example.vince.youtubeplayertest.Activities;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.session.MediaSession;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.example.vince.youtubeplayertest.Activities.users_only.QueueSong;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -350,7 +353,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                 String phoneID = params[2];
 
                 Log.d("blah", hubName);
-                URL url = new URL(createHubUrl);
+                URL url = new URL(songListUrl);
 
                 HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
                 httpURLConnection.setRequestMethod("POST");
@@ -386,8 +389,22 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                     }
                     httpURLConnection.disconnect();
 
+                    QueueSong item = new QueueSong();
+                    ArrayList<QueueSong> list = new ArrayList<QueueSong>();
+                    JSONObject json = new JSONObject(result.toString());
+                    Log.d("hi",json.toString());
+                    JSONArray jsonArray = json.getJSONArray("result");
+                    for (int i = 0; i < jsonArray.length(); i++){
+                        JSONObject jObj = jsonArray.getJSONObject(i);
+                        item.setTitle(jObj.getString("song_title"));
+                        item.setUpVotes(jObj.getInt("up_votes"));
+                        item.setDownVotes(jObj.getInt("down_votes"));
+                        list.add(item);
+                    }
+
+
                     // Pass data to onPostExecute method
-                    return(result.toString());
+                    return(list.toString() + "ji");
 
                 }else {
                     httpURLConnection.disconnect();
@@ -397,7 +414,9 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
             } catch (IOException e) {
                 e.printStackTrace();
                 return "exception";
-            }
+            } catch (JSONException e) {
+            e.printStackTrace();
+        }
         }
         return null;
     }
@@ -426,7 +445,10 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
         } else if (type.equals("searchHub")) {
             Log.d("\t\t\tresults: ", result);
             delegate.processFinish(result);
+        } else if (type.equals("songList")) {
+            Log.d("\t\t\tresults: ", result);
         }
+
     }
 
     @Override
