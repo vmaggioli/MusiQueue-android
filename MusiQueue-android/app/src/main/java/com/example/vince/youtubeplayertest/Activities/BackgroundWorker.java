@@ -25,6 +25,7 @@ import java.net.URL;
 import java.sql.Date;
 import java.sql.Timestamp;
 import java.util.ArrayList;
+import java.util.Vector;
 
 /**
  * Created by Brian on 2/16/2017.
@@ -64,289 +65,84 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
     protected String doInBackground(String... params) {
         type = params[0];
 
-        String testUrl = "http://52.14.50.251/api/backendTest.php";
-        String addUserUrl = "http://52.14.50.251/api/addUser.php";
-        String createHubUrl = "http://52.14.50.251/api/createHub.php";
-        String joinHubUrl = "http://52.14.50.251/api/joinHub.php";
-        String searchHubUrl = "http://52.14.50.251/api/searchHub.php";
+        String urlBase = "http://52.14.50.251/api/";
+        String urlEnd = type + ".php";
 
-        if (type.equals("test")) {
-            try {
-                String name = params[1];
-                String addr = params[2];
-                Log.d("blah", name + " " + addr);
-                URL url = new URL(testUrl);
+        Vector<String> paramNames = new Vector<>();
 
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setDoInput(true);
-
-                OutputStream os = httpURLConnection.getOutputStream();
-                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-
-                Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("name", name)
-                        .appendQueryParameter("addr", addr);
-                String post_data = builder.build().getEncodedQuery();
-                Log.d("post_data: ", post_data);
-                bw.write(post_data);
-                bw.flush();
-                bw.close();
-                os.close();
-                httpURLConnection.connect();
-
-                // CHECK RESPONSE CODE FOR ANY ERRORS
-                int responseCode = httpURLConnection.getResponseCode();
-                Log.d("response: ", String.valueOf(responseCode));
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    InputStream is = httpURLConnection.getInputStream();
-                    BufferedReader br = new BufferedReader(new InputStreamReader(is, "iso-8859-1"));
-                    StringBuilder result = new StringBuilder();
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        result.append(line + "\n");
-                    }
-                    httpURLConnection.disconnect();
-
-                    // Pass data to onPostExecute method
-                    return (result.toString());
-
-                } else {
-                    httpURLConnection.disconnect();
-                    return ("unsuccessful");
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                return "exception";
-            }
-        } else if (type.equals("addUser")) {
-            try {
-                String username = params[1];
-                String userId = params[2];
-                Log.d("blah", username);
-                URL url = new URL(addUserUrl);
-
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setDoInput(true);
-
-                OutputStream os = httpURLConnection.getOutputStream();
-                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-
-                Date date = new Date(System.currentTimeMillis());
-                // TODO: send a parameter for the user's phone id
-                Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("username", username)
-                        .appendQueryParameter("userId", userId)
-                        .appendQueryParameter("dateTime", String.valueOf(date));
-                String post_data = builder.build().getEncodedQuery();
-                Log.d("post_data: ", post_data);
-                bw.write(post_data);
-                bw.flush();
-                bw.close();
-                os.close();
-                httpURLConnection.connect();
-
-                // CHECK RESPONSE CODE FOR ANY ERRORS
-                int responseCode = httpURLConnection.getResponseCode();
-                Log.d("response: ", String.valueOf(responseCode));
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    InputStream is = httpURLConnection.getInputStream();
-                    BufferedReader br = new BufferedReader(new InputStreamReader(is, "iso-8859-1"));
-                    StringBuilder result = new StringBuilder();
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        result.append(line + "\n");
-                    }
-                    httpURLConnection.disconnect();
-
-                    // Pass data to onPostExecute method
-                    return (result.toString());
-
-                } else {
-                    httpURLConnection.disconnect();
-                    return ("unsuccessful");
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                return "exception";
-            }
-        } else if (type.equals("searchHub")) {
-            try {
-                String hubName = params[1];
-                Log.d("blah", hubName);
-                URL url = new URL(searchHubUrl);
-
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setDoInput(true);
-
-                OutputStream os = httpURLConnection.getOutputStream();
-                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-
-                Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("hubName", hubName);
-                String post_data = builder.build().getEncodedQuery();
-                Log.d("post_data: ", post_data);
-                bw.write(post_data);
-                bw.flush();
-                bw.close();
-                os.close();
-                httpURLConnection.connect();
-
-                // CHECK RESPONSE CODE FOR ANY ERRORS
-                int responseCode = httpURLConnection.getResponseCode();
-                Log.d("response: ", String.valueOf(responseCode));
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    InputStream is = httpURLConnection.getInputStream();
-                    BufferedReader br = new BufferedReader(new InputStreamReader(is, "iso-8859-1"));
-                    StringBuilder result = new StringBuilder();
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        result.append(line + "\n");
-                    }
-                    httpURLConnection.disconnect();
-
-                    ArrayList<String> names = new ArrayList<String>();
-                    JSONObject json = new JSONObject(result.toString());
-                    JSONArray jsonArray = json.getJSONArray("result");
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        JSONObject jObj = jsonArray.getJSONObject(i);
-                        String hub_name = jObj.getString("hub_name");
-                        names.add(hub_name);
-                    }
-                    // Pass data to onPostExecute method
-
-                    return (names.toString().substring(1, names.toString().length()-1));
-
-                } else {
-                    httpURLConnection.disconnect();
-                    return ("unsuccessful");
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                return "exception";
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-        } else if (type.equals("createHub")) {
-            try {
-                String hubName = params[1];
-                String passPin = params[2];
-                String creatorId = params[3];
-                Log.d("blah", hubName);
-                URL url = new URL(createHubUrl);
-
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setDoInput(true);
-
-                OutputStream os = httpURLConnection.getOutputStream();
-                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-
-                Date date = new Date(System.currentTimeMillis());
-                // TODO: send a parameter for the user's phone id
-                Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("hubName", hubName)
-                        .appendQueryParameter("passPin", passPin)
-                        .appendQueryParameter("creatorId", creatorId);
-                String post_data = builder.build().getEncodedQuery();
-                Log.d("post_data: ", post_data);
-                bw.write(post_data);
-                bw.flush();
-                bw.close();
-                os.close();
-                httpURLConnection.connect();
-
-                // CHECK RESPONSE CODE FOR ANY ERRORS
-                int responseCode = httpURLConnection.getResponseCode();
-                Log.d("response: ", String.valueOf(responseCode));
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    InputStream is = httpURLConnection.getInputStream();
-                    BufferedReader br = new BufferedReader(new InputStreamReader(is, "iso-8859-1"));
-                    StringBuilder result = new StringBuilder();
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        result.append(line + "\n");
-                    }
-                    httpURLConnection.disconnect();
-
-                    // Pass data to onPostExecute method
-                    return (result.toString());
-
-                } else {
-                    httpURLConnection.disconnect();
-                    return ("unsuccessful");
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                return "exception";
-            }
-        } else if (type.equals("joinHub")) {
-            try {
-                String hubName = params[1];
-                String hubPin = params[2];
-                String phoneId = params[3];
-                String username = params[4];
-                Log.d("blah", hubName);
-                URL url = new URL(joinHubUrl);
-
-                HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-                httpURLConnection.setRequestMethod("POST");
-                httpURLConnection.setDoOutput(true);
-                httpURLConnection.setDoInput(true);
-
-                OutputStream os = httpURLConnection.getOutputStream();
-                BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
-
-                Uri.Builder builder = new Uri.Builder()
-                        .appendQueryParameter("hubName", hubName)
-                        .appendQueryParameter("hubPin", hubPin)
-                        .appendQueryParameter("phoneID", phoneId)
-                        .appendQueryParameter("username", username);
-                String post_data = builder.build().getEncodedQuery();
-                Log.d("post_data: ", post_data);
-                bw.write(post_data);
-                bw.flush();
-                bw.close();
-                os.close();
-                httpURLConnection.connect();
-
-                // CHECK RESPONSE CODE FOR ANY ERRORS
-                int responseCode = httpURLConnection.getResponseCode();
-                Log.d("response: ", String.valueOf(responseCode));
-                if (responseCode == HttpURLConnection.HTTP_OK) {
-                    InputStream is = httpURLConnection.getInputStream();
-                    BufferedReader br = new BufferedReader(new InputStreamReader(is, "iso-8859-1"));
-                    StringBuilder result = new StringBuilder();
-                    String line;
-                    while ((line = br.readLine()) != null) {
-                        result.append(line + "\n");
-                    }
-                    httpURLConnection.disconnect();
-
-                    // Pass data to onPostExecute method
-                    return (result.toString());
-
-                } else {
-                    httpURLConnection.disconnect();
-                    return ("unsuccessful");
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                return "exception";
-            }
+        switch(type) {
+            case "test":
+                urlEnd = "backendTest.php";
+                paramNames.add("name");
+                paramNames.add("addr");
+                break;
+            case "searchHub":
+                paramNames.add("hubName");
+                break;
+            case "createHub":
+                paramNames.add("hubName");
+                paramNames.add("hubPin");
+                paramNames.add("phoneId");
+                paramNames.add("username");
+                break;
+            case "joinHub":
+                paramNames.add("hubName");
+                paramNames.add("hubPin");
+                paramNames.add("phoneId");
+                paramNames.add("username");
+                break;
         }
-        return null;
+
+        // setup and make the request
+        try {
+            URL url = new URL(urlBase + urlEnd);
+
+            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
+            httpURLConnection.setRequestMethod("POST");
+            httpURLConnection.setDoOutput(true);
+            httpURLConnection.setDoInput(true);
+
+            OutputStream os = httpURLConnection.getOutputStream();
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
+
+            Uri.Builder builder = new Uri.Builder();
+            int i = 1;
+            for (String p: paramNames) {
+                builder.appendQueryParameter(p, params[i++]);
+            }
+            String post_data = builder.build().getEncodedQuery();
+            Log.d("post_data: ", post_data);
+            bw.write(post_data);
+            bw.flush();
+            bw.close();
+            os.close();
+            httpURLConnection.connect();
+
+            // CHECK RESPONSE CODE FOR ANY ERRORS
+            int responseCode = httpURLConnection.getResponseCode();
+            Log.d("response: ", String.valueOf(responseCode));
+            if (responseCode == HttpURLConnection.HTTP_OK) {
+                InputStream is = httpURLConnection.getInputStream();
+                BufferedReader br = new BufferedReader(new InputStreamReader(is, "iso-8859-1"));
+                StringBuilder result = new StringBuilder();
+                String line;
+                while ((line = br.readLine()) != null) {
+                    result.append(line + "\n");
+                }
+                httpURLConnection.disconnect();
+
+                // Pass data to onPostExecute method
+                return (result.toString());
+
+            } else {
+                httpURLConnection.disconnect();
+                return ("unsuccessful");
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            return "exception";
+        }
     }
 
     @Override
@@ -358,20 +154,28 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
     @Override
     protected void onPostExecute(String result) {
         // RECEIVES THE RESULT FROM 'doInBackgroung()' AS ITS PARAMATER
+        Log.d("\t\t\tresults: ", result);
+
+        // check the json for an error message
+        try {
+            JSONObject json = new JSONObject(result);
+            if(json.getBoolean("error")) {
+                String errorCode = json.getString("errorCode");
+                String errorMessage = json.getString("errorMessage");
+                Log.e("Request error code: ", errorCode);
+                Log.e("Request error message: ", errorMessage);
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
         // TODO: remove the debug print statements from each condition
         if (type.equals("test")) {
             Log.d("\t\t\tresults: ", result);
             Intent intent = new Intent(context, BackendTestActivity.class);
             intent.putExtra("result", result);
             context.startActivity(intent);
-        } else if (type.equals("addUser")) {
-            Log.d("\t\t\tresults: ", result);
-        } else if (type.equals("createHub")) {
-            Log.d("\t\t\tresults: ", result);
-        } else if (type.equals("joinHub")) {
-            Log.d("\t\t\tresults: ", result);
-        } else if (type.equals("searchHub")) {
-            Log.d("\t\t\tresults: ", result);
+        } else {
             delegate.processFinish(result);
         }
     }

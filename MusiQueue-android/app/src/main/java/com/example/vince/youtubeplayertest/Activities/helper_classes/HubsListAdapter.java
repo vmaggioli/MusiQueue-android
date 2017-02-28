@@ -9,23 +9,25 @@ import android.widget.TextView;
 
 import com.example.vince.youtubeplayertest.R;
 
-import java.util.ArrayList;
+import java.util.Vector;
 
 
 public class HubsListAdapter extends RecyclerView.Adapter<HubsListAdapter.ViewHolder> {
-    private ArrayList<HubsListItem> hubs;
+    private Vector<HubsListItem> hubs;
     private Context mContext;
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
+        public TextView creatorName;
 
         ViewHolder(View itemView) {
             super(itemView);
             name = (TextView) itemView.findViewById(R.id.hub_name);
+            creatorName = (TextView) itemView.findViewById(R.id.hub_creator_name);
         }
     }
 
-    public HubsListAdapter(Context context, ArrayList<HubsListItem> hubs) {
+    public HubsListAdapter(Context context, Vector<HubsListItem> hubs) {
         mContext = context;
         this.hubs = hubs;
     }
@@ -42,9 +44,9 @@ public class HubsListAdapter extends RecyclerView.Adapter<HubsListAdapter.ViewHo
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         HubsListItem item = hubs.get(position);
-        TextView nameView = holder.name;
 
-        nameView.setText(item.getHubName());
+        holder.name.setText(item.getHub_name());
+        holder.creatorName.setText("Created by " + item.getHub_creator_name());
     }
 
     @Override
