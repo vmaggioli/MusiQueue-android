@@ -51,7 +51,7 @@ public class SearchHub extends AppCompatActivity {
         hubsList.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    void search(View view) {
+    public void search(View view) {
         if (enterHub.length() != 0) {
             String contents = enterHub.getText().toString();
 
