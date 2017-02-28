@@ -363,8 +363,6 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                 OutputStream os = httpURLConnection.getOutputStream();
                 BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
 
-                Date date = new Date(System.currentTimeMillis());
-                // TODO: send a parameter for the user's phone id
                 Uri.Builder builder = new Uri.Builder()
                         .appendQueryParameter("hubId", hubName)
                         .appendQueryParameter("phoneId", phoneID);
@@ -385,26 +383,27 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                     StringBuilder result = new StringBuilder();
                     String line;
                     while ((line = br.readLine()) != null) {
-                        result.append(line + "\n");
+                        result.append(line).append("\n");
                     }
                     httpURLConnection.disconnect();
 
-                    QueueSong item = new QueueSong();
                     ArrayList<QueueSong> list = new ArrayList<QueueSong>();
                     JSONObject json = new JSONObject(result.toString());
-                    Log.d("hi",json.toString());
+                    Log.d("foobar",json.toString());
                     JSONArray jsonArray = json.getJSONArray("result");
-                    for (int i = 0; i < jsonArray.length(); i++){
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        QueueSong item = new QueueSong();
+
                         JSONObject jObj = jsonArray.getJSONObject(i);
+
                         item.setTitle(jObj.getString("song_title"));
                         item.setUpVotes(jObj.getInt("up_votes"));
                         item.setDownVotes(jObj.getInt("down_votes"));
                         list.add(item);
+                        Log.d("list", list.get(0).getTitle());
                     }
-
-
                     // Pass data to onPostExecute method
-                    return(list.toString() + "ji");
+                    return(list.toString());
 
                 }else {
                     httpURLConnection.disconnect();

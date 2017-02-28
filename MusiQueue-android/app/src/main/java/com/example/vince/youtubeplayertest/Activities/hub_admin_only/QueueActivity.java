@@ -33,7 +33,7 @@ public class QueueActivity extends AppCompatActivity {
 
         //need data to run this to test
         BackgroundWorker bw = new BackgroundWorker(getApplicationContext());
-        bw.execute("songList", "47","30");
+        bw.execute("songList", "46","testPhone2_1487947707409");
 
         // initialize YouTube player
         YouTubePlayerFragment mYouTubePlayerFragment = (YouTubePlayerFragment)
