@@ -97,4 +97,6 @@ public class SearchHub extends AppCompatActivity {
             backgroundWorker.execute("searchHub", contents);
         }
     }
+
+
 }
