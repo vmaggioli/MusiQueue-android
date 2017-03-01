@@ -136,12 +136,12 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
 
             } else {
                 httpURLConnection.disconnect();
-                return ("unsuccessful");
+                return ("error");
             }
 
         } catch (IOException e) {
             e.printStackTrace();
-            return "exception";
+            return "error";
         }
     }
 
@@ -155,6 +155,13 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
     protected void onPostExecute(String result) {
         // RECEIVES THE RESULT FROM 'doInBackgroung()' AS ITS PARAMATER
         Log.d("\t\t\tresults: ", result);
+
+        if(result.equals("error")) {
+            // The request failed. Or something else bad happened. Either way, we shouldn't
+            // call processFinish cause it'll probably crash the app.
+            Log.e("", "Background Worker Failing.");
+            return;
+        }
 
         // check the json for an error message
         try {
