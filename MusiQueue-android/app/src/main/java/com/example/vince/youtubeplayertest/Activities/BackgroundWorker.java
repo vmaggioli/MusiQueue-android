@@ -66,7 +66,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... params) {
         type = params[0];
-
+        System.out.println(type);
         String urlBase = "http://52.14.50.251/api/";
         String urlEnd = type + ".php";
 
@@ -93,6 +93,10 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                 paramNames.add("phoneId");
                 paramNames.add("username");
                 break;
+            case "songList":
+                paramNames.add("hubId");
+                paramNames.add("phoneId");
+                break;
         }
 
         // setup and make the request
@@ -109,11 +113,11 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
 
             Uri.Builder builder = new Uri.Builder();
             int i = 1;
+            Log.d("paramNames: ", paramNames.toString());
             for (String p: paramNames) {
                 builder.appendQueryParameter(p, params[i++]);
             }
             String post_data = builder.build().getEncodedQuery();
-            Log.d("post_data: ", post_data);
             bw.write(post_data);
             bw.flush();
             bw.close();

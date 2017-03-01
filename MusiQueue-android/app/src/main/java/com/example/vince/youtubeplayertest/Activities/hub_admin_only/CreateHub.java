@@ -3,6 +3,7 @@ package com.example.vince.youtubeplayertest.Activities.hub_admin_only;
 import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -11,7 +12,10 @@ import android.widget.Toast;
 
 import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.Hub;
+import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListAdapter;
+import com.example.vince.youtubeplayertest.Activities.helper_classes.SearchHubResponse;
 import com.example.vince.youtubeplayertest.R;
+import com.google.gson.Gson;
 
 public class CreateHub extends AppCompatActivity {
     EditText hubNameText;
@@ -44,7 +48,12 @@ public class CreateHub extends AppCompatActivity {
                     return;
                 }
 
-                BackgroundWorker backgroundWorker = new BackgroundWorker(getApplicationContext());
+                BackgroundWorker backgroundWorker = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
+                    @Override
+                    public void processFinish(String result) {
+                        return;
+                    }
+                });
                 backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID(), appState.getUsername());
 
                 appState.setHubName(hubNameText.getText().toString());
