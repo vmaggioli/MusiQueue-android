@@ -29,6 +29,8 @@ public class QueueActivity extends AppCompatActivity {
     final public String API_KEY = "AIzaSyDtCJTBSLt9M1Xi_EBr49Uk4W8q4HhFHPU";
     private YouTubePlayer mYouTubePlayer;
     LinkedList<String> queue = new LinkedList<>();
+    ArrayList<QueueSong> list;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +45,7 @@ public class QueueActivity extends AppCompatActivity {
             @Override
             public void processFinish(String result) {
                 try {
-                    ArrayList<QueueSong> list = new ArrayList<QueueSong>();
+                    list = new ArrayList<>();
                     JSONObject json = new JSONObject(result);
                     Log.d("foobar", json.toString());
                     JSONArray jsonArray = json.getJSONArray("result");
@@ -64,6 +66,7 @@ public class QueueActivity extends AppCompatActivity {
             }
         });
         bw.execute("songList", "46","testPhone2_1487947707409");
+
 
         // initialize YouTube player
         YouTubePlayerFragment mYouTubePlayerFragment = (YouTubePlayerFragment)
