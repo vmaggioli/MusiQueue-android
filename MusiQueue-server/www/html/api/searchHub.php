@@ -12,7 +12,15 @@ searchHub:
 assertGiven("hubName");
 $hubName = mysqli_real_escape_string($conn, $_REQUEST['hubName']);
 
-$result = mysqli_query($conn, "SELECT hub_name FROM Hubs WHERE hub_name LIKE '%$hubName%';");
+$result = mysqli_query($conn, "
+	SELECT
+		Hubs.hub_name,
+		Hubs.hub_pin IS Null as hub_pin_required,
+		Users.name as hub_creator_name
+	FROM Hubs
+	INNER JOIN Users ON Hubs.hub_creator_id = Users.id
+	WHERE hub_name LIKE '%$hubName%'
+");
 $arr = array();
 
 if ($result->num_rows == 0) {
