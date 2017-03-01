@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.content.SharedPreferences;
 
 import com.example.vince.youtubeplayertest.Activities.BackendTestActivity;
 import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
@@ -26,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     Button testSearchButton;
     Button testDatabaseButton;
     Button backendButton;
+    Hub appState;
 
     /*
         UPON ENTERING THIS ACTIVITY, WE NEED TO CHECK IF THE USER'S
@@ -39,13 +41,30 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        // get global application for global variables
+        appState = ((Hub)getApplicationContext());
+        String android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
+        appState.setUserID(android_id);
+
+        SharedPreferences settings = getPreferences(MODE_PRIVATE);
+        String username = settings.getString("username", "");
+
+        if (username.equals("")) {
+            initView();
+        }else{
+            // skip this view
+            appState.setUsername(username);
+            startActivity(new Intent(MainActivity.this, GettingStarted.class));
+            finish();
+        }
+    }
+
+    protected void initView() {
+
         // set textView and editText
         createName = (TextView) findViewById(R.id.create_name_text_view);
         usernameText = (EditText) findViewById(R.id.username_entry);
         backendButton = (Button) findViewById(R.id.backend_button);
-
-        // get global application for global variables
-        final Hub appState = ((Hub)getApplicationContext());
 
         // set username button
         usernameButton = (Button) findViewById(R.id.submit_username);
@@ -60,16 +79,14 @@ public class MainActivity extends AppCompatActivity {
 
                 // sets username to global app
                 appState.setUsername(usernameText.getText().toString());
-                String android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-                appState.setUserID(android_id);
 
-                // CREATE BACKGROUND WORKER TO ADD USER TO THE DATABASE
-                // FIRST PARAMATER TELLS THE BACKGROUND WORKER WHICH TASK TO EXECUTE
-                // REMAINING PARAMETERS MUST EACH BE OF THE SAME TYPE
-                BackgroundWorker backgroundWorker = new BackgroundWorker(getApplicationContext());
-                backgroundWorker.execute("addUser", usernameText.getText().toString(), android_id);
+                SharedPreferences settings = getPreferences(MODE_PRIVATE);
+                SharedPreferences.Editor editor = settings.edit();
+                editor.putString("username", appState.getUsername());
+                editor.commit();
 
                 startActivity(new Intent(MainActivity.this, GettingStarted.class));
+                finish();
             }
         });
 

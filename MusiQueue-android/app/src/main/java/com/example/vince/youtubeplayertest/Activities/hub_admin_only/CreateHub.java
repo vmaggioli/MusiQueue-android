@@ -45,7 +45,7 @@ public class CreateHub extends AppCompatActivity {
                 }
 
                 BackgroundWorker backgroundWorker = new BackgroundWorker(getApplicationContext());
-                backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID());
+                backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID(), appState.getUsername());
 
                 appState.setHubName(hubNameText.getText().toString());
                 startActivity(new Intent(CreateHub.this, QueueActivity.class));
