@@ -1,6 +1,7 @@
 package com.example.vince.youtubeplayertest.Activities.helper_classes;
 
 import android.app.Application;
+import android.content.Intent;
 
 // Helper class to store information across activities about a hub
 
@@ -30,17 +31,22 @@ public class Hub extends Application {
     }
 
     public String getUserID() {
-        return id;
+        return userId;
     }
 
     public void setUserID(String id) {
-        this.id = id;
+        this.userId = id;
     }
+
+    public Integer getHubId() { return hubId; }
+
+    public void setHubId(Integer hubId) { this.hubId = hubId; }
 
     private String username;
     private String hubName;
     private String passPin;
-    private String id;
+    private String userId;
+    private Integer hubId;
 
 
 }
