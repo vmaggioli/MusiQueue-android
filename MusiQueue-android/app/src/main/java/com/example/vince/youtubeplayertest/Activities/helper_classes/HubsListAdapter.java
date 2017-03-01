@@ -2,6 +2,7 @@ package com.example.vince.youtubeplayertest.Activities.helper_classes;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,6 +16,11 @@ import java.util.Vector;
 public class HubsListAdapter extends RecyclerView.Adapter<HubsListAdapter.ViewHolder> {
     private Vector<HubsListItem> hubs;
     private Context mContext;
+    private OnItemClickListener listener;
+
+    public interface OnItemClickListener {
+        void onItemClick(HubsListItem hub);
+    }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView name;
@@ -25,11 +31,24 @@ public class HubsListAdapter extends RecyclerView.Adapter<HubsListAdapter.ViewHo
             name = (TextView) itemView.findViewById(R.id.hub_name);
             creatorName = (TextView) itemView.findViewById(R.id.hub_creator_name);
         }
+
+        // https://antonioleiva.com/recyclerview-listener/
+        public void bind(final HubsListItem item, final OnItemClickListener listener) {
+            name.setText(item.getHub_name());
+            creatorName.setText("Created by " + item.getHub_creator_name());
+
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override public void onClick(View v) {
+                    listener.onItemClick(item);
+                }
+            });
+        }
     }
 
-    public HubsListAdapter(Context context, Vector<HubsListItem> hubs) {
+    public HubsListAdapter(Context context, Vector<HubsListItem> hubs, OnItemClickListener listener) {
         mContext = context;
         this.hubs = hubs;
+        this.listener = listener;
     }
 
     @Override
@@ -43,11 +62,9 @@ public class HubsListAdapter extends RecyclerView.Adapter<HubsListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        HubsListItem item = hubs.get(position);
-
-        holder.name.setText(item.getHub_name());
-        holder.creatorName.setText("Created by " + item.getHub_creator_name());
+        holder.bind(hubs.get(position), listener);
     }
+
 
     @Override
     public int getItemCount() {return hubs.size();}

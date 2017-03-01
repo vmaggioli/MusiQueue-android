@@ -15,8 +15,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="@string/hub_name"
+        android:text="Join Hub"
         android:textSize="32sp" />
+
+    <TextView
+        android:id="@+id/hub_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:id="@+id/coordinator_and_pin_input"
@@ -30,53 +35,31 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:gravity="center">
 
             <TextView
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="8dp"
-                android:text="@string/hub_name"
+                android:text="Pin Required"
                 android:textSize="24sp" />
 
             <EditText
-                android:id="@+id/hub_coord"
-                android:layout_width="match_parent"
+                android:id="@+id/pass_pin"
+                android:layout_width="100sp"
                 android:layout_height="wrap_content"
-                android:layout_marginBottom="64dp"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
                 android:background="@color/white"
-                android:hint="@string/hub_coord" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical">
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:text="@string/enter_pin_to_join"
-                android:textSize="24sp" />
-
-            <EditText
-                android:id="@+id/join_pass_pin"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="12dp"
-                android:layout_marginRight="12dp"
-                android:background="@color/white"
-                android:hint="@string/four_digit_pass_pin"
+                android:hint=""
+                android:gravity="center"
+                android:padding="7sp"
                 android:inputType="numberPassword"
                 tools:ignore="TextFields" />
         </LinearLayout>
     </LinearLayout>
 
     <Button
+        android:id="@+id/join_hub_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"

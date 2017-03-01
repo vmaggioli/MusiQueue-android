@@ -36,20 +36,17 @@
         <activity android:name=".Activities.hub_admin_only.CreateHub" />
         <activity android:name=".Activities.users_only.JoinHub" />
         <activity android:name=".Activities.users_only.SearchHub" />
-        <activity android:name=".Activities.BackendTestActivity"/>
-
-        <activity
-            android:name=".Activities.SearchActivity">
+        <activity android:name=".Activities.users_only.ViewQueueActivity" />
+        <activity android:name=".Activities.BackendTestActivity" />
+        <activity android:name=".Activities.SearchActivity">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".Activities.PlayerActivity">
-        </activity>
+        <activity android:name=".Activities.PlayerActivity"></activity>
+        <activity android:name=".Activities.users_only.ConnectToHubActivity" />
     </application>
-
 
 </manifest>
