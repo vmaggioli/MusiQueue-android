@@ -84,7 +84,7 @@ public class QueueActivity extends AppCompatActivity {
         listBW = new BackgroundWorker(callback);
 
         Intent intent = getIntent();
-        if(intent != null) {
+        if(intent.hasExtra("title")) {
             title = intent.getStringExtra("title");
             id = intent.getStringExtra("id");
             QueueSong song = new QueueSong();
