@@ -14,6 +14,7 @@ import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
 import com.example.vince.youtubeplayertest.Activities.SearchActivity;
 import com.example.vince.youtubeplayertest.Activities.VideoItem;
 import com.example.vince.youtubeplayertest.Activities.VideoItemAdapter;
+import com.example.vince.youtubeplayertest.Activities.helper_classes.Hub;
 import com.example.vince.youtubeplayertest.Activities.users_only.QueueSong;
 import com.example.vince.youtubeplayertest.R;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -34,11 +35,13 @@ public class QueueActivity extends AppCompatActivity {
     LinkedList<String> queue = new LinkedList<>();
     ArrayList<QueueSong> list;
 
-    BackgroundWorker bw;
+    BackgroundWorker.AsyncResponse callback;
+    BackgroundWorker addBW;
+    BackgroundWorker listBW;
     String id;
     String title;
     RecyclerView songListView;
-
+    Hub appState;
 
 
     @Override
@@ -50,37 +53,38 @@ public class QueueActivity extends AppCompatActivity {
         final EditText url_text = (EditText) findViewById(R.id.url);
         Button url_button = (Button) findViewById(R.id.url_button);
 
+        appState = ((Hub)getApplicationContext());
 
-
-
-        //need data to run this to test
-        bw = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
+        callback = new BackgroundWorker.AsyncResponse() {
             @Override
             public void processFinish(String result) {
-                try {
-                    list = new ArrayList<>();
-                    JSONObject json = new JSONObject(result);
-                    Log.d("foobar", json.toString());
-                    JSONArray jsonArray = json.getJSONArray("result");
-                    for (int i = 0; i < jsonArray.length(); i++) {
-                        QueueSong item = new QueueSong();
-
-                        JSONObject jObj = jsonArray.getJSONObject(i);
-
-                        item.setTitle(jObj.getString("song_title"));
-                        item.setUpVotes(jObj.getInt("up_votes"));
-                        item.setDownVotes(jObj.getInt("down_votes"));
-                        item.setId(jObj.getString("song_id"));
-                        list.add(item);
-                        Log.d("list", list.get(0).getTitle());
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+//                try {
+//                    list = new ArrayList<>();
+//                    JSONObject json = new JSONObject(result);
+//                    Log.d("foobar", json.toString());
+//                    JSONArray jsonArray = json.getJSONArray("result");
+//                    for (int i = 0; i < jsonArray.length(); i++) {
+//                        QueueSong item = new QueueSong();
+//
+//                        JSONObject jObj = jsonArray.getJSONObject(i);
+//
+//                        item.setTitle(jObj.getString("song_title"));
+//                        item.setUpVotes(jObj.getInt("up_votes"));
+//                        item.setDownVotes(jObj.getInt("down_votes"));
+//                        item.setId(jObj.getString("song_id"));
+//                        list.add(item);
+//                        Log.d("list", list.get(0).getTitle());
+//                    }
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
             }
-        });
+        };
+        addBW = new BackgroundWorker(callback);
+        listBW = new BackgroundWorker(callback);
+
         Intent intent = getIntent();
-        if(intent != null) {
+        if(intent.hasExtra("title")) {
             title = intent.getStringExtra("title");
             id = intent.getStringExtra("id");
             QueueSong song = new QueueSong();
@@ -88,12 +92,12 @@ public class QueueActivity extends AppCompatActivity {
             song.setTitle(title);
 
             list.add(song);
-            //bw.execute("addSong", "46","testPhone2_1487947707409", id, title);
-            //TODO USE REAL DATA
 
+            addBW.execute("addSong", appState.getHubId().toString(), appState.getUserID(), id, title);
         }
-//        bw.execute("songList", "46","testPhone2_1487947707409");
-        //TODO USE REAL DATA AND REFRESH QUEUE IN SEPERATE FUNCTION CONSTANTLY
+
+        listBW.execute("songList", appState.getHubId().toString(), appState.getUserID());
+        //TODO REFRESH QUEUE IN SEPARATE FUNCTION CONSTANTLY
 
         //
         //Vector<VideoItem> videos = new Vector<>();
