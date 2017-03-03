@@ -9,6 +9,15 @@ public class VideoItem {
     private String thumbnailURL;
     private String id;
 
+    public VideoItem(String title, String description, String id) {
+        this.title = title;
+        this.description = description;
+        this.id = id;
+    }
+
+    public VideoItem() {
+
+    }
 
     public String getId() {
         return id;

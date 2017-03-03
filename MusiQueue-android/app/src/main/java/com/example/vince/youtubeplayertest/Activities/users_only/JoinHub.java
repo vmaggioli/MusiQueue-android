@@ -24,7 +24,7 @@ public class JoinHub extends AppCompatActivity {
 
         // set views and button
         passPinView = (EditText) findViewById(R.id.pass_pin);
-        hubNameView = (TextView) findViewById(R.id.hub_name);
+        hubNameView = (TextView) findViewById(R.id.create_a_hub_text);
         join = (Button) findViewById(R.id.join_hub_button);
 
         Intent i = getIntent();

@@ -12,6 +12,8 @@ import android.widget.EditText;
 
 import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
 import com.example.vince.youtubeplayertest.Activities.SearchActivity;
+import com.example.vince.youtubeplayertest.Activities.VideoItem;
+import com.example.vince.youtubeplayertest.Activities.VideoItemAdapter;
 import com.example.vince.youtubeplayertest.Activities.users_only.QueueSong;
 import com.example.vince.youtubeplayertest.R;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -24,16 +26,18 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.Vector;
 
 public class QueueActivity extends AppCompatActivity {
     final public String API_KEY = "AIzaSyDtCJTBSLt9M1Xi_EBr49Uk4W8q4HhFHPU";
     private YouTubePlayer mYouTubePlayer;
     LinkedList<String> queue = new LinkedList<>();
     ArrayList<QueueSong> list;
+
     BackgroundWorker bw;
     String id;
     String title;
-
+    RecyclerView songListView;
 
 
 
@@ -91,6 +95,19 @@ public class QueueActivity extends AppCompatActivity {
 //        bw.execute("songList", "46","testPhone2_1487947707409");
         //TODO USE REAL DATA AND REFRESH QUEUE IN SEPERATE FUNCTION CONSTANTLY
 
+        //
+        Vector<VideoItem> videos = new Vector<>();
+        videos.add(new VideoItem("hello", "song", "id: 1"));
+        VideoItemAdapter adapter = new VideoItemAdapter(QueueActivity.this, videos, new VideoItemAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(VideoItem videoItem) {
+
+            }
+        });
+        songListView = (RecyclerView) findViewById(R.id.songList);
+        songListView.setAdapter(adapter);
+        songListView.setLayoutManager(new LinearLayoutManager(this));
+        //
 
         // initialize YouTube player
         YouTubePlayerFragment mYouTubePlayerFragment = (YouTubePlayerFragment)

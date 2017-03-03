@@ -97,11 +97,20 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                 paramNames.add("hubId");
                 paramNames.add("phoneId");
                 break;
+
             case "addSong":
                 paramNames.add("hubId");
                 paramNames.add("phoneId");
                 paramNames.add("songId");
                 paramNames.add("songTitle");
+
+            case "voteUpSong":
+            case "voteDownSong":
+                paramNames.add("hubId");
+                paramNames.add("phoneId");
+                paramNames.add("songId");
+                break;
+
         }
 
         // setup and make the request
