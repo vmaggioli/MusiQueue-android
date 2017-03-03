@@ -33,19 +33,28 @@ public class QueueActivity extends AppCompatActivity {
     private YouTubePlayer mYouTubePlayer;
     LinkedList<String> queue = new LinkedList<>();
     ArrayList<QueueSong> list;
+
+    BackgroundWorker bw;
+    String id;
+    String title;
     RecyclerView songListView;
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_queue);
+        list = new ArrayList<>();
 
         final EditText url_text = (EditText) findViewById(R.id.url);
         Button url_button = (Button) findViewById(R.id.url_button);
 
+
+
+
         //need data to run this to test
-        BackgroundWorker bw = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
+        bw = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
             @Override
             public void processFinish(String result) {
                 try {
@@ -61,6 +70,7 @@ public class QueueActivity extends AppCompatActivity {
                         item.setTitle(jObj.getString("song_title"));
                         item.setUpVotes(jObj.getInt("up_votes"));
                         item.setDownVotes(jObj.getInt("down_votes"));
+                        item.setId(jObj.getString("song_id"));
                         list.add(item);
                         Log.d("list", list.get(0).getTitle());
                     }
@@ -69,7 +79,21 @@ public class QueueActivity extends AppCompatActivity {
                 }
             }
         });
-        bw.execute("songList", "46","testPhone2_1487947707409");
+        Intent intent = getIntent();
+        if(intent != null) {
+            title = intent.getStringExtra("title");
+            id = intent.getStringExtra("id");
+            QueueSong song = new QueueSong();
+            song.setId(id);
+            song.setTitle(title);
+
+            list.add(song);
+            bw.execute("addSong", "46","testPhone2_1487947707409", id, title);
+            //TODO USE REAL DATA
+
+        }
+//        bw.execute("songList", "46","testPhone2_1487947707409");
+        //TODO USE REAL DATA AND REFRESH QUEUE IN SEPERATE FUNCTION CONSTANTLY
 
         //
         Vector<VideoItem> videos = new Vector<>();
@@ -120,9 +144,10 @@ public class QueueActivity extends AppCompatActivity {
 
                     @Override
                     public void onVideoEnded() {
-                        queue.removeFirst();
-                        if (queue.size() != 0)
-                            mYouTubePlayer.loadVideo(queue.peek());
+                        list.remove(0);
+                        if (list.size() != 0)
+
+                            mYouTubePlayer.loadVideo(list.get(0).getId());
                     }
 
                     @Override
@@ -148,8 +173,10 @@ public class QueueActivity extends AppCompatActivity {
                 }
 
                 // add new data to queue
-                if (queue.size() == 0)
+                if (list.size() == 0)
                     mYouTubePlayer.loadVideo(video_id);
+                QueueSong song = new QueueSong();
+                song.setId(video_id);
                 queue.addLast(video_id);
                 url_text.getText().clear();
             }

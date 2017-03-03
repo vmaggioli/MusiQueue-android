@@ -99,7 +99,7 @@ public class SearchActivity extends Activity {
             @Override
             public void onItemClick(AdapterView<?> av, View v, int pos, long id) {
 
-                Intent intent = new Intent(getApplicationContext(), PlayerActivity.class);
+                Intent intent = new Intent(getApplicationContext(), QueueActivity.class);
                 Bundle videoInfo = new Bundle();
 
                 videoInfo.putString("title", searchResults.get(pos).getTitle());
