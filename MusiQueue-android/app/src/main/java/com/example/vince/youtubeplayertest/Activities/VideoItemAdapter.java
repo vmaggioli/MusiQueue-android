@@ -11,9 +11,10 @@ import android.widget.TextView;
 
 //import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListAdapter;
 //import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListItem;
+import com.example.vince.youtubeplayertest.Activities.users_only.QueueSong;
 import com.example.vince.youtubeplayertest.R;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import static com.example.vince.youtubeplayertest.R.id.video_description;
 import static com.example.vince.youtubeplayertest.R.id.video_title;
@@ -27,12 +28,12 @@ import static com.example.vince.youtubeplayertest.R.id.video_title;*/
 
 public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.ViewHolder> {
 
-    private Vector<VideoItem> videos;
+    private ArrayList<QueueSong> videos;
     private Context mContext;
     private OnItemClickListener listener;
 
     public interface OnItemClickListener {
-        void onItemClick(VideoItem videoItem);
+        void onItemClick(QueueSong videoItem);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
@@ -49,7 +50,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
             downButton = (Button) itemView.findViewById(R.id.button3);
             //videoDescription = (TextView) itemView.findViewById(R.id.video_description);
         }
-        public void bind(final VideoItem videoItem, final VideoItemAdapter.OnItemClickListener listener) {
+        public void bind(final QueueSong videoItem, final OnItemClickListener listener) {
             videoTitle.setText(videoItem.getTitle());
             //videoDescription.setText(videoItem.getDescription());
 
@@ -61,7 +62,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
         }
     }
 
-    public VideoItemAdapter(Context context, Vector<VideoItem> videos, OnItemClickListener listener) {
+    public VideoItemAdapter(Context context, ArrayList<QueueSong> videos, OnItemClickListener listener) {
         this.mContext = context;
         this.videos = videos;
         this.listener = listener;
@@ -80,7 +81,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
     public void onBindViewHolder(ViewHolder holder, int position) {
         System.out.println(videos.size() + "pos: " + position);
         holder.bind(videos.get(position), listener);
-//        VideoItem item = videos.get(position);
+//        QueueSong item = videos.get(position);
 //        holder.videoTitle.setText(item.getTitle());
 //        holder.videoDescription.setText(item.getDescription());
 

@@ -88,7 +88,7 @@ public class QueueActivity extends AppCompatActivity {
             song.setTitle(title);
 
             list.add(song);
-            bw.execute("addSong", "46","testPhone2_1487947707409", id, title);
+            //bw.execute("addSong", "46","testPhone2_1487947707409", id, title);
             //TODO USE REAL DATA
 
         }
@@ -96,11 +96,11 @@ public class QueueActivity extends AppCompatActivity {
         //TODO USE REAL DATA AND REFRESH QUEUE IN SEPERATE FUNCTION CONSTANTLY
 
         //
-        Vector<VideoItem> videos = new Vector<>();
-        videos.add(new VideoItem("hello", "song", "id: 1"));
-        VideoItemAdapter adapter = new VideoItemAdapter(QueueActivity.this, videos, new VideoItemAdapter.OnItemClickListener() {
+        //Vector<VideoItem> videos = new Vector<>();
+        //videos.add(new VideoItem("hello", "song", "id: 1"));
+        VideoItemAdapter adapter = new VideoItemAdapter(QueueActivity.this, list, new VideoItemAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(VideoItem videoItem) {
+            public void onItemClick(QueueSong videoItem) {
 
             }
         });
@@ -113,6 +113,7 @@ public class QueueActivity extends AppCompatActivity {
         YouTubePlayerFragment mYouTubePlayerFragment = (YouTubePlayerFragment)
                 getFragmentManager().findFragmentById(R.id.youtube_player);
         mYouTubePlayerFragment.initialize(API_KEY, new YouTubePlayer.OnInitializedListener() {
+
             @Override
             public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
 
@@ -120,6 +121,9 @@ public class QueueActivity extends AppCompatActivity {
 
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+                if(!b){
+                    youTubePlayer.cueVideo(getIntent().getStringExtra("id"));
+                }
                 mYouTubePlayer = youTubePlayer;
                 mYouTubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener() {
                     @Override
