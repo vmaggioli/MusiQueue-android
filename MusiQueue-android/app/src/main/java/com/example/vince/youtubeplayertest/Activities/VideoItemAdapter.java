@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.TextView;
 
 //import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListAdapter;
@@ -36,16 +37,21 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView videoTitle;
-        public TextView videoDescription;
+        public Button upButton;
+        public Button downButton;
+        //public TextView videoDescription;
+
 
         ViewHolder(View itemView) {
             super(itemView);
-            videoTitle = (TextView) itemView.findViewById(R.id.video_title);
-            videoDescription = (TextView) itemView.findViewById(R.id.video_description);
+            videoTitle = (TextView) itemView.findViewById(R.id.queueItem_title);
+            upButton = (Button) itemView.findViewById(R.id.button2);
+            downButton = (Button) itemView.findViewById(R.id.button3);
+            //videoDescription = (TextView) itemView.findViewById(R.id.video_description);
         }
         public void bind(final VideoItem videoItem, final VideoItemAdapter.OnItemClickListener listener) {
             videoTitle.setText(videoItem.getTitle());
-            videoDescription.setText(videoItem.getDescription());
+            //videoDescription.setText(videoItem.getDescription());
 
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override public void onClick(View v) {
@@ -62,20 +68,21 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
     }
 
     @Override
-    public VideoItemAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater lf = LayoutInflater.from(context);
-        View hubsListItemView = lf.inflate(R.layout.hubs_list_item, parent, false);
-        VideoItemAdapter.ViewHolder vh = new VideoItemAdapter.ViewHolder(hubsListItemView);
+        View hubsListItemView = lf.inflate(R.layout.queue_item, parent, false);
+        ViewHolder vh = new ViewHolder(hubsListItemView);
         return vh;
     }
 
     @Override
-    public void onBindViewHolder(VideoItemAdapter.ViewHolder holder, int position) {
-        //holder.bind(videos.get(position), listener);
-        VideoItem item = videos.get(position);
-        holder.videoTitle.setText(item.getTitle());
-        holder.videoDescription.setText(item.getDescription());
+    public void onBindViewHolder(ViewHolder holder, int position) {
+        System.out.println(videos.size() + "pos: " + position);
+        holder.bind(videos.get(position), listener);
+//        VideoItem item = videos.get(position);
+//        holder.videoTitle.setText(item.getTitle());
+//        holder.videoDescription.setText(item.getDescription());
 
     }
 
