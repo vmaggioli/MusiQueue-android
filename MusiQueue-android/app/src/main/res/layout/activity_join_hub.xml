@@ -15,13 +15,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:text="Join Hub"
         android:textSize="32sp" />
+    <!--android:text="Join Hub"-->
 
-    <TextView
-        android:id="@+id/hub_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+
+    <!--<TextView-->
+        <!--android:id="@+id/hub_name"-->
+        <!--android:layout_width="match_parent"-->
+        <!--android:layout_height="wrap_content" />-->
 
     <LinearLayout
         android:id="@+id/coordinator_and_pin_input"
