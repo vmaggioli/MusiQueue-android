@@ -41,6 +41,7 @@ public class QueueActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_queue);
+        list = new ArrayList<>();
 
         final EditText url_text = (EditText) findViewById(R.id.url);
         Button url_button = (Button) findViewById(R.id.url_button);
@@ -81,12 +82,13 @@ public class QueueActivity extends AppCompatActivity {
             QueueSong song = new QueueSong();
             song.setId(id);
             song.setTitle(title);
+
             list.add(song);
             bw.execute("addSong", "46","testPhone2_1487947707409", id, title);
             //TODO USE REAL DATA
 
         }
-        bw.execute("songList", "46","testPhone2_1487947707409");
+//        bw.execute("songList", "46","testPhone2_1487947707409");
         //TODO USE REAL DATA AND REFRESH QUEUE IN SEPERATE FUNCTION CONSTANTLY
 
 
