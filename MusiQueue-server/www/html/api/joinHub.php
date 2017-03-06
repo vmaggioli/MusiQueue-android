@@ -40,7 +40,7 @@ $result = mysqli_query($conn, "
     	`Hubs`.*,
     	`Users`.`phone_id` as `hub_creator_phone_id`
     FROM `Hubs`
-    INNER JOIN `Users` ON `Users`.`hub_creator_id` = `Users`.`id`
+    INNER JOIN `Users` ON `Hubs`.`hub_creator_id` = `Users`.`id`
     WHERE
         `Hubs`.`hub_name` = '$hubName'
 ");
