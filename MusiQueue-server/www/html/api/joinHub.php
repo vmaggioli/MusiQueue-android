@@ -12,6 +12,7 @@ joinHub:
         info about the hub we connect to:
         {
             hub_id - int
+            is_creator - whether the joining user is the creator of the hub
         }
 ");
 apiDocsCouldError("HUB_NOT_FOUND");
@@ -35,10 +36,13 @@ if(isset($_REQUEST['hubPin'])) {
 
 // get hub info
 $result = mysqli_query($conn, "
-    SELECT *
-    FROM Hubs
+    SELECT
+    	`Hubs`.*,
+    	`Users`.`phone_id` as `hub_creator_phone_id`
+    FROM `Hubs`
+    INNER JOIN `Users` ON `Users`.`hub_creator_id` = `Users`.`id`
     WHERE
-        hub_name = '$hubName'
+        `Hubs`.`hub_name` = '$hubName'
 ");
 $hub = mysqli_fetch_assoc($result);
 
@@ -78,7 +82,8 @@ if(mysqli_num_rows($result)) {
 }
 
 respondSuccess(array(
-    "hub_id" => $hub['id']
+    "hub_id" => $hub['id'],
+    "is_creator" => ($hub['hub_creator_phone_id'] == $_REQUEST['phoneId'])
 ));
 
 ?>
