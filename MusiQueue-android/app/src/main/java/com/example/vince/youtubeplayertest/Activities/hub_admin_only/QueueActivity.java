@@ -5,29 +5,23 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
 import com.example.vince.youtubeplayertest.Activities.SearchActivity;
-import com.example.vince.youtubeplayertest.Activities.VideoItem;
 import com.example.vince.youtubeplayertest.Activities.VideoItemAdapter;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.Hub;
+import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
 import com.example.vince.youtubeplayertest.Activities.users_only.QueueSong;
 import com.example.vince.youtubeplayertest.R;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.Vector;
 
 public class QueueActivity extends AppCompatActivity {
     final public String API_KEY = "AIzaSyDtCJTBSLt9M1Xi_EBr49Uk4W8q4HhFHPU";
@@ -49,6 +43,10 @@ public class QueueActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_queue);
         list = new ArrayList<>();
+
+
+        HubSingleton hubSingleton = HubSingleton.getInstance();                         // SINGLETON HERE
+        list = hubSingleton.getEntireList();                                            // SINGLETON HERE
 
         final EditText url_text = (EditText) findViewById(R.id.url);
         Button url_button = (Button) findViewById(R.id.url_button);
@@ -92,6 +90,7 @@ public class QueueActivity extends AppCompatActivity {
             song.setTitle(title);
 
             list.add(song);
+            hubSingleton.add(song);                                                 // SINGLETON HERE
 
             addBW.execute("addSong", appState.getHubId().toString(), appState.getUserID(), id, title);
         }
