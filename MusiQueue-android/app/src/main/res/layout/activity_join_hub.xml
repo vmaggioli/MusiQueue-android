@@ -55,7 +55,8 @@
                 android:gravity="center"
                 android:padding="7sp"
                 android:inputType="numberPassword"
-                tools:ignore="TextFields" />
+                tools:ignore="TextFields"
+                />
         </LinearLayout>
     </LinearLayout>
 
@@ -69,5 +70,7 @@
         android:background="@color/white"
         android:text="@string/join"
         android:textColor="@color/colorPrimaryDark"
-        android:textSize="20sp" />
+        android:textSize="20sp"
+        android:onClick="joinHub"
+        />
 </RelativeLayout>
