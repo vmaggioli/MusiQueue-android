@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -19,6 +20,10 @@ import com.example.vince.youtubeplayertest.R;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -56,26 +61,26 @@ public class QueueActivity extends AppCompatActivity {
         callback = new BackgroundWorker.AsyncResponse() {
             @Override
             public void processFinish(String result) {
-//                try {
-//                    list = new ArrayList<>();
-//                    JSONObject json = new JSONObject(result);
-//                    Log.d("foobar", json.toString());
-//                    JSONArray jsonArray = json.getJSONArray("result");
-//                    for (int i = 0; i < jsonArray.length(); i++) {
-//                        QueueSong item = new QueueSong();
-//
-//                        JSONObject jObj = jsonArray.getJSONObject(i);
-//
-//                        item.setTitle(jObj.getString("song_title"));
-//                        item.setUpVotes(jObj.getInt("up_votes"));
-//                        item.setDownVotes(jObj.getInt("down_votes"));
-//                        item.setId(jObj.getString("song_id"));
-//                        list.add(item);
-//                        Log.d("list", list.get(0).getTitle());
-//                    }
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
+                try {
+                    list = new ArrayList<>();
+                    JSONObject json = new JSONObject(result);
+                    Log.d("foobar", json.toString());
+                    JSONArray jsonArray = json.getJSONArray("result");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        QueueSong item = new QueueSong();
+
+                        JSONObject jObj = jsonArray.getJSONObject(i);
+
+                        item.setTitle(jObj.getString("song_title"));
+                        item.setUpVotes(jObj.getInt("up_votes"));
+                        item.setDownVotes(jObj.getInt("down_votes"));
+                        item.setId(jObj.getString("song_id"));
+                        list.add(item);
+                        Log.d("list", list.get(0).getTitle());
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         };
         addBW = new BackgroundWorker(callback);
@@ -89,7 +94,7 @@ public class QueueActivity extends AppCompatActivity {
             song.setId(id);
             song.setTitle(title);
 
-            list.add(song);
+            //list.add(song);
             hubSingleton.add(song);                                                 // SINGLETON HERE
 
             addBW.execute("addSong", appState.getHubId().toString(), appState.getUserID(), id, title);
@@ -101,7 +106,7 @@ public class QueueActivity extends AppCompatActivity {
         //
         //Vector<VideoItem> videos = new Vector<>();
         //videos.add(new VideoItem("hello", "song", "id: 1"));
-        VideoItemAdapter adapter = new VideoItemAdapter(QueueActivity.this, list, new VideoItemAdapter.OnItemClickListener() {
+        VideoItemAdapter adapter = new VideoItemAdapter(QueueActivity.this, hubSingleton.getEntireList(), new VideoItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(QueueSong videoItem) {
 
