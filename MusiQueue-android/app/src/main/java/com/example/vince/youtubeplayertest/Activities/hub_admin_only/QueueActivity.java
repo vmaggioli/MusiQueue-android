@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -20,14 +21,20 @@ import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.concurrent.ExecutionException;
 
 public class QueueActivity extends AppCompatActivity {
     final public String API_KEY = "AIzaSyDtCJTBSLt9M1Xi_EBr49Uk4W8q4HhFHPU";
     private YouTubePlayer mYouTubePlayer;
     LinkedList<String> queue = new LinkedList<>();
     ArrayList<QueueSong> list;
+    String flag = "Owner";
 
     BackgroundWorker.AsyncResponse callback;
     BackgroundWorker addBW;
@@ -52,35 +59,35 @@ public class QueueActivity extends AppCompatActivity {
         Button url_button = (Button) findViewById(R.id.url_button);
 
         appState = ((Hub)getApplicationContext());
-
+/*
         callback = new BackgroundWorker.AsyncResponse() {
             @Override
             public void processFinish(String result) {
-//                try {
-//                    list = new ArrayList<>();
-//                    JSONObject json = new JSONObject(result);
-//                    Log.d("foobar", json.toString());
-//                    JSONArray jsonArray = json.getJSONArray("result");
-//                    for (int i = 0; i < jsonArray.length(); i++) {
-//                        QueueSong item = new QueueSong();
-//
-//                        JSONObject jObj = jsonArray.getJSONObject(i);
-//
-//                        item.setTitle(jObj.getString("song_title"));
-//                        item.setUpVotes(jObj.getInt("up_votes"));
-//                        item.setDownVotes(jObj.getInt("down_votes"));
-//                        item.setId(jObj.getString("song_id"));
-//                        list.add(item);
-//                        Log.d("list", list.get(0).getTitle());
-//                    }
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
+                try {
+                    list = new ArrayList<>();
+                    JSONObject json = new JSONObject(result);
+                    Log.d("foobar", json.toString());
+                    JSONArray jsonArray = json.getJSONArray("result");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        QueueSong item = new QueueSong();
+
+                        JSONObject jObj = jsonArray.getJSONObject(i);
+
+                        item.setTitle(jObj.getString("song_title"));
+                        item.setUpVotes(jObj.getInt("up_votes"));
+                        item.setDownVotes(jObj.getInt("down_votes"));
+                        item.setId(jObj.getString("song_id"));
+                        list.add(item);
+                        Log.d("list", list.get(0).getTitle());
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
         };
         addBW = new BackgroundWorker(callback);
         listBW = new BackgroundWorker(callback);
-
+*/
         Intent intent = getIntent();
         if(intent.hasExtra("title")) {
             title = intent.getStringExtra("title");
@@ -89,24 +96,36 @@ public class QueueActivity extends AppCompatActivity {
             song.setId(id);
             song.setTitle(title);
 
-            list.add(song);
-            hubSingleton.add(song);                                                 // SINGLETON HERE
+            //list.add(song);
+            try {
+                hubSingleton.add(song, appState.getHubId().toString(), appState.getUserID());
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
-            addBW.execute("addSong", appState.getHubId().toString(), appState.getUserID(), id, title);
+
+
+            list = hubSingleton.getEntireList();                                            // SINGLETON HERE
+// SINGLETON HERE
+
+            //addBW.execute("addSong", appState.getHubId().toString(), appState.getUserID(), id, title);
         }
 
-        listBW.execute("songList", appState.getHubId().toString(), appState.getUserID());
+        //listBW.execute("songList", appState.getHubId().toString(), appState.getUserID());
         //TODO REFRESH QUEUE IN SEPARATE FUNCTION CONSTANTLY
 
         //
         //Vector<VideoItem> videos = new Vector<>();
         //videos.add(new VideoItem("hello", "song", "id: 1"));
-        VideoItemAdapter adapter = new VideoItemAdapter(QueueActivity.this, list, new VideoItemAdapter.OnItemClickListener() {
+        VideoItemAdapter adapter = new VideoItemAdapter(QueueActivity.this, hubSingleton.getEntireList(), new VideoItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(QueueSong videoItem) {
 
             }
         });
+        Log.d("list",hubSingleton.getEntireList().toString());
         songListView = (RecyclerView) findViewById(R.id.songList);
         songListView.setAdapter(adapter);
         songListView.setLayoutManager(new LinearLayoutManager(this));
@@ -191,6 +210,8 @@ public class QueueActivity extends AppCompatActivity {
     }
 
     public void searchVideo(View view) {
-        startActivity(new Intent(QueueActivity.this, SearchActivity.class));
+        Intent intent = new Intent(QueueActivity.this, SearchActivity.class);
+        intent.putExtra("view_queue",flag);
+        startActivity(intent);
     }
 }

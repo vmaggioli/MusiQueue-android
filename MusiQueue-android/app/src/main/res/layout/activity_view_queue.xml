@@ -13,4 +13,17 @@
         android:text="Hub Screen : TODO"
         android:textSize="24sp"/>
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/song_List"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"></android.support.v7.widget.RecyclerView>
+
+    <Button
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/search_button"
+        android:onClick="searchVideo"
+        android:text="Search Video"/>
 </LinearLayout>
