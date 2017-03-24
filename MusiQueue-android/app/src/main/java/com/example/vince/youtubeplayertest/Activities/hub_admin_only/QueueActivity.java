@@ -27,12 +27,14 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.concurrent.ExecutionException;
 
 public class QueueActivity extends AppCompatActivity {
     final public String API_KEY = "AIzaSyDtCJTBSLt9M1Xi_EBr49Uk4W8q4HhFHPU";
     private YouTubePlayer mYouTubePlayer;
     LinkedList<String> queue = new LinkedList<>();
     ArrayList<QueueSong> list;
+    String flag = "Owner";
 
     BackgroundWorker.AsyncResponse callback;
     BackgroundWorker addBW;
@@ -57,7 +59,7 @@ public class QueueActivity extends AppCompatActivity {
         Button url_button = (Button) findViewById(R.id.url_button);
 
         appState = ((Hub)getApplicationContext());
-
+/*
         callback = new BackgroundWorker.AsyncResponse() {
             @Override
             public void processFinish(String result) {
@@ -85,7 +87,7 @@ public class QueueActivity extends AppCompatActivity {
         };
         addBW = new BackgroundWorker(callback);
         listBW = new BackgroundWorker(callback);
-
+*/
         Intent intent = getIntent();
         if(intent.hasExtra("title")) {
             title = intent.getStringExtra("title");
@@ -95,12 +97,23 @@ public class QueueActivity extends AppCompatActivity {
             song.setTitle(title);
 
             //list.add(song);
-            hubSingleton.add(song);                                                 // SINGLETON HERE
+            try {
+                hubSingleton.add(song, appState.getHubId().toString(), appState.getUserID());
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
 
-            addBW.execute("addSong", appState.getHubId().toString(), appState.getUserID(), id, title);
+
+
+            list = hubSingleton.getEntireList();                                            // SINGLETON HERE
+// SINGLETON HERE
+
+            //addBW.execute("addSong", appState.getHubId().toString(), appState.getUserID(), id, title);
         }
 
-        listBW.execute("songList", appState.getHubId().toString(), appState.getUserID());
+        //listBW.execute("songList", appState.getHubId().toString(), appState.getUserID());
         //TODO REFRESH QUEUE IN SEPARATE FUNCTION CONSTANTLY
 
         //
@@ -112,6 +125,7 @@ public class QueueActivity extends AppCompatActivity {
 
             }
         });
+        Log.d("list",hubSingleton.getEntireList().toString());
         songListView = (RecyclerView) findViewById(R.id.songList);
         songListView.setAdapter(adapter);
         songListView.setLayoutManager(new LinearLayoutManager(this));
@@ -196,6 +210,8 @@ public class QueueActivity extends AppCompatActivity {
     }
 
     public void searchVideo(View view) {
-        startActivity(new Intent(QueueActivity.this, SearchActivity.class));
+        Intent intent = new Intent(QueueActivity.this, SearchActivity.class);
+        intent.putExtra("view_queue",flag);
+        startActivity(intent);
     }
 }
