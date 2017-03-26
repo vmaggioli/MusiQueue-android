@@ -17,6 +17,7 @@ public class JoinHub extends AppCompatActivity {
     Button join;
     String hubPin;
     String hubName;
+    static int timesPressed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,6 +36,9 @@ public class JoinHub extends AppCompatActivity {
         join.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (timesPressed++ >= 5) {
+                    Toast.makeText(getApplicationContext(), "Warning: PIN Attempts Exceeded", Toast.LENGTH_LONG).show();
+                }
                 hubPin = passPinView.getText().toString();
 
                 final Intent i = new Intent(JoinHub.this, ConnectToHubActivity.class);

@@ -20,10 +20,8 @@ import android.widget.TextView;
 
 import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
 import com.example.vince.youtubeplayertest.Activities.PlayerActivity;
-import com.example.vince.youtubeplayertest.Activities.helper_classes.Hub;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListAdapter;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListItem;
-import com.example.vince.youtubeplayertest.Activities.helper_classes.RecentHubs;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.SearchHubResponse;
 import com.example.vince.youtubeplayertest.Activities.starting_activities.GettingStarted;
 import com.example.vince.youtubeplayertest.Activities.starting_activities.MainActivity;
@@ -66,7 +64,6 @@ public class SearchHub extends AppCompatActivity {
         HubsListAdapter hubsListAdapter = new HubsListAdapter(this, hubs, callback);
         hubsList.setAdapter(hubsListAdapter);
         hubsList.setLayoutManager(new LinearLayoutManager(this));
-        recent(hubsList);
     }
 
     protected void selectHub(HubsListItem hub) {
@@ -99,21 +96,6 @@ public class SearchHub extends AppCompatActivity {
             });
             backgroundWorker.execute("searchHub", contents);
         }
-    }
-
-    public void recent(View view) {
-        RecentHubs recentHubs = new RecentHubs();
-        Vector<Hub> hubData = recentHubs.getRecentHubs(getApplicationContext());
-        for (Hub hub: hubData) {
-            HubsListItem hubsListItem = new HubsListItem();
-            hubsListItem.setHub_name(hub.getHubName());
-            hubsListItem.setHub_creator_name(hub.);
-            hubsListItem.setHub_pin_required(false);
-            hubs.add(hubsListItem);
-        }
-        HubsListAdapter hubsListAdapter = new HubsListAdapter(getApplicationContext(), hubs, callback);
-        hubsList.setAdapter(hubsListAdapter);
-        hubsList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
     }
 
 
