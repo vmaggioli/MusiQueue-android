@@ -15,6 +15,7 @@ import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.Hub;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListAdapter;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.JoinHubResponse;
+import com.example.vince.youtubeplayertest.Activities.helper_classes.RecentHubs;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.SearchHubResponse;
 import com.example.vince.youtubeplayertest.R;
 import com.google.gson.Gson;
@@ -63,6 +64,10 @@ public class ConnectToHubActivity extends AppCompatActivity {
         Log.d("", "Joined hub successfully!");
         appState.setHubName(hubName);
         appState.setHubId(hubId);
+        appState.setLastJoined();
+        RecentHubs recentHubs = new RecentHubs();
+        recentHubs.addHub(appState);
+        recentHubs.saveRecentHubs(getApplicationContext());
 
         final Intent i = new Intent(ConnectToHubActivity.this, ViewQueueActivity.class);
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
