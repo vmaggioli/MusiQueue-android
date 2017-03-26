@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.vince.youtubeplayertest.Activities.hub_admin_only.QueueActivity;
+import com.example.vince.youtubeplayertest.Activities.users_only.ViewQueueActivity;
 import com.example.vince.youtubeplayertest.R;
 import com.squareup.picasso.Picasso;
 
@@ -98,8 +99,14 @@ public class SearchActivity extends Activity {
 
             @Override
             public void onItemClick(AdapterView<?> av, View v, int pos, long id) {
-
-                Intent intent = new Intent(getApplicationContext(), QueueActivity.class);
+                Intent i = getIntent();
+                Intent intent;
+                if(i.getStringExtra("view_queue").equals("User")) {
+                    intent = new Intent(getApplicationContext(), ViewQueueActivity.class);
+                }
+                else {
+                    intent = new Intent(getApplicationContext(), QueueActivity.class);
+                }
                 Bundle videoInfo = new Bundle();
 
                 videoInfo.putString("title", searchResults.get(pos).getTitle());
