@@ -35,7 +35,7 @@ public class QueueActivity extends AppCompatActivity {
     String id;
     String title;
     RecyclerView songListView;
-    Hub appState;
+    HubSingleton appState;
 
 
     @Override
@@ -51,7 +51,7 @@ public class QueueActivity extends AppCompatActivity {
         final EditText url_text = (EditText) findViewById(R.id.url);
         Button url_button = (Button) findViewById(R.id.url_button);
 
-        appState = ((Hub)getApplicationContext());
+        appState = HubSingleton.getInstance();
 
         callback = new BackgroundWorker.AsyncResponse() {
             @Override

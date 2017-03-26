@@ -15,6 +15,7 @@ import android.content.SharedPreferences;
 import com.example.vince.youtubeplayertest.Activities.BackendTestActivity;
 import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.Hub;
+import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
 import com.example.vince.youtubeplayertest.Activities.users_only.SearchHub;
 import com.example.vince.youtubeplayertest.R;
 
@@ -27,7 +28,7 @@ public class MainActivity extends AppCompatActivity {
     Button testSearchButton;
     Button testDatabaseButton;
     Button backendButton;
-    Hub appState;
+    HubSingleton appState;
 
     /*
         UPON ENTERING THIS ACTIVITY, WE NEED TO CHECK IF THE USER'S
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         // get global application for global variables
-        appState = ((Hub)getApplicationContext());
+        appState = HubSingleton.getInstance();
         String android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
         appState.setUserID(android_id);
 
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 // PROMPT USER IF S/HE HAS NOT INPUT A USERNAME
                 if (usernameText.getText().length() == 0) {
-                    Toast.makeText(appState, "Must Have Username", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Must Have Username", Toast.LENGTH_LONG).show();
                     return;
                 }
 
@@ -104,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
         testDatabaseButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(appState, "Not setup yet", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Not setup yet", Toast.LENGTH_SHORT).show();
             }
         });
     }

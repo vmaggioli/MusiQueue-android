@@ -13,6 +13,7 @@ import android.widget.Toast;
 
 import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.Hub;
+import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListAdapter;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.JoinHubResponse;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.SearchHubResponse;
@@ -24,14 +25,14 @@ public class ConnectToHubActivity extends AppCompatActivity {
     String hubPin;
     String phoneId;
     String username;
-    Hub appState;
+    HubSingleton appState;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_connect_to_hub);
 
-        appState = ((Hub)getApplicationContext());
+        appState = HubSingleton.getInstance();
 
         Intent i = getIntent();
 
