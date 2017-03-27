@@ -98,7 +98,7 @@ public class ViewQueueActivity extends AppCompatActivity {
 
             addBW.execute("addSong", hubSingleton.getHubId().toString(), hubSingleton.getUserID(), id, title);
         }
-        listBW.execute("songList", hubSingleton.getHubId().toString(), hubSingleton.getUserID());
+        listBW.execute("hubSongList", hubSingleton.getHubId().toString(), hubSingleton.getUserID());
 
 
     }

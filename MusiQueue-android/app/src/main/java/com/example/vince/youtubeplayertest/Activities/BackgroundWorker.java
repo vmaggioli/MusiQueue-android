@@ -93,7 +93,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                 paramNames.add("phoneId");
                 paramNames.add("username");
                 break;
-            case "songList":
+            case "hubSongList":
                 paramNames.add("hubId");
                 paramNames.add("phoneId");
                 break;
