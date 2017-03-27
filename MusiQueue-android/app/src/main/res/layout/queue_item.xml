@@ -13,7 +13,7 @@
     <TextView android:id="@+id/queueItem_user"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp" />
+        android:layout_marginTop="30dp" />
 
     <Button
         android:text="D"
