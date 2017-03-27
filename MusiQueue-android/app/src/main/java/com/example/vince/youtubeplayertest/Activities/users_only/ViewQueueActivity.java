@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -12,61 +13,38 @@ import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
 import com.example.vince.youtubeplayertest.Activities.SearchActivity;
 import com.example.vince.youtubeplayertest.Activities.VideoItemAdapter;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
-
 import com.example.vince.youtubeplayertest.R;
 
-import java.util.ArrayList;
-import java.util.concurrent.ExecutionException;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 public class ViewQueueActivity extends AppCompatActivity {
     TextView hubNameView;
 
     String flag = "User";
-    HubSingleton appState;
+    HubSingleton hubSingleton;
     RecyclerView songListView;
+    BackgroundWorker addBW;
+    BackgroundWorker listBW;
     BackgroundWorker.AsyncResponse callback;
+    VideoItemAdapter adapter;
+
 
     String title;
     String id;
-    ArrayList<QueueSong> list;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_queue);
 
-        appState = HubSingleton.getInstance();
+        hubSingleton = HubSingleton.getInstance();
 
         hubNameView = (TextView) findViewById(R.id.hub_name);
-        hubNameView.setText(appState.getHubName());
+        hubNameView.setText(hubSingleton.getHubName());
 
-
-        // TODO: show the queue or whatever
-        HubSingleton hubSingleton = HubSingleton.getInstance();                         // SINGLETON HERE
-
-        Intent intent = getIntent();
-        if(intent.hasExtra("title")) {
-            title = intent.getStringExtra("title");
-            id = intent.getStringExtra("id");
-            QueueSong song = new QueueSong();
-            song.setId(id);
-            song.setTitle(title);
-
-            try {
-                hubSingleton.add(song, appState.getHubId().toString(), appState.getUserID());
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-            //list.add(song);
-            //hubSingleton.add(song);                                                 // SINGLETON HERE
-
-            //addBW.execute("addSong", appState.getHubId().toString(), appState.getUserID(), id, title);
-        }
-
-        VideoItemAdapter adapter = new VideoItemAdapter(ViewQueueActivity.this, hubSingleton.getEntireList(), new VideoItemAdapter.OnItemClickListener() {
+        adapter = new VideoItemAdapter(ViewQueueActivity.this, hubSingleton.getEntireList(), new VideoItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(QueueSong videoItem) {
 
@@ -76,11 +54,53 @@ public class ViewQueueActivity extends AppCompatActivity {
         songListView.setAdapter(adapter);
         songListView.setLayoutManager(new LinearLayoutManager(this));
 
-        QueueSong song = new QueueSong();
-        song.setTitle("hello");
-        //hubSingleton.add(song);
+        // TODO: show the queue or whatever
+        callback = new BackgroundWorker.AsyncResponse() {
 
-        //implement a search button
+            @Override
+            public void processFinish(String result) {
+                try {
+                    hubSingleton.clearList();
+                    JSONObject json = new JSONObject(result);
+                    Log.d("foobar", json.toString());
+                    JSONArray jsonArray = json.getJSONArray("result");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        QueueSong item = new QueueSong();
+
+                        JSONObject jObj = jsonArray.getJSONObject(i);
+
+                        item.setTitle(jObj.getString("song_title"));
+                        item.setUpVotes(jObj.getInt("up_votes"));
+                        item.setDownVotes(jObj.getInt("down_votes"));
+                        item.setId(jObj.getString("song_id"));
+                        hubSingleton.add(item);
+                        Log.d("list in bw", hubSingleton.toString());
+                    }
+                    adapter.notifyDataSetChanged();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        };
+        addBW = new BackgroundWorker(callback);
+        listBW = new BackgroundWorker(callback);
+
+        Intent intent = getIntent();
+        if(intent.hasExtra("title")) {
+            title = intent.getStringExtra("title");
+            id = intent.getStringExtra("id");
+            QueueSong song = new QueueSong();
+            song.setId(id);
+            song.setTitle(title);
+
+            //hubSingleton.add(song);                                                 // SINGLETON HERE
+
+            addBW.execute("addSong", hubSingleton.getHubId().toString(), hubSingleton.getUserID(), id, title);
+        }
+        listBW.execute("songList", hubSingleton.getHubId().toString(), hubSingleton.getUserID());
+
+
     }
 
     public void searchVideo(View view) {
