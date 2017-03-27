@@ -6,8 +6,9 @@ package com.example.vince.youtubeplayertest.Activities.users_only;
 
 public class QueueSong {
     private String title;
-    private int upVotes;
-    private int downVotes;
+    private int upVotes = 0;
+    private int downVotes=0;
+    private String id;
 
     public String getTitle() {
         return this.title;
@@ -27,4 +28,7 @@ public class QueueSong {
     public void setDownVotes(int downVotes) {
         this.downVotes = downVotes;
     }
+    public String getId() {return this.id;}
+    public void setId(String id) {this.id = id;}
+
 }

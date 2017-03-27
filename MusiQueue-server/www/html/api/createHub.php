@@ -13,6 +13,7 @@ createHub:
         info about the hub we connect to:
         {
             hub_id - int
+            is_creator - always true
         }
 ");
 apiDocsCouldError('HUB_NAME_TAKEN');
@@ -104,7 +105,8 @@ if($taken) {
 
 // return
 respondSuccess(array(
-    "hub_id" => $hubId
+    "hub_id" => $hubId,
+    "is_creator" => true
 ));
 
 ?>

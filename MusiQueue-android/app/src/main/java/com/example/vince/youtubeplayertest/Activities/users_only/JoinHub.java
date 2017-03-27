@@ -26,27 +26,24 @@ public class JoinHub extends AppCompatActivity {
 
         // set views and button
         passPinView = (EditText) findViewById(R.id.pass_pin);
-        hubNameView = (TextView) findViewById(R.id.hub_name);
+        hubNameView = (TextView) findViewById(R.id.create_a_hub_text);
         join = (Button) findViewById(R.id.join_hub_button);
 
         Intent i = getIntent();
         hubName = i.getStringExtra("hubName");
         hubNameView.setText(hubName);
+    }
 
-        join.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (timesPressed++ >= 5) {
-                    Toast.makeText(getApplicationContext(), "Warning: PIN Attempts Exceeded", Toast.LENGTH_LONG).show();
-                }
-                hubPin = passPinView.getText().toString();
-
-                final Intent i = new Intent(JoinHub.this, ConnectToHubActivity.class);
-                i.putExtra("hubName", hubName);
-                i.putExtra("hubPin", hubPin);
-                startActivity(i);
-            }
-        });
-
+    public void joinHub(View view) {
+        hubPin = passPinView.getText().toString();
+        if (hubPin.length() != 4) {
+            Toast.makeText(JoinHub.this, "Pass Pin Must Be 4 Numbers", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        // TODO: Make check for incorrect pin number for joining
+        final Intent i = new Intent(JoinHub.this, ConnectToHubActivity.class);
+        i.putExtra("hubName", hubName);
+        i.putExtra("hubPin", hubPin);
+        startActivity(i);
     }
 }

@@ -29,7 +29,9 @@
         <activity
             android:name=".Activities.hub_admin_only.QueueActivity"
             android:label="@string/title_activity_queue"
-            android:theme="@style/MusiQueue" />
+            android:theme="@style/MusiQueue"
+            android:windowSoftInputMode="stateHidden"
+            />
         <activity
             android:name=".Activities.starting_activities.GettingStarted"
             android:theme="@style/MusiQueue" />
