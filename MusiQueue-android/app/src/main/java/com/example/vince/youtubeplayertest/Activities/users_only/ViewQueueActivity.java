@@ -73,6 +73,7 @@ public class ViewQueueActivity extends AppCompatActivity {
                         item.setUpVotes(jObj.getInt("up_votes"));
                         item.setDownVotes(jObj.getInt("down_votes"));
                         item.setId(jObj.getString("song_id"));
+                        item.setUser(jObj.getString("user_name"));
                         hubSingleton.add(item);
                         Log.d("list in bw", hubSingleton.toString());
                     }
@@ -89,12 +90,7 @@ public class ViewQueueActivity extends AppCompatActivity {
         Intent intent = getIntent();
         if(intent.hasExtra("title")) {
             title = intent.getStringExtra("title");
-            id = intent.getStringExtra("id");
-            QueueSong song = new QueueSong();
-            song.setId(id);
-            song.setTitle(title);
-
-            //hubSingleton.add(song);                                                 // SINGLETON HERE
+            id = intent.getStringExtra("id");             // SINGLETON HERE
 
             addBW.execute("addSong", hubSingleton.getHubId().toString(), hubSingleton.getUserID(), id, title);
         }

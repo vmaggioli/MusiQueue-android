@@ -8,8 +8,12 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_marginTop="5dp"
-    />
+        android:layout_marginTop="5dp" />
+
+    <TextView android:id="@+id/queueItem_user"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp" />
 
     <Button
         android:text="D"

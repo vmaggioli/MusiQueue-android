@@ -40,6 +40,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
         public TextView videoTitle;
         public Button upButton;
         public Button downButton;
+        public TextView videoUser;
         //public TextView videoDescription;
 
 
@@ -48,10 +49,14 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
             videoTitle = (TextView) itemView.findViewById(R.id.queueItem_title);
             upButton = (Button) itemView.findViewById(R.id.button2);
             downButton = (Button) itemView.findViewById(R.id.button3);
+            videoUser = (TextView) itemView.findViewById(R.id.queueItem_user);
+
             //videoDescription = (TextView) itemView.findViewById(R.id.video_description);
         }
         public void bind(final QueueSong videoItem, final OnItemClickListener listener) {
             videoTitle.setText(videoItem.getTitle());
+            videoUser.setText(videoItem.getUser());
+
             //videoDescription.setText(videoItem.getDescription());
 
             itemView.setOnClickListener(new View.OnClickListener() {
