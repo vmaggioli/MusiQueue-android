@@ -24,15 +24,12 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.concurrent.ExecutionException;
 
 public class QueueActivity extends AppCompatActivity {
     final public String API_KEY = "AIzaSyDtCJTBSLt9M1Xi_EBr49Uk4W8q4HhFHPU";
     private YouTubePlayer mYouTubePlayer;
     LinkedList<String> queue = new LinkedList<>();
-    ArrayList<QueueSong> list;
     String flag = "Owner";
 
     BackgroundWorker.AsyncResponse callback;
@@ -41,29 +38,37 @@ public class QueueActivity extends AppCompatActivity {
     String id;
     String title;
     RecyclerView songListView;
-    HubSingleton appState;
+    HubSingleton hubSingleton;
+    VideoItemAdapter adapter;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_queue);
-        list = new ArrayList<>();
-
-
-        HubSingleton hubSingleton = HubSingleton.getInstance();                         // SINGLETON HERE
-        list = hubSingleton.getEntireList();                                            // SINGLETON HERE
 
         final EditText url_text = (EditText) findViewById(R.id.url);
         Button url_button = (Button) findViewById(R.id.url_button);
       
-        appState = HubSingleton.getInstance();
+        hubSingleton = HubSingleton.getInstance();
+
+        adapter = new VideoItemAdapter(QueueActivity.this, hubSingleton.getEntireList(), new VideoItemAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(QueueSong videoItem) {
+
+            }
+        });
+        Log.d("list",hubSingleton.getEntireList().toString());
+        songListView = (RecyclerView) findViewById(R.id.songList);
+        songListView.setAdapter(adapter);
+        songListView.setLayoutManager(new LinearLayoutManager(this));
+
 
         callback = new BackgroundWorker.AsyncResponse() {
             @Override
             public void processFinish(String result) {
                 try {
-                    list = new ArrayList<>();
+                    hubSingleton.clearList();
                     JSONObject json = new JSONObject(result);
                     Log.d("foobar", json.toString());
                     JSONArray jsonArray = json.getJSONArray("result");
@@ -76,9 +81,10 @@ public class QueueActivity extends AppCompatActivity {
                         item.setUpVotes(jObj.getInt("up_votes"));
                         item.setDownVotes(jObj.getInt("down_votes"));
                         item.setId(jObj.getString("song_id"));
-                        list.add(item);
-                        Log.d("list", list.get(0).getTitle());
+                        hubSingleton.add(item);
+                        Log.d("list", hubSingleton.getSongAt(0).getTitle());
                     }
+                    adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -95,40 +101,12 @@ public class QueueActivity extends AppCompatActivity {
             song.setId(id);
             song.setTitle(title);
 
-            //list.add(song);
-            try {
-                hubSingleton.add(song, appState.getHubId().toString(), appState.getUserID());
-            } catch (ExecutionException e) {
-                e.printStackTrace();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-
-
-
-            list = hubSingleton.getEntireList();                                            // SINGLETON HERE
-// SINGLETON HERE
-
-            //addBW.execute("addSong", appState.getHubId().toString(), appState.getUserID(), id, title);
+            addBW.execute("addSong", hubSingleton.getHubId().toString(), hubSingleton.getUserID(), id, title);
         }
 
-        //listBW.execute("songList", appState.getHubId().toString(), appState.getUserID());
+        listBW.execute("songList", hubSingleton.getHubId().toString(), hubSingleton.getUserID());
         //TODO REFRESH QUEUE IN SEPARATE FUNCTION CONSTANTLY
 
-        //
-        //Vector<VideoItem> videos = new Vector<>();
-        //videos.add(new VideoItem("hello", "song", "id: 1"));
-        VideoItemAdapter adapter = new VideoItemAdapter(QueueActivity.this, hubSingleton.getEntireList(), new VideoItemAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(QueueSong videoItem) {
-
-            }
-        });
-        Log.d("list",hubSingleton.getEntireList().toString());
-        songListView = (RecyclerView) findViewById(R.id.songList);
-        songListView.setAdapter(adapter);
-        songListView.setLayoutManager(new LinearLayoutManager(this));
-        //
 
         // initialize YouTube player
         YouTubePlayerFragment mYouTubePlayerFragment = (YouTubePlayerFragment)
@@ -169,10 +147,10 @@ public class QueueActivity extends AppCompatActivity {
 
                     @Override
                     public void onVideoEnded() {
-                        list.remove(0);
-                        if (list.size() != 0)
+                        hubSingleton.removeAt(0);
+                        if (hubSingleton.getEntireList().size() != 0)
 
-                            mYouTubePlayer.loadVideo(list.get(0).getId());
+                            mYouTubePlayer.loadVideo(hubSingleton.getSongAt(0).getId());
                     }
 
                     @Override
@@ -198,7 +176,7 @@ public class QueueActivity extends AppCompatActivity {
                 }
 
                 // add new data to queue
-                if (list.size() == 0)
+                if (hubSingleton.getEntireList().size() == 0)
                     mYouTubePlayer.loadVideo(video_id);
                 QueueSong song = new QueueSong();
                 song.setId(video_id);
