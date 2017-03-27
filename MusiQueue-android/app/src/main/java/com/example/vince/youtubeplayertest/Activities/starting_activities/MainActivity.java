@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,13 +12,9 @@ import android.widget.Toast;
 import android.content.SharedPreferences;
 
 import com.example.vince.youtubeplayertest.Activities.BackendTestActivity;
-import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
-import com.example.vince.youtubeplayertest.Activities.helper_classes.Hub;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
 import com.example.vince.youtubeplayertest.Activities.users_only.SearchHub;
 import com.example.vince.youtubeplayertest.R;
-
-import static java.security.AccessController.getContext;
 
 public class MainActivity extends AppCompatActivity {
     TextView createName;

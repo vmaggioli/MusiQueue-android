@@ -7,11 +7,9 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
-import com.example.vince.youtubeplayertest.Activities.helper_classes.Hub;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.JoinHubResponse;
 import com.example.vince.youtubeplayertest.R;

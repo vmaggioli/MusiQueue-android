@@ -2,21 +2,13 @@ package com.example.vince.youtubeplayertest.Activities.users_only;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
-import android.view.View;
 import android.widget.Toast;
 
 import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
-import com.example.vince.youtubeplayertest.Activities.helper_classes.Hub;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
-import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListAdapter;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.JoinHubResponse;
-import com.example.vince.youtubeplayertest.Activities.helper_classes.SearchHubResponse;
 import com.example.vince.youtubeplayertest.R;
 import com.google.gson.Gson;
 
