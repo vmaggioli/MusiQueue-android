@@ -7,7 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.vince.youtubeplayertest.Activities.helper_classes.Hub;
+import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
 import com.example.vince.youtubeplayertest.Activities.hub_admin_only.CreateHub;
 import com.example.vince.youtubeplayertest.Activities.users_only.SearchHub;
 import com.example.vince.youtubeplayertest.R;
@@ -44,7 +44,7 @@ public class GettingStarted extends AppCompatActivity {
             }
         });
 
-        final Hub appState = ((Hub)getApplicationContext());
+        final HubSingleton appState = HubSingleton.getInstance();
 
 
     }

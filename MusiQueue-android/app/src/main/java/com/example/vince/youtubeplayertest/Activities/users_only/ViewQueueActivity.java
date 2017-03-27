@@ -5,31 +5,24 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
 import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
 import com.example.vince.youtubeplayertest.Activities.SearchActivity;
 import com.example.vince.youtubeplayertest.Activities.VideoItemAdapter;
-import com.example.vince.youtubeplayertest.Activities.helper_classes.Hub;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
-import com.example.vince.youtubeplayertest.Activities.hub_admin_only.QueueActivity;
-import com.example.vince.youtubeplayertest.R;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.example.vince.youtubeplayertest.R;
 
 import java.util.ArrayList;
 import java.util.concurrent.ExecutionException;
 
-import static android.R.id.list;
-
 public class ViewQueueActivity extends AppCompatActivity {
     TextView hubNameView;
+
     String flag = "User";
-    Hub appState;
+    HubSingleton appState;
     RecyclerView songListView;
     BackgroundWorker.AsyncResponse callback;
 
@@ -37,13 +30,12 @@ public class ViewQueueActivity extends AppCompatActivity {
     String id;
     ArrayList<QueueSong> list;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_queue);
 
-        appState = ((Hub) getApplicationContext());
+        appState = HubSingleton.getInstance();
 
         hubNameView = (TextView) findViewById(R.id.hub_name);
         hubNameView.setText(appState.getHubName());

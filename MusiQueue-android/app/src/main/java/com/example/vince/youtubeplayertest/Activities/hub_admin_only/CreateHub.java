@@ -7,11 +7,10 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
-import com.example.vince.youtubeplayertest.Activities.helper_classes.Hub;
+import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.JoinHubResponse;
 import com.example.vince.youtubeplayertest.R;
 import com.google.gson.Gson;
@@ -31,7 +30,7 @@ public class CreateHub extends AppCompatActivity {
         passPin = (EditText) findViewById(R.id.pass_pin);
 
         // find current app state for super globals
-        final Hub appState = ((Hub) getApplicationContext());
+        final HubSingleton appState = HubSingleton.getInstance();
 
         // set button
         createHubButton = (Button) findViewById(R.id.create_hub_button);
@@ -39,10 +38,10 @@ public class CreateHub extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (hubNameText.getText().length() == 0) {
-                    Toast.makeText(appState, "Must Have Hub Name", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Must Have Hub Name", Toast.LENGTH_LONG).show();
                     return;
                 } else if (passPin.getText().length() != 4) {
-                    Toast.makeText(appState, "Pass Pin Must Be 4 Digits", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Pass Pin Must Be 4 Digits", Toast.LENGTH_LONG).show();
                     return;
                 }
 
@@ -65,7 +64,7 @@ public class CreateHub extends AppCompatActivity {
     }
 
     private void connectSuccess(Integer hubId) {
-        final Hub appState = ((Hub) getApplicationContext());
+        final HubSingleton appState = HubSingleton.getInstance();
 
         Log.d("", "Created hub successfully!");
         appState.setHubId(hubId);
