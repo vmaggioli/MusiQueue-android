@@ -23,6 +23,8 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:24.2.1'
     compile 'com.google.code.gson:gson:2.2.4'
 
+    compile 'com.yqritc:recyclerview-flexibledivider:1.4.0' // requires jcenter()
+
     testCompile 'junit:junit:4.12'
 
     compile files('libs/google-api-client-1.22.0.jar')
