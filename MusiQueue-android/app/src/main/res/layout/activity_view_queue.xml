@@ -7,11 +7,7 @@
         android:id="@+id/hub_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Hub Screen : TODO"
-        android:textSize="24sp"/>
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/song_List"
