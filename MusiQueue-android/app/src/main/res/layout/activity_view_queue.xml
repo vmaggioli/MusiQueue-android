@@ -25,7 +25,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"></android.support.v7.widget.RecyclerView>
+        android:layout_centerVertical="true"
+        android:background="@drawable/list_background"
+        >
+    </android.support.v7.widget.RecyclerView>
 
 
 </LinearLayout>
