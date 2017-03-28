@@ -2,6 +2,7 @@ package com.example.vince.youtubeplayertest.Activities.users_only;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +21,7 @@ import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListIte
 import com.example.vince.youtubeplayertest.Activities.helper_classes.SearchHubResponse;
 import com.example.vince.youtubeplayertest.R;
 import com.google.gson.Gson;
+import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import java.util.Vector;
 
@@ -71,6 +73,8 @@ public class SearchHub extends AppCompatActivity {
         HubsListAdapter hubsListAdapter = new HubsListAdapter(this, hubs, callback);
         hubsList.setAdapter(hubsListAdapter);
         hubsList.setLayoutManager(new LinearLayoutManager(this));
+        hubsList.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).color(Color.LTGRAY).sizeResId(R.dimen.divider).marginResId(R.dimen.margin5dp, R.dimen.margin5dp).build());
+
     }
 
     protected void selectHub(HubsListItem hub) {
