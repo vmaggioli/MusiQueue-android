@@ -82,6 +82,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                             item.setDownVotes(jObj.getInt("down_votes"));
                             item.setId(jObj.getString("song_id"));
                             item.setUser(jObj.getString("user_name"));
+                            item.setPlace(jObj.getInt("id"));
                             hubSingleton.add(item);
 
                         }
@@ -104,8 +105,9 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
 
                     String hub = hubSingleton.getHubId().toString();
                     String phone = hubSingleton.getUserID();
-                    String song = videoItem.getId();
-                    voteBW.execute("voteUpSong",hub,phone,song);
+                    voteBW.execute("voteUpSong",hub,phone,String.valueOf(videoItem.getPlace()));
+                    downButton.setClickable(false);
+                    upButton.setClickable(false);
 
                 }
             });
@@ -114,8 +116,9 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
 
                     String hub = hubSingleton.getHubId().toString();
                     String phone = hubSingleton.getUserID();
-                    String song = videoItem.getId();
-                    voteBW.execute("voteDownSong",hub,phone,song);
+                    voteBW.execute("voteDownSong",hub,phone,String.valueOf(videoItem.getPlace()));
+                    downButton.setClickable(false);
+                    upButton.setClickable(false);
 
                 }
             });

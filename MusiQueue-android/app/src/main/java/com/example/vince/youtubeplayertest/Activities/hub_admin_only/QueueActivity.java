@@ -85,6 +85,8 @@ public class QueueActivity extends AppCompatActivity {
                         item.setDownVotes(jObj.getInt("down_votes"));
                         item.setId(jObj.getString("song_id"));
                         item.setUser(jObj.getString("user_name"));
+                        item.setPlace(jObj.getInt("id"));
+
                         hubSingleton.add(item);
                         Log.d("list", hubSingleton.getSongAt(0).getTitle());
                     }
