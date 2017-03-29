@@ -22,6 +22,6 @@ public class PollIntentService extends IntentService {
         // TODO: POLL DATABASE
         BackgroundWorker listBW = new BackgroundWorker(this.getApplicationContext());
         appState = HubSingleton.getInstance();
-        listBW.execute("songList", appState.getHubId().toString(), appState.getUserID());
+        //listBW.execute("songList", appState.getHubId().toString(), appState.getUserID();
     }
 }
