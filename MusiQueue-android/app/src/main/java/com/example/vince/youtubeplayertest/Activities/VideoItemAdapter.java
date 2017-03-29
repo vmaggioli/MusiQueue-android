@@ -53,8 +53,8 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
         ViewHolder(View itemView) {
             super(itemView);
             videoTitle = (TextView) itemView.findViewById(R.id.queueItem_title);
-            upButton = (Button) itemView.findViewById(R.id.button2);
-            downButton = (Button) itemView.findViewById(R.id.button3);
+            upButton = (Button) itemView.findViewById(R.id.button3);
+            downButton = (Button) itemView.findViewById(R.id.button2);
             videoUser = (TextView) itemView.findViewById(R.id.queueItem_user);
 
         }
@@ -86,7 +86,6 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
 
                         }
                         //adapter.notifyDataSetChanged();
-                        this.
 
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -95,11 +94,11 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
             };
             final BackgroundWorker voteBW = new BackgroundWorker(callback);
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                    listener.onItemClick(videoItem);
-                }
-            });
+//            itemView.setOnClickListener(new View.OnClickListener() {
+  //              @Override public void onClick(View v) {
+    //                listener.onItemClick(videoItem);
+      //          }
+        //    });
             upButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
 
