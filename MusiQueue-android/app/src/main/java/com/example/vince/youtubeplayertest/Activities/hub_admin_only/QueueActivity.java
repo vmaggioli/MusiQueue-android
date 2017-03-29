@@ -124,8 +124,8 @@ public class QueueActivity extends AppCompatActivity {
 
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-                if(!b){
-                    youTubePlayer.cueVideo(getIntent().getStringExtra("id"));
+                if(!b && hubSingleton.getEntireList().size() > 0){
+                    youTubePlayer.cueVideo(hubSingleton.getSongAt(0).getId()); //getIntent().getStringExtra("id"));
                 }
                 mYouTubePlayer = youTubePlayer;
                 mYouTubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener() {
@@ -152,8 +152,8 @@ public class QueueActivity extends AppCompatActivity {
                     @Override
                     public void onVideoEnded() {
                         hubSingleton.removeAt(0);
+                        adapter.notifyDataSetChanged();
                         if (hubSingleton.getEntireList().size() != 0)
-
                             mYouTubePlayer.loadVideo(hubSingleton.getSongAt(0).getId());
                     }
 
