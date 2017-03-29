@@ -145,9 +145,6 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
     public void onBindViewHolder(ViewHolder holder, int position) {
         System.out.println(videos.size() + "pos: " + position);
         holder.bind(videos.get(position), listener);
-//        QueueSong item = videos.get(position);
-//        holder.videoTitle.setText(item.getTitle());
-//        holder.videoDescription.setText(item.getDescription());
 
     }
 
