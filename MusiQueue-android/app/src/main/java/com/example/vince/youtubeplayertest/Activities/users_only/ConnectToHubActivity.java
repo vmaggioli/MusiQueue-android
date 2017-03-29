@@ -9,6 +9,7 @@ import android.widget.Toast;
 import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.JoinHubResponse;
+import com.example.vince.youtubeplayertest.Activities.hub_admin_only.QueueActivity;
 import com.example.vince.youtubeplayertest.R;
 import com.google.gson.Gson;
 
@@ -18,6 +19,7 @@ public class ConnectToHubActivity extends AppCompatActivity {
     String phoneId;
     String username;
     HubSingleton appState;
+    int isCreator = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,19 +47,26 @@ public class ConnectToHubActivity extends AppCompatActivity {
                 if(r.error) {
                     connectError(r.errorCode, r.errorMessage);
                 }else{
-                    connectSuccess(r.getHubId());
+                    connectSuccess(r.getHubId(),r.getCreator());
+
                 }
             }
         });
         backgroundWorker.execute("joinHub", hubName, hubPin, phoneId, username);
     }
 
-    private void connectSuccess(Integer hubId) {
+    private void connectSuccess(Integer hubId,Boolean isCreator) {
         Log.d("", "Joined hub successfully!");
         appState.setHubName(hubName);
         appState.setHubId(hubId);
 
-        final Intent i = new Intent(ConnectToHubActivity.this, ViewQueueActivity.class);
+        final Intent i;
+        if(isCreator) {
+            i = new Intent(ConnectToHubActivity.this, QueueActivity.class);
+        }
+        else {
+            i = new Intent(ConnectToHubActivity.this, ViewQueueActivity.class);
+        }
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(i);
         finish();
