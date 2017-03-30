@@ -1,9 +1,11 @@
 package com.example.vince.youtubeplayertest.Activities;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -48,6 +50,8 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
         public Button downButton;
         public TextView videoUser;
         HubSingleton hubSingleton = HubSingleton.getInstance();
+        BackgroundWorker voteBW;
+        BackgroundWorker.AsyncResponse callback;
 
 
         ViewHolder(View itemView) {
@@ -57,11 +61,13 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
             downButton = (Button) itemView.findViewById(R.id.button2);
             videoUser = (TextView) itemView.findViewById(R.id.queueItem_user);
 
+
         }
         public void bind(final QueueSong videoItem, final OnItemClickListener listener) {
             videoTitle.setText(videoItem.getTitle());
             videoUser.setText(videoItem.getUser());
-            final BackgroundWorker.AsyncResponse callback;
+
+
 
             callback = new BackgroundWorker.AsyncResponse() {
                 @Override
@@ -87,14 +93,14 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
 
                         }
                         //adapter.notifyDataSetChanged();
+                        voteBW = new BackgroundWorker(callback);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
             };
-            final BackgroundWorker voteBW = new BackgroundWorker(callback);
-
+            voteBW = new BackgroundWorker(callback);
 //            itemView.setOnClickListener(new View.OnClickListener() {
   //              @Override public void onClick(View v) {
     //                listener.onItemClick(videoItem);
@@ -106,7 +112,10 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                     String hub = hubSingleton.getHubId().toString();
                     String phone = hubSingleton.getUserID();
                     voteBW.execute("voteUpSong",hub,phone,String.valueOf(videoItem.getPlace()));
-                    downButton.setClickable(false);
+                    upButton.setBackgroundColor(Color.TRANSPARENT);
+                    downButton.setBackgroundColor(Color.LTGRAY);
+
+                    downButton.setClickable(true);
                     upButton.setClickable(false);
 
                 }
@@ -117,8 +126,10 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                     String hub = hubSingleton.getHubId().toString();
                     String phone = hubSingleton.getUserID();
                     voteBW.execute("voteDownSong",hub,phone,String.valueOf(videoItem.getPlace()));
+                    upButton.setBackgroundColor(Color.LTGRAY);
+                    downButton.setBackgroundColor(Color.TRANSPARENT);
                     downButton.setClickable(false);
-                    upButton.setClickable(false);
+                    upButton.setClickable(true);
 
                 }
             });
