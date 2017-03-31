@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -39,6 +40,9 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
     private ArrayList<QueueSong> videos;
     private Context mContext;
     private OnItemClickListener listener;
+
+    public static BackgroundWorker voteUpBW;
+    public static BackgroundWorker voteDownBW;
 
     public interface OnItemClickListener {
         void onItemClick(QueueSong videoItem);
@@ -105,9 +109,20 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                     }
                 }
             };
-            voteBW = new BackgroundWorker(callback);
+// <<<<<<< SairamSamBranch
 
-            upButton.setOnClickListener(new View.OnClickListener() {
+
+// //            itemView.setOnClickListener(new View.OnClickListener() {
+//   //              @Override public void onClick(View v) {
+//     //                listener.onItemClick(videoItem);
+//       //          }
+//         //    });
+//             /*upButton.setOnClickListener(new View.OnClickListener() {
+// =======
+//             voteBW = new BackgroundWorker(callback);
+
+//             upButton.setOnClickListener(new View.OnClickListener() {
+// >>>>>>> master
                 public void onClick(View v) {
 
                     String hub = hubSingleton.getHubId().toString();
@@ -117,19 +132,57 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                     upButton.setBackgroundColor(Color.TRANSPARENT);
                     downButton.setClickable(true);
                     upButton.setClickable(false);
+                    upButton.setPressed(true);
+                    downButton.setPressed(false);
+                }
+            });*/
+            upButton.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    // show interest in events resulting from ACTION_DOWN
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) return true;
 
+                    // don't handle event unless its ACTION_UP so "doSomething()" only runs once.
+                    if (event.getAction() != MotionEvent.ACTION_UP) return false;
+
+                    voteUpBW = new BackgroundWorker(callback);
+
+                    String hub = hubSingleton.getHubId().toString();
+                    String phone = hubSingleton.getUserID();
+                    voteUpBW.execute("voteUpSong",hub,phone,String.valueOf(videoItem.getPlace()));
+                    upButton.setPressed(true);
+                    downButton.setPressed(false);
+                    return true;
                 }
             });
-            downButton.setOnClickListener(new View.OnClickListener() {
+            /*downButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
 
                     String hub = hubSingleton.getHubId().toString();
                     String phone = hubSingleton.getUserID();
                     voteBW.execute("voteDownSong",hub,phone,String.valueOf(videoItem.getPlace()));
-                    upButton.setBackgroundResource(android.R.drawable.btn_default);
-                    downButton.setBackgroundColor(Color.TRANSPARENT);
-                    downButton.setClickable(false);
-                    upButton.setClickable(true);
+                    downButton.setPressed(true);
+                    upButton.setPressed(false);
+
+                }
+            });*/
+            downButton.setOnTouchListener(new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+
+                    // show interest in events resulting from ACTION_DOWN
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) return true;
+
+                    // don't handle event unless its ACTION_UP so "doSomething()" only runs once.
+                    if (event.getAction() != MotionEvent.ACTION_UP) return false;
+
+                    voteDownBW = new BackgroundWorker(callback);
+
+                    String hub = hubSingleton.getHubId().toString();
+                    String phone = hubSingleton.getUserID();
+                    voteDownBW.execute("voteDownSong",hub,phone,String.valueOf(videoItem.getPlace()));
+                    downButton.setPressed(true);
+                    upButton.setPressed(false);
+                    return true;
                 }
             });
         }
