@@ -52,31 +52,28 @@
         <!--android:padding="16dp" />-->
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal">
-            <Button
-                android:id="@+id/url_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_alignParentRight="true"
-                android:text="PLAY VIDEO" />
-
-            <View
+        android:orientation="horizontal"
+        android:weightSum="4"
+        >
+            <EditText
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
-
+                android:layout_height="50dp"
+                android:id="@+id/search_edit"
+                android:hint="Search For Song"
+                android:layout_weight="3"
+                />
             <Button
-                android:id="@+id/searchVideoButton"
-                android:layout_width="wrap_content"
+                android:id="@+id/search_button"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_centerVertical="true"
                 android:onClick="searchVideo"
-                android:text="Search Video"
+                android:text="Search Song"
                 android:layout_gravity="right"
+                android:layout_weight="1"
                 />
     </LinearLayout>
     <android.support.v7.widget.RecyclerView
@@ -86,12 +83,12 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"></android.support.v7.widget.RecyclerView>
 
-    <!--<ListView-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:id="@+id/songList"-->
-    <!--&gt;-->
-
-    <!--</ListView>-->
+    <ListView
+        android:id="@+id/videos_found"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:dividerHeight="5dp"
+        android:visibility="gone"
+        />
 
 </LinearLayout>
