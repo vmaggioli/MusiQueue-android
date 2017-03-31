@@ -106,11 +106,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                 }
             };
             voteBW = new BackgroundWorker(callback);
-//            itemView.setOnClickListener(new View.OnClickListener() {
-  //              @Override public void onClick(View v) {
-    //                listener.onItemClick(videoItem);
-      //          }
-        //    });
+
             upButton.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
 
@@ -119,7 +115,6 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                     voteBW.execute("voteUpSong",hub,phone,String.valueOf(videoItem.getPlace()));
                     downButton.setBackgroundResource(android.R.drawable.btn_default);
                     upButton.setBackgroundColor(Color.TRANSPARENT);
-
                     downButton.setClickable(true);
                     upButton.setClickable(false);
 
@@ -135,7 +130,6 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                     downButton.setBackgroundColor(Color.TRANSPARENT);
                     downButton.setClickable(false);
                     upButton.setClickable(true);
-
                 }
             });
         }
