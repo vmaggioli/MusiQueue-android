@@ -117,7 +117,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
 //     //                listener.onItemClick(videoItem);
 //       //          }
 //         //    });
-//             /*upButton.setOnClickListener(new View.OnClickListener() {
+             /*upButton.setOnClickListener(new View.OnClickListener() {
 // =======
 //             voteBW = new BackgroundWorker(callback);
 
