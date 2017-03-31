@@ -3,6 +3,7 @@ package com.example.vince.youtubeplayertest.Activities.hub_admin_only;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -12,7 +13,9 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
+import com.example.vince.youtubeplayertest.Activities.PollData;
 import com.example.vince.youtubeplayertest.Activities.SearchActivity;
+import com.example.vince.youtubeplayertest.Activities.UpdateResultReceiver;
 import com.example.vince.youtubeplayertest.Activities.VideoItemAdapter;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
 import com.example.vince.youtubeplayertest.Activities.users_only.QueueSong;
@@ -28,7 +31,7 @@ import org.json.JSONObject;
 
 import java.util.LinkedList;
 
-public class QueueActivity extends AppCompatActivity {
+public class QueueActivity extends AppCompatActivity implements UpdateResultReceiver.Receiver {
     final public String API_KEY = "AIzaSyDtCJTBSLt9M1Xi_EBr49Uk4W8q4HhFHPU";
     private YouTubePlayer mYouTubePlayer;
     LinkedList<String> queue = new LinkedList<>();
@@ -42,6 +45,7 @@ public class QueueActivity extends AppCompatActivity {
     RecyclerView songListView;
     HubSingleton hubSingleton;
     VideoItemAdapter adapter;
+    UpdateResultReceiver receiver;
 
 
     @Override
@@ -109,8 +113,8 @@ public class QueueActivity extends AppCompatActivity {
         }
 
         listBW.execute("hubSongList", hubSingleton.getHubId().toString(), hubSingleton.getUserID());
-        //TODO REFRESH QUEUE IN SEPARATE FUNCTION CONSTANTLY
 
+        updateView();
 
         // initialize YouTube player
         YouTubePlayerFragment mYouTubePlayerFragment = (YouTubePlayerFragment)
@@ -153,7 +157,6 @@ public class QueueActivity extends AppCompatActivity {
                     public void onVideoEnded() {
                         hubSingleton.removeAt(0);
                         if (hubSingleton.getEntireList().size() != 0)
-
                             mYouTubePlayer.loadVideo(hubSingleton.getSongAt(0).getId());
                     }
 
@@ -194,5 +197,45 @@ public class QueueActivity extends AppCompatActivity {
         Intent intent = new Intent(QueueActivity.this, SearchActivity.class);
         intent.putExtra("view_queue",flag);
         startActivity(intent);
+    }
+
+    public void updateView() {
+        System.out.println("Update my view please");
+        receiver = new UpdateResultReceiver(new Handler());
+        receiver.setReceiver(this);
+
+        Intent intent = new Intent(this, PollData.class);
+        intent.putExtra("receiver", receiver);
+        startService(intent);
+
+    }
+
+    @Override
+    public void onReceiveResult(int resultCode, Bundle resultData) {
+        if (resultCode != 0) return;
+        String result = resultData.getString("result");
+        try {
+            hubSingleton.clearList();
+            JSONObject json = new JSONObject(result);
+            Log.d("foobar", json.toString());
+            JSONArray jsonArray = json.getJSONArray("result");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                QueueSong item = new QueueSong();
+
+                JSONObject jObj = jsonArray.getJSONObject(i);
+
+                item.setTitle(jObj.getString("song_title"));
+                item.setUpVotes(jObj.getInt("up_votes"));
+                item.setDownVotes(jObj.getInt("down_votes"));
+                item.setId(jObj.getString("song_id"));
+                item.setUser(jObj.getString("user_name"));
+                hubSingleton.add(item);
+                Log.d("list in bw", hubSingleton.toString());
+            }
+            adapter.notifyDataSetChanged();
+            updateView();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }

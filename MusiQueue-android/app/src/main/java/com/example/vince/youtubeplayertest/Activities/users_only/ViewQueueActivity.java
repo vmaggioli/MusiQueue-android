@@ -105,7 +105,6 @@ public class ViewQueueActivity extends AppCompatActivity implements UpdateResult
         }
         listBW.execute("hubSongList", hubSingleton.getHubId().toString(), hubSingleton.getUserID());
 
-
         updateView();
     }
 
