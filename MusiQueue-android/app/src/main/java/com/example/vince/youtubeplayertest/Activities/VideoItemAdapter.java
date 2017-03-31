@@ -1,9 +1,11 @@
 package com.example.vince.youtubeplayertest.Activities;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -30,7 +32,7 @@ import static com.example.vince.youtubeplayertest.R.id.video_title;
 import static com.example.vince.youtubeplayertest.R.id.video_title;*/
 
 /**
- * Created by Prasad on 3/2/2017.
+ * Created by Not Prasad on 3/2/2017.
  */
 
 public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.ViewHolder> {
@@ -52,6 +54,8 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
         public Button downButton;
         public TextView videoUser;
         HubSingleton hubSingleton = HubSingleton.getInstance();
+        BackgroundWorker voteBW;
+        BackgroundWorker.AsyncResponse callback;
 
 
         ViewHolder(View itemView) {
@@ -61,11 +65,17 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
             downButton = (Button) itemView.findViewById(R.id.button2);
             videoUser = (TextView) itemView.findViewById(R.id.queueItem_user);
 
+
         }
         public void bind(final QueueSong videoItem, final OnItemClickListener listener) {
             videoTitle.setText(videoItem.getTitle());
             videoUser.setText(videoItem.getUser());
-            final BackgroundWorker.AsyncResponse callback;
+            downButton.setTextColor(Color.RED);
+            upButton.setTextColor(Color.BLUE);
+            upButton.setText(Integer.toString(videoItem.getUpVotes()));
+            downButton.setText(Integer.toString(videoItem.getDownVotes()));
+
+
 
             callback = new BackgroundWorker.AsyncResponse() {
                 @Override
@@ -90,27 +100,37 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                             hubSingleton.add(item);
 
                         }
-                        //adapter.notifyDataSetChanged();
+                        //TODO: Find other way of doing this
+
+                        voteBW = new BackgroundWorker(callback);
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
             };
+// <<<<<<< SairamSamBranch
 
 
-//            itemView.setOnClickListener(new View.OnClickListener() {
-  //              @Override public void onClick(View v) {
-    //                listener.onItemClick(videoItem);
-      //          }
-        //    });
-            /*upButton.setOnClickListener(new View.OnClickListener() {
+// //            itemView.setOnClickListener(new View.OnClickListener() {
+//   //              @Override public void onClick(View v) {
+//     //                listener.onItemClick(videoItem);
+//       //          }
+//         //    });
+//             /*upButton.setOnClickListener(new View.OnClickListener() {
+// =======
+//             voteBW = new BackgroundWorker(callback);
+
+//             upButton.setOnClickListener(new View.OnClickListener() {
+// >>>>>>> master
                 public void onClick(View v) {
 
                     String hub = hubSingleton.getHubId().toString();
                     String phone = hubSingleton.getUserID();
                     voteBW.execute("voteUpSong",hub,phone,String.valueOf(videoItem.getPlace()));
-                    downButton.setClickable(false);
+                    downButton.setBackgroundResource(android.R.drawable.btn_default);
+                    upButton.setBackgroundColor(Color.TRANSPARENT);
+                    downButton.setClickable(true);
                     upButton.setClickable(false);
                     upButton.setPressed(true);
                     downButton.setPressed(false);
