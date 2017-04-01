@@ -258,8 +258,8 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
 
             addBW.execute("addSong", hubSingleton.getHubId().toString(), hubSingleton.getUserID(), id, title);
         }
-
         listBW.execute("hubSongList", hubSingleton.getHubId().toString(), hubSingleton.getUserID());
+        queueIfEmpty(id);
     }
 
     public void searchVideo(View view) {
@@ -347,9 +347,9 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
             JSONObject json = new JSONObject(result);
             Log.d("foobar", json.toString());
             JSONArray jsonArray = json.getJSONArray("result");
+            String song_id = "";
             for (int i = 0; i < jsonArray.length(); i++) {
                 QueueSong item = new QueueSong();
-
                 JSONObject jObj = jsonArray.getJSONObject(i);
 
                 item.setTitle(jObj.getString("song_title"));
@@ -357,6 +357,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                 item.setDownVotes(jObj.getInt("down_votes"));
                 item.setId(jObj.getString("song_id"));
                 item.setUser(jObj.getString("user_name"));
+                song_id = jObj.getString("song_id");
                 hubSingleton.add(item);
                 Log.d("list in bw", hubSingleton.toString());
             }
@@ -365,5 +366,10 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public void queueIfEmpty(String video_id) {
+        if (hubSingleton.getEntireList().size() == 0 && video_id != null)
+                mYouTubePlayer.loadVideo(video_id);
     }
 }
