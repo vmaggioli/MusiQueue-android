@@ -154,6 +154,5 @@ public class ViewQueueActivity extends AppCompatActivity implements UpdateResult
         Intent intent = new Intent(this, PollData.class);
         intent.putExtra("receiver", receiver);
         startService(intent);
-
     }
 }
