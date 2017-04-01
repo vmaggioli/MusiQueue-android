@@ -2,16 +2,10 @@ package com.example.vince.youtubeplayertest.Activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.session.MediaSession;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.vince.youtubeplayertest.Activities.users_only.QueueSong;
-import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListItem;
-import com.google.gson.Gson;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -24,9 +18,6 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Vector;
 
 /**
@@ -66,7 +57,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... params) {
         type = params[0];
-        System.out.println(type);
+        System.out.println("background type: " + type);
         String urlBase = "http://52.14.50.251/api/";
         String urlEnd = type + ".php";
 
@@ -102,6 +93,11 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                 paramNames.add("phoneId");
                 paramNames.add("songId");
                 paramNames.add("songTitle");
+                break;
+            case "removeSong":
+                paramNames.add("hubId");
+                paramNames.add("phoneId");
+                paramNames.add("songId");
                 break;
             case "voteUpSong":
             case "voteDownSong":
