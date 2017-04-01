@@ -48,6 +48,8 @@
         </activity>
         <activity android:name=".Activities.PlayerActivity"></activity>
         <activity android:name=".Activities.users_only.ConnectToHubActivity" />
+
+        <service android:name=".Activities.PollData" ></service>
     </application>
 
 </manifest>

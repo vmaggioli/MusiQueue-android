@@ -24,6 +24,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
+import com.example.vince.youtubeplayertest.Activities.PollData;
+import com.example.vince.youtubeplayertest.Activities.SearchActivity;
+import com.example.vince.youtubeplayertest.Activities.UpdateResultReceiver;
 import com.example.vince.youtubeplayertest.Activities.VideoItem;
 import com.example.vince.youtubeplayertest.Activities.VideoItemAdapter;
 import com.example.vince.youtubeplayertest.Activities.YoutubeConnector;
@@ -42,7 +45,7 @@ import org.json.JSONObject;
 
 import java.util.List;
 
-public class QueueActivity extends AppCompatActivity {
+public class QueueActivity extends AppCompatActivity implements UpdateResultReceiver.Receiver {
     final public String API_KEY = "AIzaSyDtCJTBSLt9M1Xi_EBr49Uk4W8q4HhFHPU";
     private YouTubePlayer mYouTubePlayer;
 
@@ -57,6 +60,7 @@ public class QueueActivity extends AppCompatActivity {
     RecyclerView songListView;
     HubSingleton hubSingleton;
     VideoItemAdapter adapter;
+    UpdateResultReceiver receiver;
 
     private List<VideoItem> searchResults;
 
@@ -98,9 +102,55 @@ public class QueueActivity extends AppCompatActivity {
         songListView.setAdapter(adapter);
         songListView.setLayoutManager(new LinearLayoutManager(this));
         songListView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).color(Color.LTGRAY).sizeResId(R.dimen.divider).marginResId(R.dimen.margin5dp, R.dimen.margin5dp).build());
+
+
+        callback = new BackgroundWorker.AsyncResponse() {
+            @Override
+            public void processFinish(String result) {
+                try {
+                    hubSingleton.clearList();
+                    JSONObject json = new JSONObject(result);
+                    Log.d("foobar", json.toString());
+                    JSONArray jsonArray = json.getJSONArray("result");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        QueueSong item = new QueueSong();
+
+                        JSONObject jObj = jsonArray.getJSONObject(i);
+
+                        item.setTitle(jObj.getString("song_title"));
+                        item.setUpVotes(jObj.getInt("up_votes"));
+                        item.setDownVotes(jObj.getInt("down_votes"));
+                        item.setId(jObj.getString("song_id"));
+                        item.setUser(jObj.getString("user_name"));
+                        hubSingleton.add(item);
+                        Log.d("list", hubSingleton.getSongAt(0).getTitle());
+                    }
+                    adapter.notifyDataSetChanged();
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        };
+        addBW = new BackgroundWorker(callback);
+        listBW = new BackgroundWorker(callback);
+
+        Intent intent = getIntent();
+        if(intent.hasExtra("title")) {
+            title = intent.getStringExtra("title");
+            id = intent.getStringExtra("id");
+            QueueSong song = new QueueSong();
+            song.setId(id);
+            song.setTitle(title);
+
+            addBW.execute("addSong", hubSingleton.getHubId().toString(), hubSingleton.getUserID(), id, title);
+        }
+
+        listBW.execute("hubSongList", hubSingleton.getHubId().toString(), hubSingleton.getUserID());
+
+        updateView();
         addAndUpdate();
         // initialize YouTube player
-        //initPlayer();
+        initPlayer();
     }
 
     public void initPlayer() {
@@ -275,5 +325,45 @@ public class QueueActivity extends AppCompatActivity {
             }
 
         });
+    }
+
+    public void updateView() {
+        System.out.println("Update my view please");
+        receiver = new UpdateResultReceiver(new Handler());
+        receiver.setReceiver(this);
+
+        Intent intent = new Intent(this, PollData.class);
+        intent.putExtra("receiver", receiver);
+        startService(intent);
+
+    }
+
+    @Override
+    public void onReceiveResult(int resultCode, Bundle resultData) {
+        if (resultCode != 0) return;
+        String result = resultData.getString("result");
+        try {
+            hubSingleton.clearList();
+            JSONObject json = new JSONObject(result);
+            Log.d("foobar", json.toString());
+            JSONArray jsonArray = json.getJSONArray("result");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                QueueSong item = new QueueSong();
+
+                JSONObject jObj = jsonArray.getJSONObject(i);
+
+                item.setTitle(jObj.getString("song_title"));
+                item.setUpVotes(jObj.getInt("up_votes"));
+                item.setDownVotes(jObj.getInt("down_votes"));
+                item.setId(jObj.getString("song_id"));
+                item.setUser(jObj.getString("user_name"));
+                hubSingleton.add(item);
+                Log.d("list in bw", hubSingleton.toString());
+            }
+            adapter.notifyDataSetChanged();
+            updateView();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 }
