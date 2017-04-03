@@ -36,7 +36,6 @@ import javax.net.ssl.HttpsURLConnection;
 public class BackgroundWorker extends AsyncTask<String, Void, String> {
     // ALLOW ACCESS TO THE ACTIVITY THAT STARTED THE TASK
     Context context;
-
     public BackgroundWorker(Context context) {
         this.context = context;
     }
@@ -58,7 +57,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... params) {
         type = params[0];
-    
+
         System.out.println("background type: " + type);
         String urlBase = "https://musiqueue.com/api/";
         String urlEnd = type + ".php";
