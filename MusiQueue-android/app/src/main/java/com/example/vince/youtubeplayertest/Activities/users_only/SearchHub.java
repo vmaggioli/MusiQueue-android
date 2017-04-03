@@ -110,7 +110,10 @@ public class SearchHub extends AppCompatActivity {
                     hubsList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                 }
             });
-            backgroundWorker.execute("searchHub", contents);
+
+
+            final HubSingleton appState = HubSingleton.getInstance();
+            backgroundWorker.execute("searchHub", contents, appState.getUserID());
         }
     }
 

@@ -32,8 +32,9 @@ if ($result->num_rows == 0) {
 
 while($assoc = mysqli_fetch_assoc($result)) {
 	$assoc['hub_pin_required'] = false;
+	$assoc['is_rejoin'] = true;
 	$arr[] = $assoc;
 }
 
-respondSuccess($arr);lo
+respondSuccess($arr);
 ?>
