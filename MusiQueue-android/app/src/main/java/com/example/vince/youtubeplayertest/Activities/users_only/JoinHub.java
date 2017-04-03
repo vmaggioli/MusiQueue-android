@@ -17,6 +17,7 @@ public class JoinHub extends AppCompatActivity {
     Button join;
     String hubPin;
     String hubName;
+    static int timesPressed;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
