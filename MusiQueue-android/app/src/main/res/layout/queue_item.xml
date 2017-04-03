@@ -1,58 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingLeft="15dp"
-    android:paddingRight="15dp"
-    android:paddingBottom="10dp"
-    android:background="@drawable/list_item_background"
+    android:layout_marginBottom="16dp"
+    android:layout_marginTop="16dp"
+    android:background="@drawable/hub_search_item"
     >
-
-
     <TextView android:id="@+id/queueItem_title"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
+        android:textSize="20sp"
+        android:padding="5dp"
+        android:background="@drawable/hub_search_item_title"
+        />
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_marginTop="5dp"
+        android:orientation="horizontal"
         android:background="@android:color/transparent"
-        />
+        >
+        <TextView android:id="@+id/queueItem_user"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginBottom="5dp"
+            android:textSize="18sp"
+            android:padding="5dp"
+            android:background="@drawable/hub_search_time_creator"
+            />
+        <View
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            />
 
-    <TextView android:id="@+id/queueItem_user"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="30dp"
-        android:background="@android:color/transparent"
-        />
-
-    <Button
-        android:text="D"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:id="@+id/button2"
-        android:layout_alignBaseline="@+id/button3"
-        android:layout_alignBottom="@+id/button3"
-        android:layout_alignParentRight="true"
-        android:layout_alignParentEnd="true"
-        android:layout_marginRight="30dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/button_custom_downvote"
-        />
-
-    <Button
-        android:text="U"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:id="@+id/button3"
-        android:layout_below="@+id/queueItem_title"
-        android:layout_toLeftOf="@+id/button2"
-        android:layout_toStartOf="@+id/button2"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="5dp"
-        android:layout_marginTop="5dp"
-        android:background="@drawable/button_custom"
-        />
+        <Button
+            android:text="U"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/button3"
+            android:layout_gravity="right"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/button_custom"
+            />
+        <Button
+            android:text="D"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/button2"
+            android:layout_gravity="right"
+            android:layout_marginRight="20dp"
+            android:layout_marginBottom="5dp"
+            android:layout_marginTop="5dp"
+            android:background="@drawable/button_custom_downvote"
+            />
+    </LinearLayout>
 
 
-</RelativeLayout>
+</LinearLayout>
