@@ -43,7 +43,7 @@ public class PollData extends IntentService {
     protected void onHandleIntent(Intent intent) {
         System.out.println("entering into the onHandleIntent");
         int min = 0;
-        int sec = 2;
+        int sec = 5;
 
         try {
             synchronized (this) {

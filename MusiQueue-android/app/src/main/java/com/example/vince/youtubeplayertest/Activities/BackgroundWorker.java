@@ -35,7 +35,6 @@ import java.util.Vector;
 public class BackgroundWorker extends AsyncTask<String, Void, String> {
     // ALLOW ACCESS TO THE ACTIVITY THAT STARTED THE TASK
     Context context;
-
     public BackgroundWorker(Context context) {
         this.context = context;
     }
@@ -57,6 +56,8 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... params) {
         type = params[0];
+        if (params.length >= 4)
+            System.out.println("songId: " + params[3]);
         System.out.println("background type: " + type);
         String urlBase = "http://52.14.50.251/api/";
         String urlEnd = type + ".php";

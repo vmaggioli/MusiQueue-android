@@ -2,10 +2,8 @@ package com.example.vince.youtubeplayertest.Activities;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,8 +11,6 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-//import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListAdapter;
-//import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListItem;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
 import com.example.vince.youtubeplayertest.Activities.users_only.QueueSong;
 import com.example.vince.youtubeplayertest.R;
@@ -25,8 +21,8 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static com.example.vince.youtubeplayertest.R.id.video_description;
-import static com.example.vince.youtubeplayertest.R.id.video_title;
+//import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListAdapter;
+//import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListItem;
 
 /*import static com.example.vince.youtubeplayertest.R.id.video_description;
 import static com.example.vince.youtubeplayertest.R.id.video_title;*/
@@ -41,8 +37,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
     private Context mContext;
     private OnItemClickListener listener;
 
-    public static BackgroundWorker voteUpBW;
-    public static BackgroundWorker voteDownBW;
+
 
     public interface OnItemClickListener {
         void onItemClick(QueueSong videoItem);
@@ -54,6 +49,8 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
         public Button downButton;
         public TextView videoUser;
         HubSingleton hubSingleton = HubSingleton.getInstance();
+        public BackgroundWorker voteUpBW;
+        public BackgroundWorker voteDownBW;
         BackgroundWorker voteBW;
         BackgroundWorker.AsyncResponse callback;
 
@@ -83,7 +80,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                     try {
                         JSONObject json = new JSONObject(result);
                         Log.d("foobar", json.toString());
-                        hubSingleton.clearList();
+                        //hubSingleton.clearList();
                         JSONArray jsonArray = json.getJSONArray("result");
                         for (int i = 0; i < jsonArray.length(); i++) {
 
@@ -97,8 +94,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                             item.setId(jObj.getString("song_id"));
                             item.setUser(jObj.getString("user_name"));
                             item.setPlace(jObj.getInt("id"));
-                            hubSingleton.add(item);
-
+                            //hubSingleton.add(item);
                         }
                         //TODO: Find other way of doing this
 

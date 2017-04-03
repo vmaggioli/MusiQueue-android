@@ -11,7 +11,6 @@
     android:orientation="vertical"
     android:gravity="center"
     tools:context="com.example.vince.youtubeplayertest.Activities.starting_activities.GettingStarted"
-    android:background="@drawable/black_diagonal_bkrnd"
     >
 
     <LinearLayout
@@ -27,7 +26,6 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="50dp"
             android:text="Getting Started"
-            android:textColor="#cccccc"
             android:textAlignment="center"
             android:textSize="40sp"
             android:background="@android:color/transparent"
@@ -60,7 +58,7 @@
                 android:layout_marginRight="32dp"
                 android:layout_weight="1"
                 android:text="CREATE A HUB"
-                android:background="@drawable/blue_bubble_button"
+                android:background="@drawable/gray_bubble_button"
                 />
 
             <Button
@@ -71,7 +69,7 @@
                 android:layout_marginRight="32dp"
                 android:layout_weight="1"
                 android:text="JOIN EXISTING HUB"
-                android:background="@drawable/blue_bubble_button"
+                android:background="@drawable/gray_bubble_button"
                 />
         </LinearLayout>
     </LinearLayout>

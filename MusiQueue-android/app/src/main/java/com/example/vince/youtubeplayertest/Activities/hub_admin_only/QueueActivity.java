@@ -46,7 +46,7 @@ import java.util.List;
 
 public class QueueActivity extends AppCompatActivity implements UpdateResultReceiver.Receiver {
     final public String API_KEY = "AIzaSyDtCJTBSLt9M1Xi_EBr49Uk4W8q4HhFHPU";
-    private YouTubePlayer mYouTubePlayer;
+    private YouTubePlayer mYouTubePlayer = null;
 
     EditText searchEdit;
     Button searchButton;
@@ -109,7 +109,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
     }
 
     public void initPlayer() {
-        YouTubePlayerFragment mYouTubePlayerFragment = (YouTubePlayerFragment)
+        final YouTubePlayerFragment mYouTubePlayerFragment = (YouTubePlayerFragment)
                 getFragmentManager().findFragmentById(R.id.youtube_player);
         mYouTubePlayerFragment.initialize(API_KEY, new YouTubePlayer.OnInitializedListener() {
 
@@ -147,13 +147,19 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
 
                     @Override
                     public void onVideoEnded() {
-                        removeId = hubSingleton.getSongAt(0).getId();
-                        System.out.println(removeId);
-                        hubSingleton.removeAt(0);
-                        changeAndUpdate("remove");
-                        adapter.notifyDataSetChanged();
-                        if (hubSingleton.getEntireList().size() != 0)
-                            mYouTubePlayer.loadVideo(hubSingleton.getSongAt(0).getId());
+                        if (hubSingleton.getEntireList() != null && hubSingleton.getEntireList().size() != 0) {
+                            removeId = String.valueOf(hubSingleton.getSongAt(0).getPlace());
+                            System.out.println("len of list: " + hubSingleton.getEntireList().size());
+                            System.out.println("song id: " + hubSingleton.getSongAt(0).getPlace());
+                            System.out.println("video id: " + hubSingleton.getSongAt(0).getId());
+                            hubSingleton.removeAt(0);
+                            changeAndUpdate("remove");
+                            adapter.notifyDataSetChanged();
+                            if (hubSingleton.getEntireList().size() != 0 && mYouTubePlayer != null)
+                                mYouTubePlayer.loadVideo(hubSingleton.getSongAt(0).getId());
+                            else if (hubSingleton.getEntireList().size() != 0 && mYouTubePlayer == null)
+                                initPlayer();
+                        }
                     }
 
                     @Override
@@ -189,15 +195,17 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                         item.setDownVotes(jObj.getInt("down_votes"));
                         item.setId(jObj.getString("song_id"));
                         item.setUser(jObj.getString("user_name"));
+                        System.out.println("find my id: " + jObj.getInt("id"));
                         item.setPlace(jObj.getInt("id"));
 
                         hubSingleton.add(item);
                         Log.d("list", hubSingleton.getSongAt(0).getTitle());
                     }
                     adapter.notifyDataSetChanged();
-                    if (reInit) {
+                    if (reInit && mYouTubePlayer != null && hubSingleton.getEntireList() != null && hubSingleton.getEntireList().size() != 0)
+                        mYouTubePlayer.loadVideo(hubSingleton.getSongAt(0).getId());
+                    else if (reInit && mYouTubePlayer == null)
                         initPlayer();
-                    }
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -218,7 +226,9 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
             addBW.execute("addSong", hubSingleton.getHubId().toString(), hubSingleton.getUserID(), id, title);
         } else if (type.equals("remove"))
             removeBW.execute("removeSong", hubSingleton.getHubId().toString(), hubSingleton.getUserID(), removeId);
-        listBW.execute("hubSongList", hubSingleton.getHubId().toString(), hubSingleton.getUserID());
+        if (hubSingleton.getEntireList().size() == 0) {
+            listBW.execute("hubSongList", hubSingleton.getHubId().toString(), hubSingleton.getUserID());
+        }
     }
 
     public void searchVideo(View view) {
@@ -316,6 +326,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                 item.setDownVotes(jObj.getInt("down_votes"));
                 item.setId(jObj.getString("song_id"));
                 item.setUser(jObj.getString("user_name"));
+                item.setPlace(jObj.getInt("id"));
                 hubSingleton.add(item);
                 Log.d("list in bw", hubSingleton.toString());
             }
