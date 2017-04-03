@@ -4,9 +4,9 @@ require_once "connection.php";
 apiDocs("
 hubSongList:
 	Params:
-		hubId - the hub the song is getting added to
-    songId - the songId of the song to remove
-    phoneId - the phone id of the user adding the song
+        hubId - the hub the song is getting added to
+        songId - the songId of the song to remove
+        phoneId - the phone id of the user adding the song
 	Returns on success:
 		array of songs:
 		{
@@ -22,23 +22,28 @@ hubSongList:
 		}
 ");
 
+apiDocsCouldError("DB_ISSUE");
+
 require_once "assert/hubExists.php";
-require_once "assert/userConnectedToHub.php";
+require_once "assert/phoneIdIsCreator.php";
 require_once "assert/hubIdOpen.php";
+require_once "assert/songInHubId.php";
 
 
 $hubId = mysqli_real_escape_string($conn, $_REQUEST['hubId']);
 $songId = mysqli_real_escape_string($conn, $_REQUEST['songId']);
 $phoneId = mysqli_real_escape_string($conn, $_REQUEST['phoneId']);
 
-
 $removeResult = $conn->query("
-  DELETE FROM Songs
-  WHERE id = '$songId'
+    DELETE FROM Songs
+    WHERE id = '$songId'
 ");
 
-printf("res: %d", $removeResult);
-echo "error: " . $conn->error;
+if(!$removeResult) {
+    respondError("DB_ISSUE", "mysql error: ".$conn->error);
+    exit;
+}
 
 require "hubSongList.php";
+
 ?>

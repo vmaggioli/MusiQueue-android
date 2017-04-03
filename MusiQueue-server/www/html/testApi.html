@@ -189,6 +189,20 @@ testEndpointError('api/hubSongList.php', {
 	phoneId: phoneId3
 }, "USER_NOT_CONNECTED");
 
+message("Testing removing song by incorrect user");
+testEndpointError('api/removeSong.php', {
+	hubId: hubId,
+	phoneId: phoneId3,
+	songId: s2Id
+}, "NOT_HUB_CREATOR");
+
+message("Testing removing song by hub creator");
+testEndpoint('api/removeSong.php', {
+	hubId: hubId,
+	phoneId: phoneId1,
+	songId: s2Id
+});
+
 message("Testing user 3 creating hub with same name");
 testEndpointError('api/createHub.php', {
 	hubName: hubName1,
