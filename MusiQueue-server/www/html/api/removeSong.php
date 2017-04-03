@@ -40,8 +40,9 @@ $removeResult = $conn->query("
 
 if(!$removeResult) {
     respondError("DB_ISSUE", "mysql error: ".$conn->error);
-    exit;
 }
+
+require "util/ensureSongPlaying.php";
 
 require "hubSongList.php";
 
