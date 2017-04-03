@@ -62,8 +62,6 @@ public class ViewQueueActivity extends AppCompatActivity implements UpdateResult
 
         songListView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).color(Color.LTGRAY).sizeResId(R.dimen.divider).marginResId(R.dimen.margin5dp, R.dimen.margin5dp).build());
 
-
-        // TODO: show the queue or whatever
         callback = new BackgroundWorker.AsyncResponse() {
 
             @Override
@@ -101,7 +99,7 @@ public class ViewQueueActivity extends AppCompatActivity implements UpdateResult
         Intent intent = getIntent();
         if(intent.hasExtra("title")) {
             title = intent.getStringExtra("title");
-            id = intent.getStringExtra("id");             // SINGLETON HERE
+            id = intent.getStringExtra("id");
 
             addBW.execute("addSong", hubSingleton.getHubId().toString(), hubSingleton.getUserID(), id, title);
         }

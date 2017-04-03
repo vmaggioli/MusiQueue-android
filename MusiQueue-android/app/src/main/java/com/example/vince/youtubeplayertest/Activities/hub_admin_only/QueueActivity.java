@@ -107,8 +107,8 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         songListView.setLayoutManager(new LinearLayoutManager(this));
         songListView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).color(Color.LTGRAY).sizeResId(R.dimen.divider).marginResId(R.dimen.margin5dp, R.dimen.margin5dp).build());
 
-        updateView();
         changeAndUpdate("add");
+        updateView();
     }
 
     public void initPlayer() {
@@ -124,7 +124,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                 if(!b && hubSingleton.getEntireList().size() > 0){
-                    youTubePlayer.cueVideo(hubSingleton.getSongAt(0).getId()); //getIntent().getStringExtra("id"));
+                    youTubePlayer.loadVideo(hubSingleton.getSongAt(0).getId()); //getIntent().getStringExtra("id"));
                 }
                 mYouTubePlayer = youTubePlayer;
                 mYouTubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener() {
@@ -228,13 +228,14 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
             song.setTitle(title);
 
             addBW.execute("addSong", hubSingleton.getHubId().toString(), hubSingleton.getUserID(), id, title);
+            queueIfNothingPlaying(id);
         } else if (type.equals("remove"))
             removeBW.execute("removeSong", hubSingleton.getHubId().toString(), hubSingleton.getUserID(), removeId);
         if (hubSingleton.getEntireList().size() == 0) {
             listBW.execute("hubSongList", hubSingleton.getHubId().toString(), hubSingleton.getUserID());
         }
         listBW.execute("hubSongList", hubSingleton.getHubId().toString(), hubSingleton.getUserID());
-        queueIfEmpty(id);
+        queueIfNothingPlaying(id);
     }
 
     public void searchVideo(View view) {
@@ -310,14 +311,12 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         Intent intent = new Intent(this, PollData.class);
         intent.putExtra("receiver", receiver);
         startService(intent);
-
     }
 
     @Override
     public void onReceiveResult(int resultCode, Bundle resultData) {
         if (resultCode != 0) return;
         String result = resultData.getString("result");
-        String id = "";
         try {
             hubSingleton.clearList();
             JSONObject json = new JSONObject(result);
@@ -339,15 +338,15 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
             }
             adapter.notifyDataSetChanged();
             updateView();
-            if (!id.equals(""))
-                queueIfEmpty(id);
+            if (currentlyPlaying.equals("") && hubSingleton.getQueueSize() != 0)
+                queueIfNothingPlaying(hubSingleton.getSongAt(0).getId());
         } catch (JSONException e) {
             e.printStackTrace();
         }
     }
 
-    public void queueIfEmpty(String video_id) {
-        if (hubSingleton.getEntireList().size() == 0 && video_id != null)
+    public void queueIfNothingPlaying(String video_id) {
+        if (currentlyPlaying.equals("") && video_id != null)
                 mYouTubePlayer.loadVideo(video_id);
     }
 }
