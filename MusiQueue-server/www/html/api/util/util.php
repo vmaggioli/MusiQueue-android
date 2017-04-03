@@ -1,6 +1,16 @@
 <?php
 define("PRETTY_PRINT", isset($_REQUEST["pretty"]));
 
+// the sql lines for calculating rank.
+// Should always be ordered DESC.
+// Always include the table name Songs for fields.
+$RANK_FORMULA = "(Songs.up_votes - Songs.down_votes)";
+$RANK_ORDER = "
+	Songs.playing DESC,
+	$RANK_FORMULA DESC,
+	Songs.time_added ASC
+";
+
 if(!isset($GLOBALS['_apiDocsString'])) {
 	$GLOBALS['_apiDocsString'] = "";
 	$GLOBALS['_apiDocsErrors'] = array();
@@ -17,7 +27,7 @@ function assertGiven($param) {
 function apiDocs($string) {
 	if(!PRETTY_PRINT) return;
 
-	$GLOBALS['_apiDocsString'] .= $string . "\n";
+	$GLOBALS['_apiDocsString'] .= ltrim($string, "\n") . "\n";
 }
 
 function apiDocsCouldError($errorCode, $desc = '') {
@@ -65,6 +75,7 @@ function respondJson($obj) {
 		echo "<a href='.'>Back to API Overview</a>\n";
 
 		if($GLOBALS['_apiDocsString'] != "") {
+			echo "\n";
 			echo str_replace("\t", "    ", $GLOBALS['_apiDocsString']);
 		}
 
