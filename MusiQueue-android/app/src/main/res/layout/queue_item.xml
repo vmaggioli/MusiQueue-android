@@ -50,7 +50,7 @@
             android:layout_marginRight="10dp"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
-            android:background="@drawable/button_custom"
+            android:background="@drawable/ic_thumb_up_black_24dp_2"
             />
         <Button
             android:text="D"
@@ -61,7 +61,7 @@
             android:layout_marginRight="20dp"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
-            android:background="@drawable/button_custom_downvote"
+            android:background="@drawable/ic_thumb_down_black_24dp_2"
             />
     </LinearLayout>
 
