@@ -15,7 +15,7 @@
         android:layout_marginTop="5dp"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:padding="5dp"
         android:background="@drawable/hub_search_item_title"
         />
@@ -31,7 +31,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginBottom="5dp"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:padding="5dp"
             android:background="@drawable/hub_search_time_creator"
             />

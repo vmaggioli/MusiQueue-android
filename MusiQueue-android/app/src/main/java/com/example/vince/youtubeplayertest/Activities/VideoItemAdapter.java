@@ -64,7 +64,10 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
 
         }
         public void bind(final QueueSong videoItem, final OnItemClickListener listener) {
-            videoTitle.setText(videoItem.getTitle());
+            if (videoItem.getTitle().replaceAll("\\s+"," ").length() >= 25)
+                videoTitle.setText(videoItem.getTitle().trim().substring(0, 28) + "...");
+            else
+                videoTitle.setText(videoItem.getTitle());
             videoUser.setText(videoItem.getUser());
             upButton.setText(Integer.toString(videoItem.getUpVotes()));
             downButton.setText(Integer.toString(videoItem.getDownVotes()));
