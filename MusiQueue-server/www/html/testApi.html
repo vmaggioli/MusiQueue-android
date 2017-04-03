@@ -106,7 +106,9 @@ var songId = 'jofNR_WkoCE';
 var songTitle = 'Test Song '+ts;
 var songId2 = 'song2';
 var songTitle2 = 'Test Song 2 '+ts;
-var hubId, s2Id, songs;
+var songId3 = 'song3';
+var songTitle3 = 'Test Song 3 '+ts;
+var hubId, s2Id, songs, sPlayingId;
 
 
 var actions = [
@@ -131,7 +133,13 @@ var actions = [
 			username: username2
 		}),
 
-	r => message("Testing user 2 adding song"),
+	r => message("Testing user 2 adding songs"),
+	r => testEndpoint('api/addSong.php', {
+			hubId: hubId,
+			phoneId: phoneId2,
+			songId: songId3,
+			songTitle: songTitle3
+		}),
 	r => testEndpoint('api/addSong.php', {
 			hubId: hubId,
 			phoneId: phoneId2,
@@ -182,13 +190,13 @@ var actions = [
 			phoneId: phoneId2
 		}).result,
 	r => {
-			if(songs.length != 2) {
+			if(songs.length != 3) {
 				error("song listing incorrect - wrong number of songs");
 				error(JSON.stringify(songs));
-			}else if(songs[0].song_id != songId || songs[0].song_title != songTitle) {
+			}else if(songs[1].song_id != songId2 || songs[1].song_title != songTitle2) {
 				error("song listing incorrect - song 1 wrong");
 				error(JSON.stringify(songs));
-			}else if(songs[0].up_votes != 2 || songs[0].down_votes != 1) {
+			}else if(songs[1].up_votes != 2 || songs[1].down_votes != 1) {
 				error("song listing incorrect - song 1 has the wrong vote totals");
 			}else{
 				success("song listing correct");
@@ -201,26 +209,53 @@ var actions = [
 			phoneId: phoneId3
 		}, "USER_NOT_CONNECTED"),
 
+	r => message("Testing song playing status"),
+	r => {
+			if(songs.length < 2) {
+				error("not enough songs");
+			}else if(!songs[0].playing) {
+				error("song 0 is not playing");
+			}else if(songs[1].playing) {
+				error("song 1 is playing but should not be");
+				error(JSON.stringify(songs));
+			}else{
+				success("song playing correct");
+			}
+		},
+	r => sPlayingId = songs[0].id,
+
 	r => message("Testing removing song by incorrect user"),
 	r => testEndpointError('api/removeSong.php', {
 			hubId: hubId,
 			phoneId: phoneId3,
-			songId: s2Id
+			songId: sPlayingId
 		}, "NOT_HUB_CREATOR"),
 
 	r => message("Testing removing song by hub creator"),
 	r => testEndpoint('api/removeSong.php', {
 			hubId: hubId,
 			phoneId: phoneId1,
-			songId: s2Id
+			songId: sPlayingId
 		}),
 	r => songs = testEndpoint('api/hubSongList.php', {
 			hubId: hubId,
 			phoneId: phoneId2
 		}).result,
 	r => {
-			if(songs.length != 1) {
+			if(songs.length != 2) {
 				error("song listing incorrect - wrong number of songs");
+				error(JSON.stringify(songs));
+			}else{
+				success("song listing correct");
+			}
+		},
+	r => {
+			if(songs.length != 2) {
+				error("could not test playing status");
+			}else if(!songs[0].playing) {
+				error("song 0 not playing");
+			}else if(songs[1].playing) {
+				error("song 1 is playing but should not be");
 				error(JSON.stringify(songs));
 			}else{
 				success("song listing correct");
@@ -231,7 +266,7 @@ var actions = [
 	r => testEndpointError('api/removeSong.php', {
 		hubId: hubId,
 		phoneId: phoneId1,
-		songId: s2Id
+		songId: sPlayingId
 	}, "SONG_NOT_FOUND"),
 
 

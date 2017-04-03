@@ -55,6 +55,7 @@ $result = $conn->query("
 
 $arr = array();
 while($assoc = mysqli_fetch_assoc($result)) {
+	$assoc['playing'] = !!$assoc['playing'];
 	$arr[] = $assoc;
 }
 
