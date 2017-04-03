@@ -54,8 +54,10 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
     BackgroundWorker.AsyncResponse callback;
     BackgroundWorker addBW;
     BackgroundWorker listBW;
+    BackgroundWorker removeBW;
     String id;
     String title;
+    String removeId;
     RecyclerView songListView;
     HubSingleton hubSingleton;
     VideoItemAdapter adapter;
@@ -103,7 +105,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         songListView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).color(Color.LTGRAY).sizeResId(R.dimen.divider).marginResId(R.dimen.margin5dp, R.dimen.margin5dp).build());
 
         updateView();
-        addAndUpdate();
+        changeAndUpdate("add");
     }
 
     public void initPlayer() {
@@ -145,7 +147,10 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
 
                     @Override
                     public void onVideoEnded() {
+                        removeId = hubSingleton.getSongAt(0).getId();
+                        System.out.println(removeId);
                         hubSingleton.removeAt(0);
+                        changeAndUpdate("remove");
                         adapter.notifyDataSetChanged();
                         if (hubSingleton.getEntireList().size() != 0)
                             mYouTubePlayer.loadVideo(hubSingleton.getSongAt(0).getId());
@@ -160,7 +165,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         });
     }
 
-    public void addAndUpdate() {
+    public void changeAndUpdate(String type) {
         callback = new BackgroundWorker.AsyncResponse() {
             @Override
             public void processFinish(String result) {
@@ -200,9 +205,10 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         };
         addBW = new BackgroundWorker(callback);
         listBW = new BackgroundWorker(callback);
+        removeBW = new BackgroundWorker(callback);
 
         Intent intent = getIntent();
-        if(intent.hasExtra("title")) {
+        if(type.equals("add") && intent.hasExtra("title")) {
             title = intent.getStringExtra("title");
             id = intent.getStringExtra("id");
             QueueSong song = new QueueSong();
@@ -210,8 +216,8 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
             song.setTitle(title);
 
             addBW.execute("addSong", hubSingleton.getHubId().toString(), hubSingleton.getUserID(), id, title);
-        }
-
+        } else if (type.equals("remove"))
+            removeBW.execute("removeSong", hubSingleton.getHubId().toString(), hubSingleton.getUserID(), removeId);
         listBW.execute("hubSongList", hubSingleton.getHubId().toString(), hubSingleton.getUserID());
     }
 
@@ -272,7 +278,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                 Intent intent = getIntent();
                 intent.putExtra("title", searchResults.get(position).getTitle());
                 intent.putExtra("id", searchResults.get(position).getId());
-                addAndUpdate();
+                changeAndUpdate("add");
                 videosFound.setVisibility(View.GONE);
                 songListView.setVisibility(View.VISIBLE);
             }
