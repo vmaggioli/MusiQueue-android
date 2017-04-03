@@ -202,6 +202,24 @@ testEndpoint('api/removeSong.php', {
 	phoneId: phoneId1,
 	songId: s2Id
 });
+var songs = testEndpoint('api/hubSongList.php', {
+	hubId: hubId,
+	phoneId: phoneId2
+}).result;
+if(songs.length != 1) {
+	error("song listing incorrect - wrong number of songs");
+	error(JSON.stringify(songs));
+}else{
+	success("song listing correct");
+}
+
+message("Testing removing song that should not exist");
+testEndpointError('api/removeSong.php', {
+	hubId: hubId,
+	phoneId: phoneId1,
+	songId: s2Id
+}, "SONG_NOT_FOUND");
+
 
 message("Testing user 3 creating hub with same name");
 testEndpointError('api/createHub.php', {

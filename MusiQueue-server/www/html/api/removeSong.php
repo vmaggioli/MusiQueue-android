@@ -27,8 +27,7 @@ apiDocsCouldError("DB_ISSUE");
 require_once "assert/hubExists.php";
 require_once "assert/phoneIdIsCreator.php";
 require_once "assert/hubIdOpen.php";
-require_once "assert/songInHubId.php";
-
+require_once "assert/songOnHub.php";
 
 $hubId = mysqli_real_escape_string($conn, $_REQUEST['hubId']);
 $songId = mysqli_real_escape_string($conn, $_REQUEST['songId']);

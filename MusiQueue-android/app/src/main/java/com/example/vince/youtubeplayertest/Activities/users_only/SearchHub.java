@@ -16,6 +16,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
+import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListAdapter;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListItem;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.SearchHubResponse;
@@ -105,7 +106,10 @@ public class SearchHub extends AppCompatActivity {
                     hubsList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                 }
             });
-            backgroundWorker.execute("searchHub", contents);
+
+
+            final HubSingleton appState = HubSingleton.getInstance();
+            backgroundWorker.execute("searchHub", contents, appState.getUserID());
         }
     }
 
