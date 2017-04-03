@@ -12,7 +12,7 @@ searchHub:
 
 assertGiven("hubName");
 assertGiven("phoneId");
-$hubName = mysqli_real_escape_string($conn, $_REQUEST['hubName']);
+$hubName = mysqli_real_escape_string($conn, trim($_REQUEST['hubName']));
 $phoneId = mysqli_real_escape_string($conn, $_REQUEST['phoneId']);
 
 $result = mysqli_query($conn, "

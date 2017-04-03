@@ -146,8 +146,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                     String hub = hubSingleton.getHubId().toString();
                     String phone = hubSingleton.getUserID();
                     voteUpBW.execute("voteUpSong",hub,phone,String.valueOf(videoItem.getPlace()));
-                    upButton.setPressed(true);
-                    downButton.setPressed(false);
+                    upButton.setEnabled(false);
                     return true;
                 }
             });
@@ -166,18 +165,21 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                 public boolean onTouch(View v, MotionEvent event) {
 
                     // show interest in events resulting from ACTION_DOWN
-                    if (event.getAction() == MotionEvent.ACTION_DOWN) return true;
+                    //if (event.getAction() == MotionEvent.ACTION_DOWN) return true;
 
                     // don't handle event unless its ACTION_UP so "doSomething()" only runs once.
-                    if (event.getAction() != MotionEvent.ACTION_UP) return false;
+                    //if (event.getAction() != MotionEvent.ACTION_UP) return false;
 
                     voteDownBW = new BackgroundWorker(callback);
 
                     String hub = hubSingleton.getHubId().toString();
                     String phone = hubSingleton.getUserID();
                     voteDownBW.execute("voteDownSong",hub,phone,String.valueOf(videoItem.getPlace()));
-                    downButton.setPressed(true);
-                    upButton.setPressed(false);
+                    //downButton.setClickable(false);
+                    //downButton.setPressed(true);
+                    //upButton.setClickable(true);
+                    //upButton.setPressed(false);
+                    downButton.setEnabled(false);
                     return true;
                 }
             });
