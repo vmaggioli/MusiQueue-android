@@ -67,6 +67,8 @@ public class HubSingleton {
 
     public QueueSong getSongAt(int pos) { return songsList.get(pos); }
 
+    public int getQueueSize() { return songsList.size();}
+
     private String username;
     private String hubName;
     private String passPin;
