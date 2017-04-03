@@ -188,6 +188,21 @@ var actions = [
 			phoneId: phoneId2,
 			songId: s2Id,
 		}),
+	r => testEndpoint('api/vote0Song.php', {
+			hubId: hubId,
+			phoneId: phoneId2,
+			songId: s2Id,
+		}),
+	r => testEndpoint('api/voteDownSong.php', {
+			hubId: hubId,
+			phoneId: phoneId2,
+			songId: s2Id,
+		}),
+	r => testEndpoint('api/vote0Song.php', {
+			hubId: hubId,
+			phoneId: phoneId2,
+			songId: s2Id,
+		}),
 
 	r => message("User 2 listing songs"),
 	r => songs = testEndpoint('api/hubSongList.php', {
@@ -201,7 +216,7 @@ var actions = [
 			}else if(songs[1].song_id != songId2 || songs[1].song_title != songTitle2) {
 				error("song listing incorrect - song 1 wrong");
 				error(JSON.stringify(songs));
-			}else if(songs[1].up_votes != 2 || songs[1].down_votes != 0) {
+			}else if(songs[1].up_votes != 1 || songs[1].down_votes != 0) {
 				error("song listing incorrect - song 1 has the wrong vote totals");
 			}else{
 				success("song listing correct");
