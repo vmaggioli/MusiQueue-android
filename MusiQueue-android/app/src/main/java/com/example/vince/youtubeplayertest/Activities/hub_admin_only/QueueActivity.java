@@ -234,7 +234,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         if (hubSingleton.getEntireList().size() == 0) {
             listBW.execute("hubSongList", hubSingleton.getHubId().toString(), hubSingleton.getUserID());
         }
-        listBW.execute("hubSongList", hubSingleton.getHubId().toString(), hubSingleton.getUserID());
+        //listBW.execute("hubSongList", hubSingleton.getHubId().toString(), hubSingleton.getUserID());
         queueIfNothingPlaying(id);
     }
 
