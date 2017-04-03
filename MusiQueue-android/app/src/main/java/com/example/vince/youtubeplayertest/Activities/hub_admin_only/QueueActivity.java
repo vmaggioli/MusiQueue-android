@@ -63,6 +63,8 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
     VideoItemAdapter adapter;
     UpdateResultReceiver receiver;
 
+    String currentlyPlaying;
+
     private List<VideoItem> searchResults;
 
     private ListView videosFound;
@@ -74,6 +76,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_queue);
 
+        currentlyPlaying = "";
         searchEdit = (EditText) findViewById(R.id.search_edit);
         searchButton = (Button) findViewById(R.id.search_button);
         videosFound = (ListView)findViewById(R.id.videos_found);
@@ -142,7 +145,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
 
                     @Override
                     public void onVideoStarted() {
-
+                        currentlyPlaying = hubSingleton.getSongAt(0).getId();
                     }
 
                     @Override
@@ -159,6 +162,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                                 mYouTubePlayer.loadVideo(hubSingleton.getSongAt(0).getId());
                             else if (hubSingleton.getEntireList().size() != 0 && mYouTubePlayer == null)
                                 initPlayer();
+                            currentlyPlaying = "";
                         }
                     }
 
@@ -313,6 +317,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
     public void onReceiveResult(int resultCode, Bundle resultData) {
         if (resultCode != 0) return;
         String result = resultData.getString("result");
+        String id = "";
         try {
             hubSingleton.clearList();
             JSONObject json = new JSONObject(result);
@@ -322,6 +327,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                 QueueSong item = new QueueSong();
                 JSONObject jObj = jsonArray.getJSONObject(i);
 
+                id = jObj.getString("song_id");
                 item.setTitle(jObj.getString("song_title"));
                 item.setUpVotes(jObj.getInt("up_votes"));
                 item.setDownVotes(jObj.getInt("down_votes"));
@@ -333,6 +339,8 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
             }
             adapter.notifyDataSetChanged();
             updateView();
+            if (!id.equals(""))
+                queueIfEmpty(id);
         } catch (JSONException e) {
             e.printStackTrace();
         }
