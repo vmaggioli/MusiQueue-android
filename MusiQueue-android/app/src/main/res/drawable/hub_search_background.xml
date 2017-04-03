@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android"
+    android:paddingBottom="18dp"
+    android:paddingRight="30dp"
+    android:paddingLeft="20dp"
+    >
     <!--Shadow Of Container-->
     <item android:top="2dp" android:left="2dp">
         <shape android:shape="rectangle" >
