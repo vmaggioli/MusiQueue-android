@@ -107,7 +107,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         songListView.setLayoutManager(new LinearLayoutManager(this));
         songListView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).color(Color.LTGRAY).sizeResId(R.dimen.divider).marginResId(R.dimen.margin5dp, R.dimen.margin5dp).build());
 
-        changeAndUpdate("add");
+        initPlayer();
         updateView();
     }
 
