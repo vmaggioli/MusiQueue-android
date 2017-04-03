@@ -4,6 +4,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:layout_marginBottom="16dp"
+    android:layout_marginTop="16dp"
     android:background="@drawable/hub_search_item"
     >
 
@@ -14,6 +15,7 @@
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
+        android:layout_gravity="center_vertical"
         android:layout_weight="1"
         android:textSize="24sp"
         android:padding="5dp"
