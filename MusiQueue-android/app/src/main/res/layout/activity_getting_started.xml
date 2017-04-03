@@ -27,8 +27,10 @@
             android:layout_marginBottom="50dp"
             android:text="Getting Started"
             android:textAlignment="center"
-            android:textSize="40sp"
-            android:background="@android:color/transparent"
+            android:textSize="38sp"
+            android:paddingTop="2dp"
+            android:paddingBottom="10dp"
+            android:background="@drawable/getting_started_title"
             />
 
         <TextView
@@ -67,6 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="32dp"
                 android:layout_marginRight="32dp"
+                android:layout_marginBottom="10dp"
                 android:layout_weight="1"
                 android:text="JOIN EXISTING HUB"
                 android:background="@drawable/gray_bubble_button"
