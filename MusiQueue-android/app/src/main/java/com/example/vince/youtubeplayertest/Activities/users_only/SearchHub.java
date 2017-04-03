@@ -15,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
+import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListAdapter;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListItem;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.SearchHubResponse;
@@ -28,6 +29,7 @@ public class SearchHub extends AppCompatActivity {
     EditText enterHub;
     Button searchButton;
     Vector<HubsListItem> hubs;
+    HubSingleton hubSingleton;
 
     HubsListAdapter.OnItemClickListener callback;
 
@@ -47,6 +49,7 @@ public class SearchHub extends AppCompatActivity {
 
         hubsList = (RecyclerView) findViewById(R.id.hubs_list);
         hubs = new Vector<>();
+        hubSingleton = HubSingleton.getInstance();
 
         // ALLOWS SEARCHING FROM KEYBOARD INSTEAD OF CLICKING SEARCH BUTTON
         enterHub.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -71,6 +74,7 @@ public class SearchHub extends AppCompatActivity {
         HubsListAdapter hubsListAdapter = new HubsListAdapter(this, hubs, callback);
         hubsList.setAdapter(hubsListAdapter);
         hubsList.setLayoutManager(new LinearLayoutManager(this));
+        recentHubs();
     }
 
     protected void selectHub(HubsListItem hub) {
@@ -105,5 +109,19 @@ public class SearchHub extends AppCompatActivity {
         }
     }
 
+    public void recentHubs() {
+        BackgroundWorker backgroundWorker = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
+            @Override
+            public void processFinish(String result) {
+                Gson gson = new Gson();
+                SearchHubResponse r = gson.fromJson(result, SearchHubResponse.class);
+
+                HubsListAdapter hubsListAdapter = new HubsListAdapter(getApplicationContext(), r.result, callback);
+                hubsList.setAdapter(hubsListAdapter);
+                hubsList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+            }
+        });
+        backgroundWorker.execute("recentHubs", hubSingleton.getUserID());
+    }
 
 }
