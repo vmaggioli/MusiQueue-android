@@ -2,9 +2,11 @@
 require_once "connection.php";
 
 if(VOTE_DIRECTION == -1) {
-	apiDocs("voteDownSong:\n");
+	apiDocs("voteDownSong:");
+}else if(VOTE_DIRECTION == 1) {
+	apiDocs("voteUpSong:");
 }else{
-	apiDocs("voteUpSong:\n");
+	apiDocs("vote0Song:");
 }
 
 apiDocs("

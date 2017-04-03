@@ -27,7 +27,7 @@ function assertGiven($param) {
 function apiDocs($string) {
 	if(!PRETTY_PRINT) return;
 
-	$GLOBALS['_apiDocsString'] .= $string . "\n";
+	$GLOBALS['_apiDocsString'] .= ltrim($string, "\n") . "\n";
 }
 
 function apiDocsCouldError($errorCode, $desc = '') {
@@ -75,6 +75,7 @@ function respondJson($obj) {
 		echo "<a href='.'>Back to API Overview</a>\n";
 
 		if($GLOBALS['_apiDocsString'] != "") {
+			echo "\n";
 			echo str_replace("\t", "    ", $GLOBALS['_apiDocsString']);
 		}
 

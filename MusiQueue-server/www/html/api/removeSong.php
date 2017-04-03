@@ -2,24 +2,13 @@
 require_once "connection.php";
 
 apiDocs("
-hubSongList:
+removeSong:
 	Params:
         hubId - the hub the song is getting added to
         songId - the songId of the song to remove
         phoneId - the phone id of the user adding the song
 	Returns on success:
-		array of songs:
-		{
-			id,
-            song_id - string, youtube id value,
-            song_title - string,
-            time_added - timnestamp,
-            up_votes - int,
-            down_votes - int,
-            user_id - The id of the Users table entry of the user who added the song,
-            user_name - The name of the user who added the song
-            rank - The song's rank. Higher is better
-		}
+		See hubSongList.php
 ");
 
 apiDocsCouldError("DB_ISSUE");
