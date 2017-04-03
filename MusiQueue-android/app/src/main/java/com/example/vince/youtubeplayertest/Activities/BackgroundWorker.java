@@ -98,6 +98,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                 break;
             case "recentHubs":
                 paramNames.add("phoneId");
+                break;
             case "removeSong":
                 paramNames.add("hubId");
                 paramNames.add("phoneId");
