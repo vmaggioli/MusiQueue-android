@@ -60,6 +60,7 @@
                 android:layout_marginRight="32dp"
                 android:layout_weight="1"
                 android:text="CREATE A HUB"
+                android:textSize="20sp"
                 android:background="@drawable/gray_bubble_button"
                 />
 
@@ -72,6 +73,7 @@
                 android:layout_marginBottom="10dp"
                 android:layout_weight="1"
                 android:text="JOIN EXISTING HUB"
+                android:textSize="20sp"
                 android:background="@drawable/gray_bubble_button"
                 />
         </LinearLayout>
