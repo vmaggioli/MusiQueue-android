@@ -45,6 +45,7 @@ public class PollData extends IntentService {
         int min = 0;
         int sec = 2;
 
+
         try {
             synchronized (this) {
                 this.wait(((min * 60) + sec) * 1000);
