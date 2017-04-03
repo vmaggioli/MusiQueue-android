@@ -163,17 +163,12 @@ var actions = [
 			songTitle: songTitle
 		}, "USER_NOT_CONNECTED"),
 
-	r => message("Testing user 1 voting on song 2"),
+	r => message("Testing voting on songs"),
 	r => s2Id = testEndpoint('api/hubSongList.php', {
 			hubId: hubId,
 			phoneId: phoneId1
 		}).result[1].id,
-	r => testEndpoint('api/voteUpSong.php', {
-			hubId: hubId,
-			phoneId: phoneId1,
-			songId: s2Id,
-		}),
-	r => testEndpoint('api/voteUpSong.php', {
+	r => testEndpoint('api/voteDownSong.php', {
 			hubId: hubId,
 			phoneId: phoneId1,
 			songId: s2Id,
@@ -181,6 +176,16 @@ var actions = [
 	r => testEndpoint('api/voteDownSong.php', {
 			hubId: hubId,
 			phoneId: phoneId1,
+			songId: s2Id,
+		}),
+	r => testEndpoint('api/voteUpSong.php', {
+			hubId: hubId,
+			phoneId: phoneId1,
+			songId: s2Id,
+		}),
+	r => testEndpoint('api/voteUpSong.php', {
+			hubId: hubId,
+			phoneId: phoneId2,
 			songId: s2Id,
 		}),
 
@@ -196,7 +201,7 @@ var actions = [
 			}else if(songs[1].song_id != songId2 || songs[1].song_title != songTitle2) {
 				error("song listing incorrect - song 1 wrong");
 				error(JSON.stringify(songs));
-			}else if(songs[1].up_votes != 2 || songs[1].down_votes != 1) {
+			}else if(songs[1].up_votes != 2 || songs[1].down_votes != 0) {
 				error("song listing incorrect - song 1 has the wrong vote totals");
 			}else{
 				success("song listing correct");
@@ -232,6 +237,11 @@ var actions = [
 		}, "NOT_HUB_CREATOR"),
 
 	r => message("Testing removing song by hub creator"),
+	r => testEndpoint('api/voteUpSong.php', { // vote up to check DB cascade on delete
+			hubId: hubId,
+			phoneId: phoneId2,
+			songId: sPlayingId,
+		}),
 	r => testEndpoint('api/removeSong.php', {
 			hubId: hubId,
 			phoneId: phoneId1,
