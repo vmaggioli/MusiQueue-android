@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "87323731569",
+    "firebase_url": "https://musiqueue-android.firebaseio.com",
+    "project_id": "musiqueue-android",
+    "storage_bucket": "musiqueue-android.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:87323731569:android:489efe3f09dca715",
+        "android_client_info": {
+          "package_name": "com.example.vince.youtubeplayertest"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "87323731569-nq7rf4l74lmnmec17c3estg96d2fe3n9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.vince.youtubeplayertest",
+            "certificate_hash": "bced157d99d374cb677d237955a5a3cc8260baaa"
+          }
+        },
+        {
+          "client_id": "87323731569-p8dj8a8uglf2tc5mnbhfp5e3h2rlm2r8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBcIvIi5qdnPwf3Rz2dfVIAByVNBOa6Y5w"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "87323731569-p8dj8a8uglf2tc5mnbhfp5e3h2rlm2r8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

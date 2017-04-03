@@ -9,6 +9,8 @@ public class QueueSong {
     private int upVotes = 0;
     private int downVotes=0;
     private String id;
+    private String user;
+    private int place;
 
     public String getTitle() {
         return this.title;
@@ -30,5 +32,14 @@ public class QueueSong {
     }
     public String getId() {return this.id;}
     public void setId(String id) {this.id = id;}
+    public void setUser(String user) {this.user= user;}
+    public String getUser(){return this.user;}
 
+    public int getPlace() {
+        return place;
+    }
+
+    public void setPlace(int place) {
+        this.place = place;
+    }
 }

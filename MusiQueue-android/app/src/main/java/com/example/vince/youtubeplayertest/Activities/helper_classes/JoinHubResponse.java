@@ -11,6 +11,7 @@ public class JoinHubResponse {
 
     private static class Result{
         private Integer hub_id;
+        private Boolean is_creator;
     }
 
     private Result result;
@@ -18,4 +19,5 @@ public class JoinHubResponse {
     public Integer getHubId(){
         return result.hub_id;
     }
+    public Boolean getCreator(){return this.result.is_creator;}
 }

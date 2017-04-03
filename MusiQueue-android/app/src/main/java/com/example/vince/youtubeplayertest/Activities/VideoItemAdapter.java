@@ -1,9 +1,13 @@
 package com.example.vince.youtubeplayertest.Activities;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.provider.MediaStore;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
+import android.view.Display;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -11,8 +15,13 @@ import android.widget.TextView;
 
 //import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListAdapter;
 //import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListItem;
+import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
 import com.example.vince.youtubeplayertest.Activities.users_only.QueueSong;
 import com.example.vince.youtubeplayertest.R;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -23,7 +32,7 @@ import static com.example.vince.youtubeplayertest.R.id.video_title;
 import static com.example.vince.youtubeplayertest.R.id.video_title;*/
 
 /**
- * Created by Prasad on 3/2/2017.
+ * Created by Not Prasad on 3/2/2017.
  */
 
 public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.ViewHolder> {
@@ -31,6 +40,9 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
     private ArrayList<QueueSong> videos;
     private Context mContext;
     private OnItemClickListener listener;
+
+    public static BackgroundWorker voteUpBW;
+    public static BackgroundWorker voteDownBW;
 
     public interface OnItemClickListener {
         void onItemClick(QueueSong videoItem);
@@ -40,23 +52,137 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
         public TextView videoTitle;
         public Button upButton;
         public Button downButton;
-        //public TextView videoDescription;
+        public TextView videoUser;
+        HubSingleton hubSingleton = HubSingleton.getInstance();
+        BackgroundWorker voteBW;
+        BackgroundWorker.AsyncResponse callback;
 
 
         ViewHolder(View itemView) {
             super(itemView);
             videoTitle = (TextView) itemView.findViewById(R.id.queueItem_title);
-            upButton = (Button) itemView.findViewById(R.id.button2);
-            downButton = (Button) itemView.findViewById(R.id.button3);
-            //videoDescription = (TextView) itemView.findViewById(R.id.video_description);
+            upButton = (Button) itemView.findViewById(R.id.button3);
+            downButton = (Button) itemView.findViewById(R.id.button2);
+            videoUser = (TextView) itemView.findViewById(R.id.queueItem_user);
+
+
         }
         public void bind(final QueueSong videoItem, final OnItemClickListener listener) {
             videoTitle.setText(videoItem.getTitle());
-            //videoDescription.setText(videoItem.getDescription());
+            videoUser.setText(videoItem.getUser());
+            downButton.setTextColor(Color.RED);
+            upButton.setTextColor(Color.BLUE);
+            upButton.setText(Integer.toString(videoItem.getUpVotes()));
+            downButton.setText(Integer.toString(videoItem.getDownVotes()));
 
-            itemView.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
-                    listener.onItemClick(videoItem);
+
+
+            callback = new BackgroundWorker.AsyncResponse() {
+                @Override
+                public void processFinish(String result) {
+                    try {
+                        JSONObject json = new JSONObject(result);
+                        Log.d("foobar", json.toString());
+                        hubSingleton.clearList();
+                        JSONArray jsonArray = json.getJSONArray("result");
+                        for (int i = 0; i < jsonArray.length(); i++) {
+
+                            QueueSong item = new QueueSong();
+
+                            JSONObject jObj = jsonArray.getJSONObject(i);
+
+                            item.setTitle(jObj.getString("song_title"));
+                            item.setUpVotes(jObj.getInt("up_votes"));
+                            item.setDownVotes(jObj.getInt("down_votes"));
+                            item.setId(jObj.getString("song_id"));
+                            item.setUser(jObj.getString("user_name"));
+                            item.setPlace(jObj.getInt("id"));
+                            hubSingleton.add(item);
+
+                        }
+                        //TODO: Find other way of doing this
+
+                        voteBW = new BackgroundWorker(callback);
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+// <<<<<<< SairamSamBranch
+
+
+// //            itemView.setOnClickListener(new View.OnClickListener() {
+//   //              @Override public void onClick(View v) {
+//     //                listener.onItemClick(videoItem);
+//       //          }
+//         //    });
+             /*upButton.setOnClickListener(new View.OnClickListener() {
+// =======
+//             voteBW = new BackgroundWorker(callback);
+
+//             upButton.setOnClickListener(new View.OnClickListener() {
+// >>>>>>> master
+                public void onClick(View v) {
+
+                    String hub = hubSingleton.getHubId().toString();
+                    String phone = hubSingleton.getUserID();
+                    voteBW.execute("voteUpSong",hub,phone,String.valueOf(videoItem.getPlace()));
+                    downButton.setBackgroundResource(android.R.drawable.btn_default);
+                    upButton.setBackgroundColor(Color.TRANSPARENT);
+                    downButton.setClickable(true);
+                    upButton.setClickable(false);
+                    upButton.setPressed(true);
+                    downButton.setPressed(false);
+                }
+            });*/
+            upButton.setOnTouchListener(new View.OnTouchListener() {
+                @Override
+                public boolean onTouch(View v, MotionEvent event) {
+                    // show interest in events resulting from ACTION_DOWN
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) return true;
+
+                    // don't handle event unless its ACTION_UP so "doSomething()" only runs once.
+                    if (event.getAction() != MotionEvent.ACTION_UP) return false;
+
+                    voteUpBW = new BackgroundWorker(callback);
+
+                    String hub = hubSingleton.getHubId().toString();
+                    String phone = hubSingleton.getUserID();
+                    voteUpBW.execute("voteUpSong",hub,phone,String.valueOf(videoItem.getPlace()));
+                    upButton.setPressed(true);
+                    downButton.setPressed(false);
+                    return true;
+                }
+            });
+            /*downButton.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+
+                    String hub = hubSingleton.getHubId().toString();
+                    String phone = hubSingleton.getUserID();
+                    voteBW.execute("voteDownSong",hub,phone,String.valueOf(videoItem.getPlace()));
+                    downButton.setPressed(true);
+                    upButton.setPressed(false);
+
+                }
+            });*/
+            downButton.setOnTouchListener(new View.OnTouchListener() {
+                public boolean onTouch(View v, MotionEvent event) {
+
+                    // show interest in events resulting from ACTION_DOWN
+                    if (event.getAction() == MotionEvent.ACTION_DOWN) return true;
+
+                    // don't handle event unless its ACTION_UP so "doSomething()" only runs once.
+                    if (event.getAction() != MotionEvent.ACTION_UP) return false;
+
+                    voteDownBW = new BackgroundWorker(callback);
+
+                    String hub = hubSingleton.getHubId().toString();
+                    String phone = hubSingleton.getUserID();
+                    voteDownBW.execute("voteDownSong",hub,phone,String.valueOf(videoItem.getPlace()));
+                    downButton.setPressed(true);
+                    upButton.setPressed(false);
+                    return true;
                 }
             });
         }
@@ -66,6 +192,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
         this.mContext = context;
         this.videos = videos;
         this.listener = listener;
+
     }
 
     @Override
@@ -81,9 +208,6 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
     public void onBindViewHolder(ViewHolder holder, int position) {
         System.out.println(videos.size() + "pos: " + position);
         holder.bind(videos.get(position), listener);
-//        QueueSong item = videos.get(position);
-//        holder.videoTitle.setText(item.getTitle());
-//        holder.videoDescription.setText(item.getDescription());
 
     }
 

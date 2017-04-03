@@ -2,16 +2,10 @@ package com.example.vince.youtubeplayertest.Activities;
 
 import android.content.Context;
 import android.content.Intent;
-import android.media.session.MediaSession;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.example.vince.youtubeplayertest.Activities.users_only.QueueSong;
-import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListItem;
-import com.google.gson.Gson;
-
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,12 +16,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
 import java.net.URL;
-import java.sql.Date;
-import java.sql.Timestamp;
-import java.util.ArrayList;
 import java.util.Vector;
+
+import javax.net.ssl.HttpsURLConnection;
 
 /**
  * Created by Brian on 2/16/2017.
@@ -66,8 +58,9 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
     @Override
     protected String doInBackground(String... params) {
         type = params[0];
-        System.out.println(type);
-        String urlBase = "http://52.14.50.251/api/";
+    
+        System.out.println("background type: " + type);
+        String urlBase = "https://musiqueue.com/api/";
         String urlEnd = type + ".php";
 
         Vector<String> paramNames = new Vector<>();
@@ -93,7 +86,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                 paramNames.add("phoneId");
                 paramNames.add("username");
                 break;
-            case "songList":
+            case "hubSongList":
                 paramNames.add("hubId");
                 paramNames.add("phoneId");
                 break;
@@ -105,6 +98,10 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                 break;
             case "recentHubs":
                 paramNames.add("phoneId");
+            case "removeSong":
+                paramNames.add("hubId");
+                paramNames.add("phoneId");
+                paramNames.add("songId");
                 break;
             case "voteUpSong":
             case "voteDownSong":
@@ -119,12 +116,12 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
         try {
             URL url = new URL(urlBase + urlEnd);
 
-            HttpURLConnection httpURLConnection = (HttpURLConnection) url.openConnection();
-            httpURLConnection.setRequestMethod("POST");
-            httpURLConnection.setDoOutput(true);
-            httpURLConnection.setDoInput(true);
+            HttpsURLConnection conn = (HttpsURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
 
-            OutputStream os = httpURLConnection.getOutputStream();
+            OutputStream os = conn.getOutputStream();
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(os, "UTF-8"));
 
             Uri.Builder builder = new Uri.Builder();
@@ -138,26 +135,26 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
             bw.flush();
             bw.close();
             os.close();
-            httpURLConnection.connect();
+            conn.connect();
 
             // CHECK RESPONSE CODE FOR ANY ERRORS
-            int responseCode = httpURLConnection.getResponseCode();
+            int responseCode = conn.getResponseCode();
             Log.d("response: ", String.valueOf(responseCode));
-            if (responseCode == HttpURLConnection.HTTP_OK) {
-                InputStream is = httpURLConnection.getInputStream();
+            if (responseCode == conn.HTTP_OK) {
+                InputStream is = conn.getInputStream();
                 BufferedReader br = new BufferedReader(new InputStreamReader(is, "iso-8859-1"));
                 StringBuilder result = new StringBuilder();
                 String line;
                 while ((line = br.readLine()) != null) {
                     result.append(line + "\n");
                 }
-                httpURLConnection.disconnect();
+                conn.disconnect();
 
                 // Pass data to onPostExecute method
                 return (result.toString());
 
             } else {
-                httpURLConnection.disconnect();
+                conn.disconnect();
                 return ("error");
             }
 

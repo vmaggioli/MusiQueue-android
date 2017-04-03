@@ -43,12 +43,12 @@ $result = $conn->query("
 		Songs.down_votes,
         Users.id as user_id,
         Users.name as user_name,
-        (-UNIX_TIMESTAMP(Songs.time_added) + (Songs.up_votes - Songs.down_votes)*60) as rank
+        (Songs.up_votes - Songs.down_votes) as rank
 	FROM Songs
 	INNER JOIN Users on Users.id = Songs.user_id
 	WHERE
 		Songs.hub_id='$hubId'
-	ORDER BY rank DESC
+	ORDER BY rank DESC, Songs.time_added ASC
 ");
 
 $arr = array();
