@@ -39,6 +39,9 @@ $result = $conn->query("
 	), '$songId', '$songTitle')
 ");
 
+// if there aren't any songs, this one might be playing
+require "util/ensureSongPlaying.php";
+
 // seemes successful, return the list of songs in the hub
 require "hubSongList.php";
 

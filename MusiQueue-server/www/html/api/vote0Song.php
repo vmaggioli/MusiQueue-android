@@ -1,6 +1,6 @@
 <?php
 
-define("VOTE_DIRECTION", -1);
+define("VOTE_DIRECTION", 0);
 require "util/voteSong.php";
 
 ?>

@@ -41,18 +41,27 @@ $result = $conn->query("
 		Songs.time_added,
 		Songs.up_votes,
 		Songs.down_votes,
+		Songs.playing,
         Users.id as user_id,
         Users.name as user_name,
-        (Songs.up_votes - Songs.down_votes) as rank
+        $RANK_FORMULA as rank,
+        IFNULL(Votes.vote, 0) as voted
 	FROM Songs
 	INNER JOIN Users on Users.id = Songs.user_id
+	LEFT JOIN Votes on Songs.id = Votes.song_id AND Votes.phone_id = '$phoneId'
 	WHERE
 		Songs.hub_id='$hubId'
-	ORDER BY rank DESC, Songs.time_added ASC
+	ORDER BY
+		$RANK_ORDER
 ");
+
+if(!$result) {
+	respondError("DB_ISSUE", "mysql error in hubSongList: " . $conn->error);
+}
 
 $arr = array();
 while($assoc = mysqli_fetch_assoc($result)) {
+	$assoc['playing'] = !!$assoc['playing'];
 	$arr[] = $assoc;
 }
 

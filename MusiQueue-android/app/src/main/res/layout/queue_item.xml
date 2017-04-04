@@ -15,7 +15,7 @@
         android:layout_marginTop="5dp"
         android:layout_gravity="center_vertical"
         android:layout_weight="1"
-        android:textSize="20sp"
+        android:textSize="18sp"
         android:padding="5dp"
         android:background="@drawable/hub_search_item_title"
         />
@@ -32,7 +32,7 @@
             android:layout_marginLeft="5dp"
             android:layout_marginRight="5dp"
             android:layout_marginBottom="5dp"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:padding="5dp"
             android:background="@drawable/hub_search_time_creator"
             />
@@ -51,7 +51,7 @@
             android:layout_marginRight="10dp"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
-            android:background="@drawable/button_custom"
+            android:background="@drawable/ic_thumb_up_black_24dp_2"
             />
         <Button
             android:text="D"
@@ -62,7 +62,7 @@
             android:layout_marginRight="20dp"
             android:layout_marginBottom="5dp"
             android:layout_marginTop="5dp"
-            android:background="@drawable/button_custom_downvote"
+            android:background="@drawable/ic_thumb_down_black_24dp_2"
             />
     </LinearLayout>
 

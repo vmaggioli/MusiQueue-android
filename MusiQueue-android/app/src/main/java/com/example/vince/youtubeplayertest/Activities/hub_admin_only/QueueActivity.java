@@ -63,6 +63,8 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
     VideoItemAdapter adapter;
     UpdateResultReceiver receiver;
 
+    String currentlyPlaying;
+
     private List<VideoItem> searchResults;
 
     private ListView videosFound;
@@ -74,6 +76,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_queue);
 
+        currentlyPlaying = "";
         searchEdit = (EditText) findViewById(R.id.search_edit);
         searchButton = (Button) findViewById(R.id.search_button);
         videosFound = (ListView)findViewById(R.id.videos_found);
@@ -104,8 +107,8 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         songListView.setLayoutManager(new LinearLayoutManager(this));
         songListView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).color(Color.LTGRAY).sizeResId(R.dimen.divider).marginResId(R.dimen.margin5dp, R.dimen.margin5dp).build());
 
+        initPlayer();
         updateView();
-        changeAndUpdate("add");
     }
 
     public void initPlayer() {
@@ -121,7 +124,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
             @Override
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
                 if(!b && hubSingleton.getEntireList().size() > 0){
-                    youTubePlayer.cueVideo(hubSingleton.getSongAt(0).getId()); //getIntent().getStringExtra("id"));
+                    youTubePlayer.loadVideo(hubSingleton.getSongAt(0).getId()); //getIntent().getStringExtra("id"));
                 }
                 mYouTubePlayer = youTubePlayer;
                 mYouTubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener() {
@@ -142,7 +145,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
 
                     @Override
                     public void onVideoStarted() {
-
+                        currentlyPlaying = hubSingleton.getSongAt(0).getId();
                     }
 
                     @Override
@@ -159,6 +162,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                                 mYouTubePlayer.loadVideo(hubSingleton.getSongAt(0).getId());
                             else if (hubSingleton.getEntireList().size() != 0 && mYouTubePlayer == null)
                                 initPlayer();
+                            currentlyPlaying = "";
                         }
                     }
 
@@ -224,11 +228,14 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
             song.setTitle(title);
 
             addBW.execute("addSong", hubSingleton.getHubId().toString(), hubSingleton.getUserID(), id, title);
+            queueIfNothingPlaying(id);
         } else if (type.equals("remove"))
             removeBW.execute("removeSong", hubSingleton.getHubId().toString(), hubSingleton.getUserID(), removeId);
         if (hubSingleton.getEntireList().size() == 0) {
             listBW.execute("hubSongList", hubSingleton.getHubId().toString(), hubSingleton.getUserID());
         }
+        //listBW.execute("hubSongList", hubSingleton.getHubId().toString(), hubSingleton.getUserID());
+        queueIfNothingPlaying(id);
     }
 
     public void searchVideo(View view) {
@@ -304,7 +311,6 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         Intent intent = new Intent(this, PollData.class);
         intent.putExtra("receiver", receiver);
         startService(intent);
-
     }
 
     @Override
@@ -318,9 +324,9 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
             JSONArray jsonArray = json.getJSONArray("result");
             for (int i = 0; i < jsonArray.length(); i++) {
                 QueueSong item = new QueueSong();
-
                 JSONObject jObj = jsonArray.getJSONObject(i);
 
+                id = jObj.getString("song_id");
                 item.setTitle(jObj.getString("song_title"));
                 item.setUpVotes(jObj.getInt("up_votes"));
                 item.setDownVotes(jObj.getInt("down_votes"));
@@ -332,8 +338,15 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
             }
             adapter.notifyDataSetChanged();
             updateView();
+            if (currentlyPlaying.equals("") && hubSingleton.getQueueSize() != 0)
+                queueIfNothingPlaying(hubSingleton.getSongAt(0).getId());
         } catch (JSONException e) {
             e.printStackTrace();
         }
+    }
+
+    public void queueIfNothingPlaying(String video_id) {
+        if (currentlyPlaying.equals("") && video_id != null)
+                mYouTubePlayer.loadVideo(video_id);
     }
 }

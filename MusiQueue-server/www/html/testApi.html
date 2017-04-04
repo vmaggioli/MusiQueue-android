@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <div id="output"></div>
 <script src="jquery-3.1.1.min.js"></script>
 <style type="text/css">
@@ -24,6 +25,8 @@
 	}
 </style>
 <script>
+var numErrors = 0;
+
 // for testing an endpoint that should work
 function testEndpoint(url, params) {
     var response = $.ajax({
@@ -49,6 +52,7 @@ function testEndpoint(url, params) {
     		+' ('
     		+response.errorMessage
     		+")</pre></a></div>";
+    	numErrors++;
     }else{
     	document.getElementById('output').innerHTML += "<div class='good indent'><a href='"+href+"'>No error: <pre>"+url+' '+JSON.stringify(params)+"</pre></a></div>";
     }
@@ -66,10 +70,12 @@ function testEndpointError(url, params, errorCode) {
     }).responseJSON;
     if(!response.error) {
     	document.getElementById('output').innerHTML += "<div class='bad indent'>No error - expected <pre>'"+errorCode+"'</pre>: <pre>"+url+' '+JSON.stringify(params)+"</pre></div>";
+    	numErrors++;
     }else if(response.errorCode == errorCode){
     	document.getElementById('output').innerHTML += "<div class='good indent'>Correct error: <pre>"+url+' '+JSON.stringify(params)+"</pre> - <pre>"+response.errorCode+"</pre></div>";
     }else{
     	document.getElementById('output').innerHTML += "<div class='bad indent'>Unexpected error - expected <pre>'"+errorCode+"'</pre>: <pre>"+url+' '+JSON.stringify(params)+"</pre> - <pre>"+response.errorCode+"</pre></div>";
+    	numErrors++;
     }
     return response;
 }
@@ -80,6 +86,7 @@ function message(m) {
 
 function error(m) {
 	document.getElementById('output').innerHTML += "<div class='bad indent'>"+m+"</div>";
+    numErrors++;
 }
 
 function success(m) {
@@ -99,211 +106,294 @@ var songId = 'jofNR_WkoCE';
 var songTitle = 'Test Song '+ts;
 var songId2 = 'song2';
 var songTitle2 = 'Test Song 2 '+ts;
+var songId3 = 'song3';
+var songTitle3 = 'Test Song 3 '+ts;
+var hubId, s2Id, songs, sPlayingId;
 
-message("Testing User 1 creating a hub with no pin");
-hubId = testEndpoint('api/createHub.php', {
-	hubName: hubName1,
-	phoneId: phoneId1,
-	username: username
-}).result.hub_id;
 
-message("Testing user 2 joining hub with wrong name");
-testEndpointError('api/joinHub.php', {
-	hubName: hubName1 + 'wrong',
-	phoneId: phoneId2,
-	username: username2
-}, 'HUB_NOT_FOUND');
+var actions = [
+	r => message("User 1 creating a hub with no pin"),
+	r => hubId = testEndpoint('api/createHub.php', {
+		hubName: hubName1,
+		phoneId: phoneId1,
+		username: username
+	}).result.hub_id,
 
-message("Testing user 2 joining hub");
-testEndpoint('api/joinHub.php', {
-	hubName: hubName1,
-	phoneId: phoneId2,
-	username: username2
-});
+	r => message("User 2 joining hub with wrong name"),
+	r => testEndpointError('api/joinHub.php', {
+			hubName: hubName1 + 'wrong',
+			phoneId: phoneId2,
+			username: username2
+		}, 'HUB_NOT_FOUND'),
 
-message("Testing user 2 adding song");
-testEndpoint('api/addSong.php', {
-	hubId: hubId,
-	phoneId: phoneId2,
-	songId: songId2,
-	songTitle: songTitle2
-});
+	r => message("User 2 joining hub"),
+	r => testEndpoint('api/joinHub.php', {
+			hubName: hubName1,
+			phoneId: phoneId2,
+			username: username2
+		}),
 
-message("Testing user 2 adding another song");
-testEndpoint('api/addSong.php', {
-	hubId: hubId,
-	phoneId: phoneId2,
-	songId: songId,
-	songTitle: songTitle
-});
+	r => message("User 2 adding songs"),
+	r => testEndpoint('api/addSong.php', {
+			hubId: hubId,
+			phoneId: phoneId2,
+			songId: songId3,
+			songTitle: songTitle3
+		}),
+	r => testEndpoint('api/addSong.php', {
+			hubId: hubId,
+			phoneId: phoneId2,
+			songId: songId2,
+			songTitle: songTitle2
+		}),
 
-message("Testing user 3 adding song");
-testEndpointError('api/addSong.php', {
-	hubId: hubId,
-	phoneId: phoneId3,
-	songId: songId,
-	songTitle: songTitle
-}, "USER_NOT_CONNECTED");
+	r => message("User 2 adding another song"),
+	r => testEndpoint('api/addSong.php', {
+			hubId: hubId,
+			phoneId: phoneId2,
+			songId: songId,
+			songTitle: songTitle
+		}),
 
-message("Testing user 1 voting on song 2");
-var s2Id = testEndpoint('api/hubSongList.php', {
-	hubId: hubId,
-	phoneId: phoneId1
-}).result[1].id;
-testEndpoint('api/voteUpSong.php', {
-	hubId: hubId,
-	phoneId: phoneId1,
-	songId: s2Id,
-});
-testEndpoint('api/voteUpSong.php', {
-	hubId: hubId,
-	phoneId: phoneId1,
-	songId: s2Id,
-});
-testEndpoint('api/voteDownSong.php', {
-	hubId: hubId,
-	phoneId: phoneId1,
-	songId: s2Id,
-});
+	r => message("User 3 adding song"),
+	r => testEndpointError('api/addSong.php', {
+			hubId: hubId,
+			phoneId: phoneId3,
+			songId: songId,
+			songTitle: songTitle
+		}, "USER_NOT_CONNECTED"),
 
-message("Testing user 2 listing songs");
-var songs = testEndpoint('api/hubSongList.php', {
-	hubId: hubId,
-	phoneId: phoneId2
-}).result;
-if(songs.length != 2) {
-	error("song listing incorrect - wrong number of songs");
-	error(JSON.stringify(songs));
-}else if(songs[0].song_id != songId || songs[0].song_title != songTitle) {
-	error("song listing incorrect - song 1 wrong");
-	error(JSON.stringify(songs));
-}else if(songs[0].up_votes != 2 || songs[0].down_votes != 1) {
-	error("song listing incorrect - song 1 has the wrong vote totals");
-}else{
-	success("song listing correct");
+	r => message("Voting on songs"),
+	r => s2Id = testEndpoint('api/hubSongList.php', {
+			hubId: hubId,
+			phoneId: phoneId1
+		}).result[1].id,
+	r => testEndpoint('api/voteDownSong.php', {
+			hubId: hubId,
+			phoneId: phoneId1,
+			songId: s2Id,
+		}),
+	r => testEndpoint('api/voteDownSong.php', {
+			hubId: hubId,
+			phoneId: phoneId1,
+			songId: s2Id,
+		}),
+	r => testEndpoint('api/voteUpSong.php', {
+			hubId: hubId,
+			phoneId: phoneId1,
+			songId: s2Id,
+		}),
+	r => testEndpoint('api/voteUpSong.php', {
+			hubId: hubId,
+			phoneId: phoneId2,
+			songId: s2Id,
+		}),
+	r => testEndpoint('api/vote0Song.php', {
+			hubId: hubId,
+			phoneId: phoneId2,
+			songId: s2Id,
+		}),
+	r => testEndpoint('api/voteDownSong.php', {
+			hubId: hubId,
+			phoneId: phoneId2,
+			songId: s2Id,
+		}),
+	r => testEndpoint('api/vote0Song.php', {
+			hubId: hubId,
+			phoneId: phoneId2,
+			songId: s2Id,
+		}),
+
+	r => message("User 2 listing songs"),
+	r => songs = testEndpoint('api/hubSongList.php', {
+			hubId: hubId,
+			phoneId: phoneId2
+		}).result,
+	r => {
+			if(songs.length != 3) {
+				error("song listing incorrect - wrong number of songs");
+				error(JSON.stringify(songs));
+			}else if(songs[1].song_id != songId2 || songs[1].song_title != songTitle2) {
+				error("song listing incorrect - song 1 wrong");
+				error(JSON.stringify(songs));
+			}else if(songs[1].up_votes != 1 || songs[1].down_votes != 0) {
+				error("song listing incorrect - song 1 has the wrong vote totals");
+			}else{
+				success("song listing correct");
+			}
+		},
+
+	r => message("User 3 listing songs"),
+	r => testEndpointError('api/hubSongList.php', {
+			hubId: hubId,
+			phoneId: phoneId3
+		}, "USER_NOT_CONNECTED"),
+
+	r => message("Song playing status"),
+	r => {
+			if(songs.length < 2) {
+				error("not enough songs");
+			}else if(!songs[0].playing) {
+				error("song 0 is not playing");
+			}else if(songs[1].playing) {
+				error("song 1 is playing but should not be");
+				error(JSON.stringify(songs));
+			}else{
+				success("song playing correct");
+			}
+		},
+	r => sPlayingId = songs[0].id,
+
+	r => message("Removing song by incorrect user"),
+	r => testEndpointError('api/removeSong.php', {
+			hubId: hubId,
+			phoneId: phoneId3,
+			songId: sPlayingId
+		}, "NOT_HUB_CREATOR"),
+
+	r => message("Removing song by hub creator"),
+	r => testEndpoint('api/voteUpSong.php', { // vote up to check DB cascade on delete
+			hubId: hubId,
+			phoneId: phoneId2,
+			songId: sPlayingId,
+		}),
+	r => testEndpoint('api/removeSong.php', {
+			hubId: hubId,
+			phoneId: phoneId1,
+			songId: sPlayingId
+		}),
+	r => songs = testEndpoint('api/hubSongList.php', {
+			hubId: hubId,
+			phoneId: phoneId2
+		}).result,
+	r => {
+			if(songs.length != 2) {
+				error("song listing incorrect - wrong number of songs");
+				error(JSON.stringify(songs));
+			}else{
+				success("song listing correct");
+			}
+		},
+	r => {
+			if(songs.length != 2) {
+				error("could not test playing status");
+			}else if(!songs[0].playing) {
+				error("song 0 not playing");
+			}else if(songs[1].playing) {
+				error("song 1 is playing but should not be");
+				error(JSON.stringify(songs));
+			}else{
+				success("song listing correct");
+			}
+		},
+
+	r => message("Removing song that should not exist"),
+	r => testEndpointError('api/removeSong.php', {
+		hubId: hubId,
+		phoneId: phoneId1,
+		songId: sPlayingId
+	}, "SONG_NOT_FOUND"),
+
+
+	r => message("User 3 creating hub with same name"),
+	r => testEndpointError('api/createHub.php', {
+		hubName: hubName1,
+		phoneId: phoneId3,
+		username: username3
+	}, 'HUB_NAME_TAKEN'),
+
+	r => message("User 2 closing the hub"),
+	r => testEndpointError('api/closeHub.php', {
+		hubId: hubId,
+		phoneId: phoneId2,
+	}, 'NOT_HUB_CREATOR'),
+
+	r => message("User 1 closing the hub"),
+	r => testEndpoint("api/closeHub.php", {
+		hubId: hubId,
+		phoneId: phoneId1
+	}),
+
+	r => message("User 3 joining a closed hub"),
+	r => testEndpointError('api/joinHub.php', {
+		hubName: hubName1,
+		phoneId: phoneId3,
+		username: username3
+	}, "HUB_CLOSED"),
+
+	r => message("User 2 adding song"),
+	r => testEndpointError('api/addSong.php', {
+		hubId: hubId,
+		phoneId: phoneId2,
+		songId: songId2,
+		songTitle: songTitle2
+	}, "HUB_CLOSED"),
+
+	r => message("User 1 opening the hub again"),
+	r => testEndpoint('api/createHub.php', {
+		hubName: hubName1,
+		phoneId: phoneId1,
+		username: 'new username',
+		hubPin: '1234'
+	}),
+
+	r => message("User 3 joing hub with changed pin"),
+	r => testEndpointError('api/joinHub.php', {
+		hubName: hubName1,
+		phoneId: phoneId3,
+		username: username3,
+		hubPin: '0000'
+	}, "HUB_PIN_WRONG"),
+
+
+	r => message("User 1 creating hub with pin"),
+	r => hubId = testEndpoint('api/createHub.php', {
+		hubName: hubName2,
+		phoneId: phoneId1,
+		username: username,
+		hubPin: '1234'
+	}).result.hub_id,
+
+	r => message("User 2 joining hub with pin"),
+	r => testEndpoint('api/joinHub.php', {
+		hubName: hubName2,
+		phoneId: phoneId2,
+		username: username2,
+		hubPin: '1234'
+	}),
+
+	r => message("User 3 joining hub without pin"),
+	r => testEndpointError('api/joinHub.php', {
+		hubName: hubName2,
+		phoneId: phoneId3,
+		username: username3
+	}, 'HUB_PIN_WRONG'),
+
+	r => message("User 3 joining hub with wrong pin"),
+	r => testEndpointError('api/joinHub.php', {
+		hubName: hubName2,
+		phoneId: phoneId3,
+		username: username3,
+		hubPin: '0000'
+	}, 'HUB_PIN_WRONG'),
+
+	r => {
+			message("<h2>Results</h2>");
+			if(numErrors) {
+				error(numErrors + " errors found!");
+			}else{
+				success("No errors!");
+			}
+		}
+].reverse();
+
+// do the actions
+function doActions(actions) {
+	actions.pop()();
+	window.scrollTo(0,document.body.scrollHeight);
+	if(actions.length)
+		setTimeout(a => doActions(actions), 0)
 }
-
-message("Testing user 3 listing songs");
-testEndpointError('api/hubSongList.php', {
-	hubId: hubId,
-	phoneId: phoneId3
-}, "USER_NOT_CONNECTED");
-
-message("Testing removing song by incorrect user");
-testEndpointError('api/removeSong.php', {
-	hubId: hubId,
-	phoneId: phoneId3,
-	songId: s2Id
-}, "NOT_HUB_CREATOR");
-
-message("Testing removing song by hub creator");
-testEndpoint('api/removeSong.php', {
-	hubId: hubId,
-	phoneId: phoneId1,
-	songId: s2Id
-});
-var songs = testEndpoint('api/hubSongList.php', {
-	hubId: hubId,
-	phoneId: phoneId2
-}).result;
-if(songs.length != 1) {
-	error("song listing incorrect - wrong number of songs");
-	error(JSON.stringify(songs));
-}else{
-	success("song listing correct");
-}
-
-message("Testing removing song that should not exist");
-testEndpointError('api/removeSong.php', {
-	hubId: hubId,
-	phoneId: phoneId1,
-	songId: s2Id
-}, "SONG_NOT_FOUND");
-
-
-message("Testing user 3 creating hub with same name");
-testEndpointError('api/createHub.php', {
-	hubName: hubName1,
-	phoneId: phoneId3,
-	username: username3
-}, 'HUB_NAME_TAKEN');
-
-message("Testing user 2 closing the hub");
-testEndpointError('api/closeHub.php', {
-	hubId: hubId,
-	phoneId: phoneId2,
-}, 'NOT_HUB_CREATOR');
-
-message("Testing user 1 closing the hub");
-testEndpoint("api/closeHub.php", {
-	hubId: hubId,
-	phoneId: phoneId1
-});
-
-message("Testing user 3 joining a closed hub");
-testEndpointError('api/joinHub.php', {
-	hubName: hubName1,
-	phoneId: phoneId3,
-	username: username3
-}, "HUB_CLOSED");
-
-message("Testing user 2 adding song");
-testEndpointError('api/addSong.php', {
-	hubId: hubId,
-	phoneId: phoneId2,
-	songId: songId2,
-	songTitle: songTitle2
-}, "HUB_CLOSED");
-
-message("Testing User 1 opening the hub again");
-testEndpoint('api/createHub.php', {
-	hubName: hubName1,
-	phoneId: phoneId1,
-	username: 'new username',
-	hubPin: '1234'
-});
-
-message("Testing user 3 joing hub with changed pin");
-testEndpointError('api/joinHub.php', {
-	hubName: hubName1,
-	phoneId: phoneId3,
-	username: username3,
-	hubPin: '0000'
-}, "HUB_PIN_WRONG");
-
-
-message("Testing user 1 creating hub with pin");
-hubId = testEndpoint('api/createHub.php', {
-	hubName: hubName2,
-	phoneId: phoneId1,
-	username: username,
-	hubPin: '1234'
-}).result.hub_id;
-
-message("Testing user 2 joining hub with pin");
-testEndpoint('api/joinHub.php', {
-	hubName: hubName2,
-	phoneId: phoneId2,
-	username: username2,
-	hubPin: '1234'
-});
-
-message("Testing user 3 joining hub without pin");
-testEndpointError('api/joinHub.php', {
-	hubName: hubName2,
-	phoneId: phoneId3,
-	username: username3
-}, 'HUB_PIN_WRONG');
-
-message("Testing user 3 joining hub with wrong pin");
-testEndpointError('api/joinHub.php', {
-	hubName: hubName2,
-	phoneId: phoneId3,
-	username: username3,
-	hubPin: '0000'
-}, 'HUB_PIN_WRONG');
-
-message("<h2>Testing Complete</h2>");
-
+doActions(actions);
 
 </script>
