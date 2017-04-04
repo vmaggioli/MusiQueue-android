@@ -213,7 +213,9 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                         Log.d("list", hubSingleton.getSongAt(0).getTitle());
                     }
                     adapter.notifyDataSetChanged();
-                    if (reInit && mYouTubePlayer != null && hubSingleton.getEntireList() != null && hubSingleton.getEntireList().size() != 0)
+                    if (currentlyPlaying.equals("") && hubSingleton.getQueueSize() != 0)
+                        queueIfNothingPlaying(hubSingleton.getSongAt(0).getId());
+                    else if (reInit && mYouTubePlayer != null && hubSingleton.getEntireList() != null && hubSingleton.getEntireList().size() != 0)
                         mYouTubePlayer.loadVideo(hubSingleton.getSongAt(0).getId());
                     else if (reInit && mYouTubePlayer == null)
                         initPlayer();
@@ -235,14 +237,13 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
             song.setTitle(title);
 
             addBW.execute("addSong", hubSingleton.getHubId().toString(), hubSingleton.getUserID(), id, title);
-            queueIfNothingPlaying(id);
         } else if (type.equals("remove"))
             removeBW.execute("removeSong", hubSingleton.getHubId().toString(), hubSingleton.getUserID(), removeId);
         if (hubSingleton.getEntireList().size() == 0) {
             listBW.execute("hubSongList", hubSingleton.getHubId().toString(), hubSingleton.getUserID());
         }
         //listBW.execute("hubSongList", hubSingleton.getHubId().toString(), hubSingleton.getUserID());
-        queueIfNothingPlaying(id);
+        //queueIfNothingPlaying(id);
     }
 
     public void searchVideo(View view) {
@@ -345,8 +346,6 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
             }
             adapter.notifyDataSetChanged();
             updateView();
-            if (currentlyPlaying.equals("") && hubSingleton.getQueueSize() != 0)
-                queueIfNothingPlaying(hubSingleton.getSongAt(0).getId());
         } catch (JSONException e) {
             e.printStackTrace();
         }
