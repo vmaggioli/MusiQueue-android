@@ -1,14 +1,18 @@
 package com.example.vince.youtubeplayertest;
 
+import android.provider.Settings;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
 import com.example.vince.youtubeplayertest.Activities.hub_admin_only.CreateHub;
-import com.example.vince.youtubeplayertest.Activities.starting_activities.GettingStarted;
+import com.example.vince.youtubeplayertest.Activities.hub_admin_only.QueueActivity;
 
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+
+import java.util.Calendar;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.action.ViewActions.click;
@@ -29,12 +33,14 @@ public class CreateNewHubTest {
 
     @Test
     public void createHubTest() throws Exception {
+        HubSingleton hubSingleton = HubSingleton.getInstance();
+        if (hubSingleton.getUserID() == null) hubSingleton.setUserID(Settings.Secure.getString(createValidHubTest.getActivity().getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID));
         onView(withId(R.id.hub_name))
-            .perform(typeText("uniqueName"), closeSoftKeyboard());
+            .perform(typeText("uniqueName"+ String.valueOf(Calendar.getInstance().get(Calendar.SECOND))), closeSoftKeyboard());
         onView(withId(R.id.pass_pin))
                 .perform(typeText("1234"), closeSoftKeyboard());
         onView(withId(R.id.create_hub_button))
                 .perform(click());
-        intended(hasComponent(GettingStarted.class.getName()));
+        intended(hasComponent(QueueActivity.class.getName()));
     }
 }

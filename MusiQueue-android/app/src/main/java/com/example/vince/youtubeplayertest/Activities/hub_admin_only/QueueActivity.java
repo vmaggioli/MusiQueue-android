@@ -70,6 +70,14 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
     public void onBackPressed() {
     }
     @Override
+    public void onDestroy() {
+        if (mYouTubePlayer != null) {
+            mYouTubePlayer.release();
+            mYouTubePlayer = null;
+        }
+        super.onDestroy();
+    }
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_queue);
@@ -119,12 +127,13 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
             }
 
             @Override
-            public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+            public void onInitializationSuccess(YouTubePlayer.Provider provider, final YouTubePlayer youTubePlayer, boolean b) {
                 if(!b && hubSingleton.getEntireList().size() > 0){
                     youTubePlayer.loadVideo(hubSingleton.getSongAt(0).getId()); //getIntent().getStringExtra("id"));
                 }
                 mYouTubePlayer = youTubePlayer;
                 mYouTubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener() {
+
                     @Override
                     public void onLoading() {
 
@@ -167,6 +176,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                     public void onError(YouTubePlayer.ErrorReason errorReason) {
 
                     }
+
                 });
             }
         });
@@ -343,7 +353,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
     }
 
     public void queueIfNothingPlaying(String video_id) {
-        if (currentlyPlaying.equals("") && video_id != null)
+        if (currentlyPlaying.equals("") && video_id != null && mYouTubePlayer != null)
                 mYouTubePlayer.loadVideo(video_id);
     }
 }
