@@ -1,9 +1,11 @@
 package com.example.vince.youtubeplayertest;
 
+import android.provider.Settings;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
+import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
 import com.example.vince.youtubeplayertest.Activities.users_only.JoinHub;
 import com.example.vince.youtubeplayertest.Activities.users_only.SearchHub;
 
@@ -34,6 +36,9 @@ public class JoinHubPinIncorrectTest {
 
     @Test
     public void correctJoinTest() throws Exception {
+        HubSingleton hubSingleton = HubSingleton.getInstance();
+        if (hubSingleton.getUserID() == null) hubSingleton.setUserID(Settings.Secure.getString(checkCorrectJoin.getActivity().getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID));
+
         onView(withId(R.id.hub_name_search))
                 .perform(typeText("test"), closeSoftKeyboard());
         onView(withId(R.id.hub_name_search_button))

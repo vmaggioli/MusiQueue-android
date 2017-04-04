@@ -1,11 +1,14 @@
 package com.example.vince.youtubeplayertest;
 
+import android.provider.Settings;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.example.vince.youtubeplayertest.Activities.SearchActivity;
+import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
 import com.example.vince.youtubeplayertest.Activities.users_only.SearchHub;
+import com.example.vince.youtubeplayertest.Activities.users_only.ViewQueueActivity;
 
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,16 +33,22 @@ public class SearchVideoButtonTest {
 
     @Test
     public void testSearchVideoButton() throws Exception {
+        HubSingleton hubSingleton = HubSingleton.getInstance();
+        if (hubSingleton.getUserID() == null) hubSingleton.setUserID(Settings.Secure.getString(checkCorrectJoin.getActivity().getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID));
+
         onView(withId(R.id.hub_name_search))
                 .perform(typeText("test"), closeSoftKeyboard());
         onView(withId(R.id.hub_name_search_button))
                 .perform(click());
         onView(withId(R.id.hubs_list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition(2,click()));
-        onView(withId(R.id.pass_pin))
-                .perform(typeText("1234"), closeSoftKeyboard());
-        onView(withId(R.id.join_hub_button))
-                .perform(click());
+                .perform(RecyclerViewActions.actionOnItemAtPosition(3,click()));
+        // BELOW ONLY NEEDED IF NEVER JOINED HUB BEFORE
+//        intended(hasComponent(JoinHub.class.getName()));
+//        onView(withId(R.id.pass_pin))
+//                .perform(typeText("1234"), closeSoftKeyboard());
+//        onView(withId(R.id.join_hub_button))
+//                .perform(click());
+        intended(hasComponent(ViewQueueActivity.class.getName()));
         onView(withId(R.id.search_button))
                 .perform(click());
         intended(hasComponent(SearchActivity.class.getName()));
