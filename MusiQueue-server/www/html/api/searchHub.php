@@ -36,7 +36,7 @@ if ($result->num_rows == 0) {
 while($assoc = mysqli_fetch_assoc($result)) {
 	$assoc['hub_pin_required'] = !!$assoc['hub_pin_required'];
 	$assoc['is_rejoin'] = !!$assoc['is_rejoin'];
-	if('is_rejoin') $assoc['hub_pin_required'] = false;
+	if($assoc['is_rejoin']) $assoc['hub_pin_required'] = false;
 	$arr[] = $assoc;
 }
 
