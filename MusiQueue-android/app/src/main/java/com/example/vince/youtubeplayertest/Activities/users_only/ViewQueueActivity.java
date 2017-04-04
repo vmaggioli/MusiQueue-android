@@ -39,7 +39,9 @@ public class ViewQueueActivity extends AppCompatActivity implements UpdateResult
 
     String title;
     String id;
-
+    @Override
+    public void onBackPressed() {
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
