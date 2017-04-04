@@ -62,20 +62,17 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
     HubSingleton hubSingleton;
     VideoItemAdapter adapter;
     UpdateResultReceiver receiver;
-
     String currentlyPlaying;
-
     private List<VideoItem> searchResults;
-
     private ListView videosFound;
-
     private Handler handler;
-
+    @Override
+    public void onBackPressed() {
+    }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_queue);
-
         currentlyPlaying = "";
         searchEdit = (EditText) findViewById(R.id.search_edit);
         searchButton = (Button) findViewById(R.id.search_button);
