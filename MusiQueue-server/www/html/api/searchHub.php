@@ -23,9 +23,8 @@ $result = mysqli_query($conn, "
 		COUNT(joined.id) as is_rejoin
 	FROM Hubs
 	INNER JOIN Users creators ON Hubs.hub_creator_id = creators.id
-	LEFT JOIN Users joined ON joined.hub_id = Hubs.id
+	LEFT JOIN Users joined ON joined.hub_id = Hubs.id AND joined.phone_id = '$phoneId'
 	WHERE Hubs.hub_name LIKE '%$hubName%'
-	AND joined.phone_id = '$phoneId'
 	GROUP BY Hubs.hub_name
 ");
 $arr = array();
