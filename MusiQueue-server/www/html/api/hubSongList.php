@@ -48,13 +48,9 @@ $result = $conn->query("
         IFNULL(Votes.vote, 0) as voted
 	FROM Songs
 	INNER JOIN Users on Users.id = Songs.user_id
-	LEFT JOIN Votes on Songs.id = Votes.song_id
+	LEFT JOIN Votes on Songs.id = Votes.song_id AND Votes.phone_id = '$phoneId'
 	WHERE
 		Songs.hub_id='$hubId'
-		AND (
-			Votes.phone_id = '$phoneId'
-			OR Votes.phone_id IS NULL
-			)
 	ORDER BY
 		$RANK_ORDER
 ");
