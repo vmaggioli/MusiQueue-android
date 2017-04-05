@@ -12,12 +12,13 @@ hubSongList:
 			id,
             song_id - string, youtube id value,
             song_title - string,
-            time_added - timnestamp,
+            time_added - timestamp,
             up_votes - int,
             down_votes - int,
             user_id - The id of the Users table entry of the user who added the song,
             user_name - The name of the user who added the song
             rank - The song's rank. Higher is better
+            voted - -1/0/1, the user's vote on this song. (-1 is downvote, 0 is no vote, 1 is upvote)
 		}
 ");
 

@@ -70,8 +70,17 @@ if(mysqli_num_rows($result)) {
 }else{
     // the user is not in the hub
     // check if the hub pin is correct
-
     if($hub['hub_pin'] != $hubPin && $hub['hub_pin'] != null) {
+        // mitigate against brute force attacks
+        if($hub['connection_failures'] < $hub['connection_successes'] * 2 + 5) {
+            sleep(2);
+        }else{
+            sleep(6);
+        }
+
+        $hubId = $hub['id'];
+        mysqli_query($conn, "UPDATE Hubs SET connection_failures = connection_failures + 1 WHERE id = $hubId");
+
         respondError('HUB_PIN_WRONG', "The pin provided for this hub is not correct.");
     }
     // add the user to the hub
@@ -79,6 +88,9 @@ if(mysqli_num_rows($result)) {
         INSERT INTO Users (phone_id, hub_id, name)
         VALUES ('$phoneId', '".$hub['id']."', '$username')
     ");
+
+    $hubId = $hub['id'];
+    mysqli_query($conn, "UPDATE Hubs SET connection_successes = connection_successes + 1 WHERE id = $hubId");
 }
 
 respondSuccess(array(
