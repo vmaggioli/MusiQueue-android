@@ -346,7 +346,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                 queueIfNothingPlaying(hubSingleton.getSongAt(0).getId());
             else if (reInit && mYouTubePlayer != null && hubSingleton.getEntireList() != null && hubSingleton.getEntireList().size() != 0)
                 mYouTubePlayer.loadVideo(hubSingleton.getSongAt(0).getId());
-            else if (reInit && mYouTubePlayer == null)
+            //else if (reInit && mYouTubePlayer == null)
                 //initPlayer();
             updateView();
         } catch (JSONException e) {
