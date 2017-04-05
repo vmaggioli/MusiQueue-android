@@ -69,7 +69,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
     private Handler handler;
     @Override
     public void onBackPressed() {
-        if (songListView.getAdapter().getItemCount() != 0 && videosFound.getVisibility() == View.VISIBLE) {
+        if (songListView != null && songListView.getAdapter().getItemCount() != 0 && videosFound.getVisibility() == View.VISIBLE) {
             videosFound.setVisibility(View.GONE);
             songListView.setVisibility(View.VISIBLE);
         }
