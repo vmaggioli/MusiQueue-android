@@ -17,13 +17,20 @@ $phoneId = mysqli_real_escape_string($conn, $_REQUEST['phoneId']);
 $result = mysqli_query($conn, "
 	SELECT
 		Hubs.hub_name,
-		creators.name as hub_creator_name
+		creators.name as hub_creator_name,
+		DATEDIFF(CURRENT_TIME(), u.last_active) as days_ago
   	FROM Hubs
   	INNER JOIN Users u ON u.hub_id = Hubs.id
   	INNER JOIN Users creators ON Hubs.hub_creator_id = creators.id
   	WHERE u.phone_id = '$phoneId'
   	AND DATEDIFF(CURRENT_TIME(), u.last_active) <= 7
+  	ORDER BY u.last_active DESC
 ");
+
+if(!$result) {
+	respondError("DB_ISSUE", "mysql error in resentHubs: " . $conn->error);
+}
+
 $arr = array();
 
 if ($result->num_rows == 0) {
