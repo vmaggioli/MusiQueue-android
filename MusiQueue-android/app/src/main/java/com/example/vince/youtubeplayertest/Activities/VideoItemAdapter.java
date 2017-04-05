@@ -61,18 +61,23 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
             downButton = (Button) itemView.findViewById(R.id.button2);
             videoUser = (TextView) itemView.findViewById(R.id.queueItem_user);
 
-
         }
         public void bind(final QueueSong videoItem, final OnItemClickListener listener) {
-//            if (videoItem.getTitle().replaceAll("\\s+"," ").length() >= 25)
-//                videoTitle.setText(videoItem.getTitle().trim().substring(0, 28) + "...");
-//            else
-                videoTitle.setText(videoItem.getTitle());
+
+            videoTitle.setText(videoItem.getTitle());
             videoUser.setText(videoItem.getUser());
             upButton.setText(Integer.toString(videoItem.getUpVotes()));
             downButton.setText(Integer.toString(videoItem.getDownVotes()));
 
-
+            //TODO: set pressed states
+            if(videoItem.getPressed() == -1) {
+                downButton.setPressed(true);
+                upButton.setPressed(false);
+            }
+            else if(videoItem.getPressed() == 1) {
+                upButton.setPressed(true);
+                downButton.setPressed(false);
+            }
 
             callback = new BackgroundWorker.AsyncResponse() {
                 @Override
@@ -94,6 +99,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                             item.setId(jObj.getString("song_id"));
                             item.setUser(jObj.getString("user_name"));
                             item.setPlace(jObj.getInt("id"));
+                            item.setPressed(jObj.getInt("voted"));
                             //hubSingleton.add(item);
                         }
                         //TODO: Find other way of doing this
@@ -147,9 +153,11 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                     String phone = hubSingleton.getUserID();
                     voteUpBW.execute("voteUpSong",hub,phone,String.valueOf(videoItem.getPlace()));
                     //upButton.setClickable(false);
+
                     upButton.setPressed(true);
                     //downButton.setClickable(true);
                     downButton.setPressed(false);
+
                     //upButton.setEnabled(false);
                     return true;
                 }

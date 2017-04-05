@@ -137,6 +137,7 @@ public class ViewQueueActivity extends AppCompatActivity implements UpdateResult
                 item.setId(jObj.getString("song_id"));
                 item.setUser(jObj.getString("user_name"));
                 item.setPlace(jObj.getInt("id"));
+                item.setPressed(jObj.getInt("voted"));
                 hubSingleton.add(item);
                 Log.d("list in bw", hubSingleton.toString());
             }

@@ -205,6 +205,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                         item.setId(jObj.getString("song_id"));
                         item.setUser(jObj.getString("user_name"));
                         item.setPlace(jObj.getInt("id"));
+                        item.setPressed(jObj.getInt("voted"));
 
                         hubSingleton.add(item);
                     }
@@ -339,6 +340,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                 item.setId(jObj.getString("song_id"));
                 item.setUser(jObj.getString("user_name"));
                 item.setPlace(jObj.getInt("id"));
+                item.setPressed(jObj.getInt("voted"));
                 hubSingleton.add(item);
             }
             adapter.notifyDataSetChanged();
