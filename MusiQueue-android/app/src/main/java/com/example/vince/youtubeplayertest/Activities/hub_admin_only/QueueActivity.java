@@ -69,8 +69,10 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
     private Handler handler;
     @Override
     public void onBackPressed() {
-        videosFound.setVisibility(View.GONE);
-        songListView.setVisibility(View.VISIBLE);
+        if (searchResults != null && videosFound.getVisibility() == View.VISIBLE) {
+            videosFound.setVisibility(View.GONE);
+            songListView.setVisibility(View.VISIBLE);
+        }
     }
     @Override
     public void onDestroy() {
