@@ -45,28 +45,31 @@ public class HubSingletonTest  {
                 .perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
         intended(hasComponent(ViewQueueActivity.class.getName()));
         HubSingleton hubSingleton = HubSingleton.getInstance();
-        if (hubSingleton.getUserID() == null) hubSingleton.setUserID(Settings.Secure.getString(checkHubSingletonTest.getActivity().getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID));
+        if (hubSingleton.getUserID() == null || hubSingleton.getUsername() == null) {
+            hubSingleton.setUserID(Settings.Secure.getString(checkHubSingletonTest.getActivity().getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID));
+            hubSingleton.setUsername("Richard");
+        }
         if (hubSingleton.getEntireList() == null) {
             System.out.println("List Is Null");
-            double i = 0/10;
+            double i = 10/0;
         } else if (hubSingleton.getEntireList().size() > 0 && hubSingleton.getSongAt(0) == null) {
             System.out.println("Corrupted List");
-            double i = 0/10;
+            double i = 10/0;
         } else if (hubSingleton.getHubId() <= 0) {
             System.out.println("Corrupted HubId");
-            double i = 0/10;
+            double i = 10/0;
         } else if (hubSingleton.getHubName() == null || hubSingleton.getHubName().length() <= 0) {
             System.out.println("Corrupted Hub Name");
-            double i = 0/10;
+            double i = 10/0;
 //        } else if (hubSingleton.getPassPin().length() != 4) {
 //            System.out.println("Corrupted Hub Pin");
 //            double i = 0/10;
         } else if (hubSingleton.getUserID() == null || !hubSingleton.getUserID().equals(Settings.Secure.getString(checkHubSingletonTest.getActivity().getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID))) {
             System.out.println("User Id null or Incorrect");
-            double i = 0/10;
+            double i = 10/0;
         } else if (hubSingleton.getUsername() == null) {
-            System.out.println("Hub Creator Name Not Recorded");
-            double i = 0/10;
+            System.out.println("User Name Not Recorded");
+            double i = 10/0;
         }
     }
 }
