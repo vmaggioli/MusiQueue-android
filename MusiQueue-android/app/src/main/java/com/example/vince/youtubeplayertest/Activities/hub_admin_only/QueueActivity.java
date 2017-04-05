@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.ViewGroup;
@@ -68,6 +67,10 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
     private Handler handler;
     @Override
     public void onBackPressed() {
+        if (songListView != null && videosFound != null && videosFound.getVisibility() == View.VISIBLE) {
+            videosFound.setVisibility(View.GONE);
+            songListView.setVisibility(View.VISIBLE);
+        }
     }
     @Override
     public void onDestroy() {
@@ -106,7 +109,6 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
 
             }
         });
-        Log.d("list",hubSingleton.getEntireList().toString());
         songListView = (RecyclerView) findViewById(R.id.songList);
         songListView.setAdapter(adapter);
         songListView.setLayoutManager(new LinearLayoutManager(this));
@@ -151,16 +153,14 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
 
                     @Override
                     public void onVideoStarted() {
-                        currentlyPlaying = hubSingleton.getSongAt(0).getId();
+                        if (hubSingleton.getEntireList() != null && hubSingleton.getEntireList().size() > 0)
+                            currentlyPlaying = hubSingleton.getSongAt(0).getId();
                     }
 
                     @Override
                     public void onVideoEnded() {
                         if (hubSingleton.getEntireList() != null && hubSingleton.getEntireList().size() != 0) {
                             removeId = String.valueOf(hubSingleton.getSongAt(0).getPlace());
-                            System.out.println("len of list: " + hubSingleton.getEntireList().size());
-                            System.out.println("song id: " + hubSingleton.getSongAt(0).getPlace());
-                            System.out.println("video id: " + hubSingleton.getSongAt(0).getId());
                             hubSingleton.removeAt(0);
                             changeAndUpdate("remove");
                             adapter.notifyDataSetChanged();
@@ -189,12 +189,10 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                 Boolean reInit = false;
                 try {
                     if (hubSingleton.getEntireList().size() == 0) {
-                        System.out.println("size if zero");
                         reInit = true;
                     }
                     hubSingleton.clearList();
                     JSONObject json = new JSONObject(result);
-                    Log.d("foobar", json.toString());
                     JSONArray jsonArray = json.getJSONArray("result");
                     for (int i = 0; i < jsonArray.length(); i++) {
                         QueueSong item = new QueueSong();
@@ -206,11 +204,9 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                         item.setDownVotes(jObj.getInt("down_votes"));
                         item.setId(jObj.getString("song_id"));
                         item.setUser(jObj.getString("user_name"));
-                        System.out.println("find my id: " + jObj.getInt("id"));
                         item.setPlace(jObj.getInt("id"));
 
                         hubSingleton.add(item);
-                        Log.d("list", hubSingleton.getSongAt(0).getTitle());
                     }
                     adapter.notifyDataSetChanged();
                     if (currentlyPlaying.equals("") && hubSingleton.getQueueSize() != 0)
@@ -312,7 +308,6 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
     }
 
     public void updateView() {
-        System.out.println("Update my view please");
         receiver = new UpdateResultReceiver(new Handler());
         receiver.setReceiver(this);
 
@@ -325,10 +320,13 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
     public void onReceiveResult(int resultCode, Bundle resultData) {
         if (resultCode != 0) return;
         String result = resultData.getString("result");
+        Boolean reInit = false;
         try {
+            if (hubSingleton.getEntireList().size() == 0) {
+                reInit = true;
+            }
             hubSingleton.clearList();
             JSONObject json = new JSONObject(result);
-            Log.d("foobar", json.toString());
             JSONArray jsonArray = json.getJSONArray("result");
             for (int i = 0; i < jsonArray.length(); i++) {
                 QueueSong item = new QueueSong();
@@ -342,9 +340,14 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                 item.setUser(jObj.getString("user_name"));
                 item.setPlace(jObj.getInt("id"));
                 hubSingleton.add(item);
-                Log.d("list in bw", hubSingleton.toString());
             }
             adapter.notifyDataSetChanged();
+            if (currentlyPlaying.equals("") && hubSingleton.getQueueSize() != 0)
+                queueIfNothingPlaying(hubSingleton.getSongAt(0).getId());
+            else if (reInit && mYouTubePlayer != null && hubSingleton.getEntireList() != null && hubSingleton.getEntireList().size() != 0)
+                mYouTubePlayer.loadVideo(hubSingleton.getSongAt(0).getId());
+            else if (reInit && mYouTubePlayer == null)
+                //initPlayer();
             updateView();
         } catch (JSONException e) {
             e.printStackTrace();
