@@ -44,7 +44,7 @@ public class voteTest {
             System.out.println("Correct");
         }
         else {
-            System.out.println("Incorrect");
+            System.out.println("Maybecorrect/idkwhatrightansweris/Incorrect");
         }
     }
 }
