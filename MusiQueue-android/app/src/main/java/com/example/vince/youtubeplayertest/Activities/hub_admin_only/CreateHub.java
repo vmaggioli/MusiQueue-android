@@ -51,6 +51,8 @@ public class CreateHub extends AppCompatActivity {
                         Gson gson = new Gson();
                         JoinHubResponse r = gson.fromJson(result, JoinHubResponse.class);
                         if (r.error) {
+                            Toast.makeText(getApplicationContext(), "Hub Name is Already Taken", Toast.LENGTH_LONG).show();
+
                             connectError(r.errorCode, r.errorMessage);
                         } else {
                             connectSuccess(r.getHubId());
