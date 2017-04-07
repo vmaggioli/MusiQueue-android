@@ -1,2 +1,3 @@
-You might be looking for: <a href='api'>api docs</a>.
-Or maybe <a href="testApi.html">api tests</a>.
+You might be looking for: <a href='api'>api docs</a>.<br/>
+Or maybe <a href="testApi.html">api tests</a>.<br/>
+Or maybe <a href="bruteForceTest.html">brute force tests</a>.<br/>
