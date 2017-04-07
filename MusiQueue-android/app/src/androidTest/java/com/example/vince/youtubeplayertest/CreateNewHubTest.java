@@ -1,6 +1,5 @@
 package com.example.vince.youtubeplayertest;
 
-import android.provider.Settings;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
@@ -34,7 +33,8 @@ public class CreateNewHubTest {
     @Test
     public void createHubTest() throws Exception {
         HubSingleton hubSingleton = HubSingleton.getInstance();
-        if (hubSingleton.getUserID() == null) hubSingleton.setUserID(Settings.Secure.getString(createValidHubTest.getActivity().getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID));
+        hubSingleton.setUserID("ba6e6ecebee2c145");
+        hubSingleton.setUsername("bd");
         onView(withId(R.id.hub_name))
             .perform(typeText("uniqueName"+ String.valueOf(Calendar.getInstance().get(Calendar.SECOND))), closeSoftKeyboard());
         onView(withId(R.id.pass_pin))

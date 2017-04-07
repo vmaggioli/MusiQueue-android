@@ -32,13 +32,13 @@ public class ExampleInstrumentedTest {
     public void typeAcceptableSearch() throws Exception {
 
         onView(withId(R.id.hub_name_search))                    // choose view to manipulate (search box)
-                .perform(typeText("hub"), closeSoftKeyboard()); // type "hub" into search bar and close keyboard
+                .perform(typeText("friday"), closeSoftKeyboard()); // type "hub" into search bar and close keyboard
 
         onView(withId(R.id.hub_name_search_button))             // choose view to manipulate (search button)
                 .perform(click());                              // click on search button
 
         onView(withId(R.id.hubs_list))                          // choose view to manipulate (recycler view)
-                .perform(RecyclerViewActions.actionOnItemAtPosition(3, click()));   // click third item on list
+                .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));   // click third item on list
     }
 
 }

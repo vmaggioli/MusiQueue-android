@@ -7,8 +7,9 @@ import android.support.test.runner.AndroidJUnit4;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
 import com.example.vince.youtubeplayertest.Activities.starting_activities.GettingStarted;
 import com.example.vince.youtubeplayertest.Activities.users_only.SearchHub;
-import com.example.vince.youtubeplayertest.Activities.users_only.ViewQueueActivity;
 
+import org.junit.Rule;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 
 import static android.support.test.espresso.Espresso.onView;
@@ -23,9 +24,13 @@ import static android.support.test.espresso.matcher.ViewMatchers.withId;
 @RunWith(AndroidJUnit4.class)
 
 public class voteTest {
-
+    @Rule
     public IntentsTestRule<GettingStarted> checkHubSingletonTest = new IntentsTestRule<GettingStarted>(GettingStarted.class);
+    @Test
     public void VoteTest() throws Exception {
+        HubSingleton hubSingleton = HubSingleton.getInstance();
+        hubSingleton.setUserID("ba6e6ecebee2c145");
+        hubSingleton.setUsername("bd");
         onView(withId(R.id.join_hub_button))
                 .perform(click());
         intended(hasComponent(SearchHub.class.getName()));
@@ -36,11 +41,11 @@ public class voteTest {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+
         onView(withId(R.id.hubs_list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition(1, click()));
-        intended(hasComponent(ViewQueueActivity.class.getName()));
-        HubSingleton hubSingleton = HubSingleton.getInstance();
-        if (hubSingleton.getEntireList().get(0).getDownVotes() == 2) {
+                .perform(RecyclerViewActions.actionOnItemAtPosition(0, click()));
+        //intended(hasComponent(ViewQueueActivity.class.getName()));
+        if (hubSingleton.getEntireList() != null && hubSingleton.getEntireList().size() != 0 && hubSingleton.getEntireList().get(0).getDownVotes() == 2) {
             System.out.println("Correct");
         }
         else {
