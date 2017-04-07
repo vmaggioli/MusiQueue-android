@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<style type="text/css">
+	#info{
+		position: fixed;
+		top: 0;
+		left: 0;
+		right: 0;
+		height: 150px;
+		background: #eee;
+	}
+
+	body{
+		margin-top: 150px;
+	}
+</style>
+<div id="output"></div>
+<div id="info">
+	Guesses: <span id="numGuesses"></span><br/>
+	Last guess time: <span id="lastGuessTime"></span><br/>
+	Guess rate: <span id="rate"></span> (Over past 120 seconds)<br/>
+	Estimated time to guess hub pin: <span id="estimate"></span> (assuming 0.5 * 10^4 guesses required)
+</div>
+<script src="jquery-3.1.1.min.js"></script>
+<script>
+function testEndpoint(url, params) {
+    var response = $.ajax({
+        type: "POST",
+        url: url,
+        async: false,
+        data: params,
+        dataType: 'json'
+    }).responseJSON;
+
+    return response;
+}
+
+function message(m) {
+	document.getElementById('output').innerHTML += "<div>"+m+"</div>";
+}
+
+function pin(number) {
+	return ("0000" + number).substr(-4);
+}
+
+
+var ts = +(new Date());
+var hubName1 = 'testHub_'+ts;
+var phoneId1 = 'testPhone1_'+ts;
+var phoneId2 = 'testPhone2_'+ts;
+var username1 = 'testUser1_'+ts;
+var username2 = 'testUser2_'+ts;
+var hubPin = pin(Math.floor(Math.random()*10000));
+var hubId = testEndpoint('api/createHub.php', {
+	hubName: hubName1,
+	phoneId: phoneId1,
+	username: username1,
+	hubPin: hubPin
+}).result.hub_id;
+
+message("Created hub (#" + hubId + ") with pin " + hubPin);
+message("Trying to guess hub pin");
+
+var allPins = [];
+for(var i = 0; i < 10000; i++) {
+	allPins.push(i);
+}
+
+var done = false;
+
+startDate = new Date();
+var guessTimes = [];
+
+function guessPin() {
+	var i = 10000 - allPins.length;
+	var p = pin(allPins.pop());
+	var t = new Date();
+	$.getJSON({
+		url: 'api/joinHub.php',
+		data: {
+			hubName: hubName1,
+			phoneId: phoneId2,
+			username: username2,
+			hubPin: p,
+		},
+		success: r => {
+			if(!r.error) {
+				message("Found hub pin - " + p + " in " + (new Date() - startDate)/1000 + " seconds.");
+				done = true;
+			}else{
+				document.getElementById('numGuesses').innerHTML++;
+				document.getElementById('lastGuessTime').innerHTML = (new Date() - t)/1000 + " seconds";
+
+				message("Failed guess completed at " + (new Date() - startDate)/1000);
+
+				var now = +(new Date());
+				guessTimes.push((now - startDate)/1000);
+
+				num = 0;
+				for(var i = guessTimes.length - 1; i >=0; i--) {
+					if(guessTimes[i] > (now - startDate)/1000 - 120) {
+						num++;
+					}else{
+						break;
+					}
+				}
+				var rate = num / Math.min(120, (now - startDate)/1000); // guesses/sec
+				rate *= 60; // guesses/min
+
+				document.getElementById('rate').innerHTML = rate + " guesses/minute."
+				document.getElementById('estimate').innerHTML = 5000 / rate / 60 + " hours."
+				if(!done) guessPin();
+			}
+		}
+	})
+}
+
+for(var i = 0; i < 6; i++) guessPin();
+
+</script>
