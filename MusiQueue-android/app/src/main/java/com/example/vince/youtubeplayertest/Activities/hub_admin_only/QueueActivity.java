@@ -164,6 +164,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                             removeId = String.valueOf(hubSingleton.getSongAt(0).getPlace());
                             hubSingleton.removeAt(0);
                             changeAndUpdate("remove");
+                            songListView.getRecycledViewPool().clear();
                             adapter.notifyDataSetChanged();
                             if (hubSingleton.getEntireList().size() != 0 && mYouTubePlayer != null)
                                 mYouTubePlayer.loadVideo(hubSingleton.getSongAt(0).getId());
@@ -210,6 +211,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
 
                         hubSingleton.add(item);
                     }
+                    songListView.getRecycledViewPool().clear();
                     adapter.notifyDataSetChanged();
                     if (currentlyPlaying.equals("") && hubSingleton.getQueueSize() != 0)
                         queueIfNothingPlaying(hubSingleton.getSongAt(0).getId());
@@ -344,6 +346,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                 item.setPressed(jObj.getInt("voted"));
                 hubSingleton.add(item);
             }
+            songListView.getRecycledViewPool().clear();
             adapter.notifyDataSetChanged();
             if (currentlyPlaying.equals("") && hubSingleton.getQueueSize() != 0)
                 queueIfNothingPlaying(hubSingleton.getSongAt(0).getId());

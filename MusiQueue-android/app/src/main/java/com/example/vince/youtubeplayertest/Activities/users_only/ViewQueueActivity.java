@@ -88,6 +88,7 @@ public class ViewQueueActivity extends AppCompatActivity implements UpdateResult
                         hubSingleton.add(item);
                         Log.d("list in bw", hubSingleton.toString());
                     }
+                    songListView.getRecycledViewPool().clear();
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -141,6 +142,7 @@ public class ViewQueueActivity extends AppCompatActivity implements UpdateResult
                 hubSingleton.add(item);
                 Log.d("list in bw", hubSingleton.toString());
             }
+            songListView.getRecycledViewPool().clear();
             adapter.notifyDataSetChanged();
             updateView();
         } catch (JSONException e) {
