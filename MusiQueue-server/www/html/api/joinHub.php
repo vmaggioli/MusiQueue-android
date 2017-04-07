@@ -64,19 +64,31 @@ if(mysqli_num_rows($result)) {
         UPDATE Users
         SET `name` = '$username',
             `active` = 1,
-            `last_active` = CURRENT_TIME()
+            `last_active` = NOW()
         WHERE `id` = ".$userInfo['id']."
     ");
 }else{
     // the user is not in the hub
     // check if the hub pin is correct
-    if($hub['hub_pin'] != $hubPin && $hub['hub_pin'] != null) {
-        // mitigate against brute force attacks
-        if($hub['connection_failures'] < $hub['connection_successes'] * 2 + 5) {
-            sleep(2);
+    // mitigate against brute force attacks
+    if($hub['connection_failures'] < $hub['connection_successes'] * 2 + 5) {
+        sleep(1);
+    }else{
+        $ip = mysqli_real_escape_string($conn, $_SERVER['REMOTE_ADDR']);
+
+        $timeResult = mysqli_query($conn, "SELECT *, TIMESTAMPDIFF(SECOND, NOW(), time) as secs FROM IpLockout WHERE ip = '$ip'");
+        if(mysqli_num_rows($timeResult)) {
+            $secs = mysqli_fetch_assoc($timeResult)['secs'];
+            $secs = max(0, $secs);
+            $secs += 6;
         }else{
-            sleep(6);
+            $secs = 6;
         }
+        mysqli_query($conn, "REPLACE INTO IpLockout SET time = NOW() + INTERVAL $secs SECOND, ip = '$ip'");
+        sleep($secs);
+    }
+
+    if($hub['hub_pin'] != $hubPin && $hub['hub_pin'] != null) {
 
         $hubId = $hub['id'];
         mysqli_query($conn, "UPDATE Hubs SET connection_failures = connection_failures + 1 WHERE id = $hubId");
