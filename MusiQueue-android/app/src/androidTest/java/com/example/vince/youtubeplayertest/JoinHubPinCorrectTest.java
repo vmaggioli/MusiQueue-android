@@ -1,6 +1,5 @@
 package com.example.vince.youtubeplayertest;
 
-import android.provider.Settings;
 import android.support.test.espresso.contrib.RecyclerViewActions;
 import android.support.test.espresso.intent.rule.IntentsTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -34,14 +33,14 @@ public class JoinHubPinCorrectTest {
     @Test
     public void correctJoinTest() throws Exception {
         HubSingleton hubSingleton = HubSingleton.getInstance();
-        if (hubSingleton.getUserID() == null) hubSingleton.setUserID(Settings.Secure.getString(checkCorrectJoin.getActivity().getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID));
+        if (hubSingleton.getUserID() == null) hubSingleton.setUserID("ba6e6ecebee2c145");
 
         onView(withId(R.id.hub_name_search))
-                .perform(typeText("test"), closeSoftKeyboard());
+                .perform(typeText("friday"), closeSoftKeyboard());
         onView(withId(R.id.hub_name_search_button))
                 .perform(click());
         onView(withId(R.id.hubs_list))
-                .perform(RecyclerViewActions.actionOnItemAtPosition(2,click()));
+                .perform(RecyclerViewActions.actionOnItemAtPosition(0,click()));
 
         intended(hasComponent(ViewQueueActivity.class.getName()));
     }
