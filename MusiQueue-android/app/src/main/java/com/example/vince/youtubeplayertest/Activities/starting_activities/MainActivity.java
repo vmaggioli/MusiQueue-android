@@ -20,8 +20,8 @@ public class MainActivity extends AppCompatActivity {
     TextView createName;
     EditText usernameText;
     Button usernameButton;
-    Button testSearchButton;
-    Button testDatabaseButton;
+    //Button testSearchButton;
+    //Button testDatabaseButton;
     Button backendButton;
     HubSingleton appState;
 
@@ -60,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         // set textView and editText
         createName = (TextView) findViewById(R.id.create_name_text_view);
         usernameText = (EditText) findViewById(R.id.username_entry);
-        backendButton = (Button) findViewById(R.id.backend_button);
+        //backendButton = (Button) findViewById(R.id.backend_button);
 
         // set username button
         usernameButton = (Button) findViewById(R.id.submit_username);
@@ -86,7 +86,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        // TODO: remove test buttons below for final product
+       /*
         testSearchButton = (Button) findViewById(R.id.test_button_search_hubs);
         testSearchButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,7 +102,7 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Toast.makeText(getApplicationContext(), "Not setup yet", Toast.LENGTH_SHORT).show();
             }
-        });
+        });*/
     }
 
     // FUNCTION CALLED WHEN THE TEST BACKEND BUTTON IS PRESSED
