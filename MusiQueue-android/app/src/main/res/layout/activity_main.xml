@@ -48,31 +48,5 @@
         android:text="@string/submit"
         android:textColor="@color/colorPrimaryDark" />
 
-    <Button
-        android:id="@+id/test_button_search_hubs"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/submit_username"
-        android:layout_centerHorizontal="true"
-        android:text="TEST SEARCH HUBS"
-        android:textColor="@color/colorPrimaryDark" />
-
-    <Button
-        android:id="@+id/test_button_database"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_above="@id/test_button_search_hubs"
-        android:layout_centerHorizontal="true"
-        android:text="TEST DATABASE"
-        android:textColor="@color/colorPrimaryDark" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="TEST BACKEND"
-        android:onClick="toBack"
-        android:id="@+id/backend_button"
-        />
-
 </LinearLayout>
 
