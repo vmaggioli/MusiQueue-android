@@ -8,15 +8,17 @@ createHub:
         hubPin (optional) - the pin required for joining the hub
         phoneId - the user's phoneId
         username - the name the user wants to be called
-    	// TODO: add hub location?
+        lat - the latitude of the created hub (0 if user didn't allow location)
+        long - the longitude of the created hub (0 if user didn't allow location)
     Returns on success:
         info about the hub we connect to:
         {
             hub_id - int
-            is_creator - always true
         }
+    Common errors:
+        HUB_NAME_TAKEN
+    // TODO: add hub location?
 ");
-apiDocsCouldError('HUB_NAME_TAKEN');
 
 assertGiven("hubName");
 assertGiven("phoneId");
@@ -31,6 +33,8 @@ if(isset($_REQUEST['hubPin'])) {
 }else{
 	$hasPin = false;
 }
+$lat = mysqli_real_escape_string($conn, $_REQUEST['lat']);
+$long = mysqli_real_escape_string($conn, $_REQUEST['long']);
 
 // check if this hub name is available
 $result = mysqli_query($conn, "
@@ -83,8 +87,8 @@ if($taken) {
 	// create the hub
 	$result = mysqli_query($conn, "
 		INSERT INTO Hubs
-		(hub_name, time_last_active, hub_pin)
-		VALUES ('$hubName', CURRENT_TIME(), ".($hasPin ? "'$hubPin'" : 'NULL').")
+		(hub_name, time_last_active, hub_pin, latitude, longitude)
+		VALUES ('$hubName', CURRENT_TIME(), ".($hasPin ? "'$hubPin'" : 'NULL').", $lat, $long)
 	");
 	$hubId = mysqli_insert_id($conn);
 
@@ -105,8 +109,7 @@ if($taken) {
 
 // return
 respondSuccess(array(
-    "hub_id" => $hubId,
-    "is_creator" => true
+    "hub_id" => $hubId
 ));
 
 ?>
