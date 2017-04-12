@@ -1,6 +1,8 @@
 package com.example.vince.youtubeplayertest.Activities;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,7 +13,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
+import com.example.vince.youtubeplayertest.Activities.hub_admin_only.QueueActivity;
 import com.example.vince.youtubeplayertest.Activities.users_only.QueueSong;
+import com.example.vince.youtubeplayertest.Activities.users_only.SearchHub;
 import com.example.vince.youtubeplayertest.R;
 
 import org.json.JSONArray;
@@ -32,8 +36,8 @@ import static com.example.vince.youtubeplayertest.R.id.video_title;*/
 
 public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.ViewHolder> {
 
-    private ArrayList<QueueSong> videos;
-    private Context mContext;
+    private static ArrayList<QueueSong> videos;
+    private static Context mContext;
     private OnItemClickListener listener;
 
 
@@ -46,10 +50,12 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
         public TextView videoTitle;
         public Button upButton;
         public Button downButton;
+        public Button removeSongButton;
         public TextView videoUser;
         HubSingleton hubSingleton = HubSingleton.getInstance();
         public BackgroundWorker voteUpBW;
         public BackgroundWorker voteDownBW;
+        public BackgroundWorker removeSongBW;
         BackgroundWorker voteBW;
         BackgroundWorker.AsyncResponse callback;
 
@@ -60,7 +66,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
             upButton = (Button) itemView.findViewById(R.id.button3);
             downButton = (Button) itemView.findViewById(R.id.button2);
             videoUser = (TextView) itemView.findViewById(R.id.queueItem_user);
-
+            removeSongButton = (Button) itemView.findViewById(R.id.removeSong);
 
         }
         public void bind(final QueueSong videoItem, final OnItemClickListener listener) {
@@ -187,6 +193,40 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                     return true;
                 }
             });
+
+            if (mContext.getClass() == QueueActivity.class) {
+                removeSongButton.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                        builder.setMessage("Are you sure you want to remove this song from the playlist?")
+                                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                        removeSongBW = new BackgroundWorker(callback);
+                                        String hubId = hubSingleton.getHubId().toString();
+                                        String songId = String.valueOf(videoItem.getPlace());
+                                        String phoneId = hubSingleton.getUserID();
+                                        videos.remove(videoItem);
+                                        removeSongBW.execute("removeSong", hubId, phoneId, songId);
+                                        removeSongButton.setPressed(true);
+
+                                    }
+                                })
+                                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        dialog.dismiss();
+                                    }
+                                });
+
+                        AlertDialog alertDialog = builder.create();
+                        alertDialog.show();
+
+                    }
+                });
+            }
+
         }
     }
 
@@ -201,7 +241,12 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         Context context = parent.getContext();
         LayoutInflater lf = LayoutInflater.from(context);
-        View hubsListItemView = lf.inflate(R.layout.queue_item, parent, false);
+        View hubsListItemView;
+        if (mContext.getClass() == QueueActivity.class) {
+            hubsListItemView = lf.inflate(R.layout.queue_item_admin, parent, false);
+        } else {
+            hubsListItemView = lf.inflate(R.layout.queue_item, parent, false);
+        }
         ViewHolder vh = new ViewHolder(hubsListItemView);
         return vh;
     }
