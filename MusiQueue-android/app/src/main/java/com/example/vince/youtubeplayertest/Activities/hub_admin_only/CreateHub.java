@@ -32,6 +32,7 @@ public class CreateHub extends AppCompatActivity  {
     HubSingleton appState;
     LocationManager locationmanager;
     LocationListener locationListener;
+    Location globalLocation;
     static boolean set = false;
 
 
@@ -40,6 +41,7 @@ public class CreateHub extends AppCompatActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_hub);
 
+        globalLocation = null;
         // set editTexts
         hubNameText = (EditText) findViewById(R.id.hub_name);
         passPin = (EditText) findViewById(R.id.pass_pin);
@@ -101,7 +103,11 @@ public class CreateHub extends AppCompatActivity  {
                 }
             }
         });
-        backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID(), appState.getUsername());
+        if (globalLocation == null)
+            backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID(), appState.getUsername(), "0", "0");
+        else
+            backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID(), appState.getUsername(),
+                    String.valueOf(globalLocation.getLatitude()), String.valueOf(globalLocation.getLongitude()));
         appState.setHubName(hubNameText.getText().toString());
     }
 
@@ -128,8 +134,9 @@ public class CreateHub extends AppCompatActivity  {
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-                System.out.println("my location changed to: " + location.getLatitude() + " lat and " + location.getLongitude() + " long.");
+
                 if (!set) {
+                    globalLocation = location;
                     AlertDialog.Builder builder = new AlertDialog.Builder(CreateHub.this);
                     builder.setMessage("Your General Location Has Been Saved. You Can Disable Your GPS Now.")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
