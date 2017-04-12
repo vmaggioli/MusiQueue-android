@@ -37,6 +37,7 @@ import java.util.Vector;
 
 public class SearchHub extends AppCompatActivity {
     RecyclerView hubsList;
+    HubsListAdapter hubsListAdapter;
     EditText enterHub;
     Button searchButton;
     Button searchByNameButton;
@@ -44,17 +45,17 @@ public class SearchHub extends AppCompatActivity {
     TextView hubsNearText;
     Vector<HubsListItem> hubs;
     HubSingleton hubSingleton;
+    SearchHubResponse r;
 
     LocationManager locationmanager;
     LocationListener locationListener;
     Location globalLocation;
-    static boolean set = false;
+    boolean set;
 
 
     HubsListAdapter.OnItemClickListener callback;
 
     private Handler handler;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,9 +129,9 @@ public class SearchHub extends AppCompatActivity {
                 @Override
                 public void processFinish(String result) {
                     Gson gson = new Gson();
-                    SearchHubResponse r = gson.fromJson(result, SearchHubResponse.class);
+                    r = gson.fromJson(result, SearchHubResponse.class);
 
-                    HubsListAdapter hubsListAdapter = new HubsListAdapter(getApplicationContext(), r.result, callback);
+                    hubsListAdapter = new HubsListAdapter(getApplicationContext(), r.result, callback);
                     hubsList.setAdapter(hubsListAdapter);
                     hubsList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                 }
@@ -147,9 +148,9 @@ public class SearchHub extends AppCompatActivity {
             @Override
             public void processFinish(String result) {
                 Gson gson = new Gson();
-                SearchHubResponse r = gson.fromJson(result, SearchHubResponse.class);
+                r = gson.fromJson(result, SearchHubResponse.class);
 
-                HubsListAdapter hubsListAdapter = new HubsListAdapter(getApplicationContext(), r.result, callback);
+                hubsListAdapter = new HubsListAdapter(getApplicationContext(), r.result, callback);
                 hubsList.setAdapter(hubsListAdapter);
                 hubsList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
             }
@@ -158,12 +159,14 @@ public class SearchHub extends AppCompatActivity {
     }
 
     public void nearestHubs() {
+        searchByNameButton.setEnabled(true);
         BackgroundWorker backgroundWorker = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
             @Override
             public void processFinish(String result) {
                 Gson gson = new Gson();
-                SearchHubResponse r = gson.fromJson(result, SearchHubResponse.class);
+                r = gson.fromJson(result, SearchHubResponse.class);
 
+                hubsNearText.setText("Hubs Near You");
                 HubsListAdapter hubsListAdapter = new HubsListAdapter(getApplicationContext(), r.result, callback);
                 hubsList.setAdapter(hubsListAdapter);
                 hubsList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -191,23 +194,29 @@ public class SearchHub extends AppCompatActivity {
         searchByNameButton.setPressed(false);
         searchButton.setVisibility(View.GONE);
         enterHub.setVisibility(View.GONE);
+        hubsNearText.setText("loading...");
         hubsNearText.setVisibility(View.VISIBLE);
-        nearestHubs();
+        r.result.clear();
+        hubsListAdapter.notifyDataSetChanged();
 
         AlertDialog.Builder builder = new AlertDialog.Builder(SearchHub.this);
-        builder.setMessage("We Need To Access Your Location Momentarily, Turn On GPS Location?")
+        builder.setMessage("We Need To Access Your Location Momentarily, Allow Us To Use Your GPS Location?")
                 .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        configureLocation();
+                        searchByNameButton.setEnabled(false);
+                        if (set)
+                            nearestHubs();
+                        else
+                            configureLocation();
+
                     }
                 })
                 .setNegativeButton("NO", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
-                        set = false;
                         searchByName(new View(getApplicationContext()));
                     }
                 });
@@ -230,18 +239,21 @@ public class SearchHub extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
+                                    searchByNameButton.setEnabled(true);
                                 }
                             })
                             .setNegativeButton("CANCEL", new AlertDialog.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
+                                    searchByNameButton.setEnabled(true);
                                 }
                             });
 
                     AlertDialog alertDialog = builder.create();
                     alertDialog.show();
                     set = true;
+                    nearestHubs();
                 }
             }
 
@@ -252,12 +264,10 @@ public class SearchHub extends AppCompatActivity {
 
             @Override
             public void onProviderEnabled(String provider) {
-
             }
 
             @Override
             public void onProviderDisabled(String provider) {
-
             }
         };
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
