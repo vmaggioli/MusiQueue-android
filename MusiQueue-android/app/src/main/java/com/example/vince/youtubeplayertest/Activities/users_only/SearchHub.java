@@ -1,10 +1,19 @@
 package com.example.vince.youtubeplayertest.Activities.users_only;
 
-import android.content.Context;
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -30,8 +39,17 @@ public class SearchHub extends AppCompatActivity {
     RecyclerView hubsList;
     EditText enterHub;
     Button searchButton;
+    Button searchByNameButton;
+    Button searchByLocationButton;
+    TextView hubsNearText;
     Vector<HubsListItem> hubs;
     HubSingleton hubSingleton;
+
+    LocationManager locationmanager;
+    LocationListener locationListener;
+    Location globalLocation;
+    static boolean set = false;
+
 
     HubsListAdapter.OnItemClickListener callback;
 
@@ -43,11 +61,18 @@ public class SearchHub extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_hub);
 
-        Context context = getApplicationContext();
-
         // initialize views
         enterHub = (EditText) findViewById(R.id.hub_name_search);
+        hubsNearText = (TextView) findViewById(R.id.hubs_near_you_text);
         searchButton = (Button) findViewById(R.id.hub_name_search_button);
+        searchByNameButton = (Button) findViewById(R.id.search_by_name_button);
+        searchByLocationButton = (Button) findViewById(R.id.search_by_location_button);
+        globalLocation = null;
+        set = false;
+
+        // view starts with searchByNameButton considered pressed
+        searchByNameButton.setEnabled(false);
+        searchByNameButton.setPressed(true);
 
         hubsList = (RecyclerView) findViewById(R.id.hubs_list);
         hubs = new Vector<>();
@@ -130,6 +155,144 @@ public class SearchHub extends AppCompatActivity {
             }
         });
         backgroundWorker.execute("recentHubs", hubSingleton.getUserID());
+    }
+
+    public void nearestHubs() {
+        BackgroundWorker backgroundWorker = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
+            @Override
+            public void processFinish(String result) {
+                Gson gson = new Gson();
+                SearchHubResponse r = gson.fromJson(result, SearchHubResponse.class);
+
+                HubsListAdapter hubsListAdapter = new HubsListAdapter(getApplicationContext(), r.result, callback);
+                hubsList.setAdapter(hubsListAdapter);
+                hubsList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+            }
+        });
+        backgroundWorker.execute("nearestHubs", hubSingleton.getUserID(),
+                String.valueOf(globalLocation.getLatitude()), String.valueOf(globalLocation.getLongitude()));
+    }
+
+    public void searchByName(View view) {
+        searchByLocationButton.setEnabled(true);
+        searchByLocationButton.setPressed(false);
+        searchByNameButton.setEnabled(false);
+        searchByNameButton.setPressed(true);
+        hubsNearText.setVisibility(View.GONE);
+        searchButton.setVisibility(View.VISIBLE);
+        enterHub.setVisibility(View.VISIBLE);
+        recentHubs();
+    }
+
+    public void searchByLocation(View view) {
+        searchByLocationButton.setEnabled(false);
+        searchByLocationButton.setPressed(true);
+        searchByNameButton.setEnabled(true);
+        searchByNameButton.setPressed(false);
+        searchButton.setVisibility(View.GONE);
+        enterHub.setVisibility(View.GONE);
+        hubsNearText.setVisibility(View.VISIBLE);
+        nearestHubs();
+
+        AlertDialog.Builder builder = new AlertDialog.Builder(SearchHub.this);
+        builder.setMessage("We Need To Access Your Location Momentarily, Turn On GPS Location?")
+                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        configureLocation();
+                    }
+                })
+                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        set = false;
+                        searchByName(new View(getApplicationContext()));
+                    }
+                });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+    private void configureLocation() {
+        locationmanager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+
+                if (!set) {
+                    globalLocation = location;
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SearchHub.this);
+                    builder.setMessage("Your General Location Has Been Saved. You Can Disable Your GPS Now.")
+                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            })
+                            .setNegativeButton("CANCEL", new AlertDialog.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                }
+                            });
+
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                    set = true;
+                }
+            }
+
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                requestPermissions(new String[]{
+                        Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
+                }, 10);
+                int off;
+                try {
+                    off = Settings.Secure.getInt(getContentResolver(), Settings.Secure.LOCATION_MODE);
+                    if(off==0){
+                        Intent onGPS = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                        startActivity(onGPS);
+                    }
+                } catch (Settings.SettingNotFoundException e) {
+                    e.printStackTrace();
+                }
+
+                locationmanager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                System.out.println(locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+                return;
+            }
+        } else {
+            int off;
+            try {
+                off = Settings.Secure.getInt(getContentResolver(), Settings.Secure.LOCATION_MODE);
+                if(off==0){
+                    Intent onGPS = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+                    startActivity(onGPS);
+                }
+            } catch (Settings.SettingNotFoundException e) {
+                e.printStackTrace();
+            }
+            locationmanager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+            System.out.println("second: " + locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER));        }
     }
 
 }

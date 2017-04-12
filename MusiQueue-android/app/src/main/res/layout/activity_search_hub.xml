@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_search_hub"
     android:layout_width="match_parent"
@@ -8,8 +8,44 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
     tools:context="com.example.vince.youtubeplayertest.Activities.users_only.SearchHub">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/search_by_name_button"
+            android:text="By Name"
+            android:background="@drawable/gray_bubble_button"
+            android:onClick="searchByName"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            />
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/search_by_location_button"
+            android:text="By Location"
+            android:background="@drawable/gray_bubble_button"
+            android:onClick="searchByLocation"
+            android:paddingLeft="5dp"
+            android:paddingRight="5dp"
+            />
+    </LinearLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/hubs_near_you_text"
+        android:textAlignment="center"
+        android:text="Hubs Near You"
+        android:textSize="30sp"
+        android:visibility="gone"
+        />
     <LinearLayout
         android:id="@+id/search_bar_hubs"
         android:layout_width="match_parent"
@@ -51,4 +87,4 @@
 
     </android.support.v7.widget.RecyclerView>
 
-</RelativeLayout>
+</LinearLayout>
