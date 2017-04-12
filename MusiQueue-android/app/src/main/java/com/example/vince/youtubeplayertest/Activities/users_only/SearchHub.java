@@ -109,7 +109,7 @@ public class SearchHub extends AppCompatActivity {
     }
 
     protected void selectHub(HubsListItem hub) {
-        if(hub.getHub_pin_required() == null || hub.getHub_pin_required()) {
+        if(hub.getHub_pin_required()) {
             final Intent i = new Intent(SearchHub.this, JoinHub.class);
             i.putExtra("hubName", hub.getHub_name());
             startActivity(i);
