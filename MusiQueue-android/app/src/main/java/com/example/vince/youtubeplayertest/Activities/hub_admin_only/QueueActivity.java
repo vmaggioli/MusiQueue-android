@@ -41,6 +41,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class QueueActivity extends AppCompatActivity implements UpdateResultReceiver.Receiver {
@@ -51,9 +52,11 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
     Button searchButton;
 
     BackgroundWorker.AsyncResponse callback;
+    BackgroundWorker.AsyncResponse othercallback;
     BackgroundWorker addBW;
     BackgroundWorker listBW;
     BackgroundWorker removeBW;
+    BackgroundWorker userBW;
     String id;
     String title;
     String removeId;
@@ -61,6 +64,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
     HubSingleton hubSingleton;
     VideoItemAdapter adapter;
     UpdateResultReceiver receiver;
+    ArrayList<String> users;
     String currentlyPlaying;
     private List<VideoItem> searchResults;
     private ListView videosFound;
@@ -102,6 +106,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         });
 
         hubSingleton = HubSingleton.getInstance();
+        getUsers();
 
         adapter = new VideoItemAdapter(QueueActivity.this, hubSingleton.getEntireList(), new VideoItemAdapter.OnItemClickListener() {
             @Override
@@ -274,7 +279,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 if(convertView == null){
-                    convertView = getLayoutInflater().inflate(R.layout.video_item, parent, false);
+                     convertView = getLayoutInflater().inflate(R.layout.video_item, parent, false);
                 }
                 ImageView thumbnail = (ImageView)convertView.findViewById(R.id.video_thumbnail);
                 TextView title = (TextView)convertView.findViewById(R.id.video_title);
@@ -358,5 +363,37 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
     public void queueIfNothingPlaying(String video_id) {
         if (currentlyPlaying.equals("") && video_id != null && mYouTubePlayer != null)
                 mYouTubePlayer.loadVideo(video_id);
+    }
+
+    public void getUsers() {
+        othercallback = new BackgroundWorker.AsyncResponse() {
+            @Override
+            public void processFinish(String output) {
+                hubSingleton.clearUsers();
+                JSONObject json = null;
+                users = new ArrayList<String>();
+                try {
+                    json = new JSONObject(output);
+                    JSONArray jsonArray = json.getJSONArray("result");
+                    for(int i = 0; i < jsonArray.length();i++) {
+                        users.add(jsonArray.getJSONObject(i).getString("name"));
+                    }
+                    hubSingleton.setUsers(users);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        };
+        userBW = new BackgroundWorker(othercallback);
+        userBW.execute("hubUsers",hubSingleton.getHubId().toString(),hubSingleton.getUserID());
+    }
+    public void viewUsers() {
+        //set all view components for users
+    }
+    public void viewSongs() {
+        //set all view components for songs
     }
 }

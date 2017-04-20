@@ -25,6 +25,13 @@
             <!--app:popupTheme="@style/AppTheme.PopupOverlay" />-->
 
     <!--</android.support.design.widget.AppBarLayout>-->
+    <ToggleButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Users"
+        android:id="@+id/q_view"
+        />
 
     <fragment
         android:id="@+id/youtube_player"

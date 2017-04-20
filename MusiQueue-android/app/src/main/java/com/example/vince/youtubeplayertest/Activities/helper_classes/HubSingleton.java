@@ -17,6 +17,7 @@ public class HubSingleton {
     private HubSingleton() {
         songsList = new ArrayList<QueueSong>();
     }
+
     public String getHubName() {
         return hubName;
     }
@@ -69,10 +70,22 @@ public class HubSingleton {
 
     public int getQueueSize() { return songsList.size();}
 
+    public void setUsers(ArrayList<String> users) {
+        this.users = users;
+    }
+
+    public void clearUsers() {
+        users.clear();
+    }
+
+    public ArrayList<String> getUsers() {return this.users;}
+
     private String username;
     private String hubName;
     private String passPin;
     private String userId;
     private Integer hubId;
-    ArrayList<QueueSong> songsList;
+    private ArrayList<QueueSong> songsList;
+    private ArrayList<String> users;
+
 }
