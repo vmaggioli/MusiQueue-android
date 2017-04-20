@@ -16,11 +16,13 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
 import com.example.vince.youtubeplayertest.Activities.PollData;
@@ -66,9 +68,11 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
     UpdateResultReceiver receiver;
     ArrayList<String> users;
     String currentlyPlaying;
+    ToggleButton viewButton;
     private List<VideoItem> searchResults;
     private ListView videosFound;
     private Handler handler;
+    boolean song = true;
     @Override
     public void onBackPressed() {
         if (songListView != null && videosFound != null && videosFound.getVisibility() == View.VISIBLE) {
@@ -92,6 +96,8 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         searchEdit = (EditText) findViewById(R.id.search_edit);
         searchButton = (Button) findViewById(R.id.search_button);
         videosFound = (ListView)findViewById(R.id.videos_found);
+        viewButton = (ToggleButton) findViewById(R.id.q_view);
+
         handler = new Handler();
         addClickListener();
         searchEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -114,6 +120,19 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
 
             }
         });
+        viewButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonview, boolean isChecked) {
+                if(isChecked) {
+                    song = false;
+                }
+                else {
+                    song = true;
+                }
+                //TODO: call view function (song)
+            }
+        }
+
+        );
         songListView = (RecyclerView) findViewById(R.id.songList);
         songListView.setAdapter(adapter);
         songListView.setLayoutManager(new LinearLayoutManager(this));
@@ -366,11 +385,12 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
     }
 
     public void getUsers() {
+        System.out.println("Begin getting users");
         othercallback = new BackgroundWorker.AsyncResponse() {
             @Override
             public void processFinish(String output) {
                 hubSingleton.clearUsers();
-                JSONObject json = null;
+                JSONObject json;
                 users = new ArrayList<String>();
                 try {
                     json = new JSONObject(output);
@@ -379,6 +399,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                         users.add(jsonArray.getJSONObject(i).getString("name"));
                     }
                     hubSingleton.setUsers(users);
+                    System.out.println("end getting users");
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -389,6 +410,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         };
         userBW = new BackgroundWorker(othercallback);
         userBW.execute("hubUsers",hubSingleton.getHubId().toString(),hubSingleton.getUserID());
+
     }
     public void viewUsers() {
         //set all view components for users
