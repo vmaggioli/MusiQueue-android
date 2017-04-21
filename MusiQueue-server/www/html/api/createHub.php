@@ -23,6 +23,8 @@ createHub:
 assertGiven("hubName");
 assertGiven("phoneId");
 assertGiven("username");
+assertGiven("lat");
+assertGiven("long");
 
 $phoneId = mysqli_real_escape_string($conn, $_REQUEST['phoneId']);
 $username = mysqli_real_escape_string($conn, $_REQUEST['username']);

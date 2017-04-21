@@ -116,7 +116,9 @@ var actions = [
 	r => hubId = testEndpoint('api/createHub.php', {
 		hubName: hubName1,
 		phoneId: phoneId1,
-		username: username
+		username: username,
+		lat: 0,
+		long: 0,
 	}).result.hub_id,
 
 	r => message("User 2 joining hub with wrong name"),
@@ -299,7 +301,9 @@ var actions = [
 	r => testEndpointError('api/createHub.php', {
 		hubName: hubName1,
 		phoneId: phoneId3,
-		username: username3
+		username: username3,
+		lat: 0,
+		long: 0,
 	}, 'HUB_NAME_TAKEN'),
 
 	r => message("User 2 closing the hub"),
@@ -334,7 +338,9 @@ var actions = [
 		hubName: hubName1,
 		phoneId: phoneId1,
 		username: 'new username',
-		hubPin: '1234'
+		hubPin: '1234',
+		lat: 0,
+		long: 0,
 	}),
 
 	r => message("User 3 joing hub with changed pin"),
@@ -351,7 +357,9 @@ var actions = [
 		hubName: hubName2,
 		phoneId: phoneId1,
 		username: username,
-		hubPin: '1234'
+		hubPin: '1234',
+		lat: 0,
+		long: 0,
 	}).result.hub_id,
 
 	r => message("User 2 joining hub with pin"),
