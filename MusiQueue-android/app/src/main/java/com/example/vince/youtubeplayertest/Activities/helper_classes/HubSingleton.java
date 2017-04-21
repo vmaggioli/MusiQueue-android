@@ -75,7 +75,9 @@ public class HubSingleton {
     }
 
     public void clearUsers() {
-        users.clear();
+        if(users != null) {
+            users.clear();
+        }
     }
 
     public ArrayList<String> getUsers() {return this.users;}

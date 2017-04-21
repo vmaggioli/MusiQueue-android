@@ -27,6 +27,7 @@ import android.widget.ToggleButton;
 import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
 import com.example.vince.youtubeplayertest.Activities.PollData;
 import com.example.vince.youtubeplayertest.Activities.UpdateResultReceiver;
+import com.example.vince.youtubeplayertest.Activities.UserItemAdapter;
 import com.example.vince.youtubeplayertest.Activities.VideoItem;
 import com.example.vince.youtubeplayertest.Activities.VideoItemAdapter;
 import com.example.vince.youtubeplayertest.Activities.YoutubeConnector;
@@ -65,6 +66,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
     RecyclerView songListView;
     HubSingleton hubSingleton;
     VideoItemAdapter adapter;
+    UserItemAdapter userAdapter;
     UpdateResultReceiver receiver;
     ArrayList<String> users;
     String currentlyPlaying;
@@ -73,6 +75,8 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
     private ListView videosFound;
     private Handler handler;
     boolean song = true;
+
+
     @Override
     public void onBackPressed() {
         if (songListView != null && videosFound != null && videosFound.getVisibility() == View.VISIBLE) {
@@ -129,6 +133,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                     song = true;
                 }
                 //TODO: call view function (song)
+
             }
         }
 
@@ -371,8 +376,6 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                 queueIfNothingPlaying(hubSingleton.getSongAt(0).getId());
             else if (reInit && mYouTubePlayer != null && hubSingleton.getEntireList() != null && hubSingleton.getEntireList().size() != 0)
                 mYouTubePlayer.loadVideo(hubSingleton.getSongAt(0).getId());
-            //else if (reInit && mYouTubePlayer == null)
-                //initPlayer();
             updateView();
         } catch (JSONException e) {
             e.printStackTrace();

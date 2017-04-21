@@ -41,11 +41,9 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
     private OnItemClickListener listener;
 
 
-
     public interface OnItemClickListener {
         void onItemClick(QueueSong videoItem);
     }
-
     static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView videoTitle;
         public Button upButton;
@@ -73,7 +71,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
 //            if (videoItem.getTitle().replaceAll("\\s+"," ").length() >= 25)
 //                videoTitle.setText(videoItem.getTitle().trim().substring(0, 28) + "...");
 //            else
-                videoTitle.setText(videoItem.getTitle());
+            videoTitle.setText(videoItem.getTitle());
             videoUser.setText(videoItem.getUser());
             upButton.setText(Integer.toString(videoItem.getUpVotes()));
             downButton.setText(Integer.toString(videoItem.getDownVotes()));
@@ -111,33 +109,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                     }
                 }
             };
-// <<<<<<< SairamSamBranch
 
-
-// //            itemView.setOnClickListener(new View.OnClickListener() {
-//   //              @Override public void onClick(View v) {
-//     //                listener.onItemClick(videoItem);
-//       //          }
-//         //    });
-             /*upButton.setOnClickListener(new View.OnClickListener() {
-// =======
-//             voteBW = new BackgroundWorker(callback);
-
-//             upButton.setOnClickListener(new View.OnClickListener() {
-// >>>>>>> master
-                public void onClick(View v) {
-
-                    String hub = hubSingleton.getHubId().toString();
-                    String phone = hubSingleton.getUserID();
-                    voteBW.execute("voteUpSong",hub,phone,String.valueOf(videoItem.getPlace()));
-                    downButton.setBackgroundResource(android.R.drawable.btn_default);
-                    upButton.setBackgroundColor(Color.TRANSPARENT);
-                    downButton.setClickable(true);
-                    upButton.setClickable(false);
-                    upButton.setPressed(true);
-                    downButton.setPressed(false);
-                }
-            });*/
             upButton.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
