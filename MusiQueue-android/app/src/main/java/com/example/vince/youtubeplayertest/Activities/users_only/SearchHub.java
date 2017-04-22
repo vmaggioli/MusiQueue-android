@@ -87,10 +87,25 @@ public class SearchHub extends AppCompatActivity {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    recentHubsButton.setPressed(false);
+                    recentHubsButton.setEnabled(true);
+                    nearbyHubsButton.setPressed(false);
+                    nearbyHubsButton.setEnabled(true);
                     search(findViewById(R.id.hub_name_search_button));
                     return true;
                 }
                 return false;
+            }
+        });
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                recentHubsButton.setPressed(false);
+                recentHubsButton.setEnabled(true);
+                nearbyHubsButton.setPressed(false);
+                nearbyHubsButton.setEnabled(true);
+                search(findViewById(R.id.hub_name_search_button));
             }
         });
 
@@ -102,7 +117,7 @@ public class SearchHub extends AppCompatActivity {
             }
         };
 
-        HubsListAdapter hubsListAdapter = new HubsListAdapter(this, hubs, callback);
+        final HubsListAdapter hubsListAdapter = new HubsListAdapter(this, hubs, callback);
         hubsList.setAdapter(hubsListAdapter);
         hubsList.setLayoutManager(new LinearLayoutManager(this));
 
@@ -119,7 +134,8 @@ public class SearchHub extends AppCompatActivity {
                 recentHubsButton.setEnabled(false);
                 nearbyHubsButton.setPressed(false);
                 nearbyHubsButton.setEnabled(true);
-                hubsNearText.setVisibility(View.INVISIBLE);
+                hubs.clear();
+                hubsListAdapter.notifyDataSetChanged();
                 recentHubs();
             }
         });
@@ -127,17 +143,21 @@ public class SearchHub extends AppCompatActivity {
         nearbyHubsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 recentHubsButton.setPressed(false);
                 recentHubsButton.setEnabled(true);
                 nearbyHubsButton.setPressed(true);
                 nearbyHubsButton.setEnabled(false);
+                hubs.clear();
+                hubsListAdapter.notifyDataSetChanged();
                 searchByLocation(new View(getApplicationContext()));
             }
         });
 
         AlertDialog.Builder builder = new AlertDialog.Builder(SearchHub.this);
-        builder.setMessage("We Need To Access Your Location Momentarily, Allow Us To Use Your GPS Location?")
-                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+        builder.setMessage("We need to access your location momentarily, allow us to use " +
+                "your GPS location?").setPositiveButton("YES",
+                new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
@@ -159,6 +179,13 @@ public class SearchHub extends AppCompatActivity {
         AlertDialog alertDialog = builder.create();
         alertDialog.show();
 
+        // App starts with recent hubs button pressed
+        recentHubsButton.setPressed(false);
+        recentHubsButton.setEnabled(true);
+        nearbyHubsButton.setPressed(false);
+        nearbyHubsButton.setEnabled(true);
+        searchButton.setVisibility(View.VISIBLE);
+        enterHub.setVisibility(View.VISIBLE);
         recentHubs();
     }
 
@@ -245,13 +272,13 @@ public class SearchHub extends AppCompatActivity {
         /*searchByLocationButton.setEnabled(false);
         searchByLocationButton.setPressed(true);
         searchByNameButton.setEnabled(true);
-        searchByNameButton.setPressed(false);*/
+        searchByNameButton.setPressed(false);
         searchButton.setVisibility(View.GONE);
         enterHub.setVisibility(View.GONE);
         hubsNearText.setText("loading...");
-        hubsNearText.setVisibility(View.VISIBLE);
-        r.result.clear();
-        hubsListAdapter.notifyDataSetChanged();
+        hubsNearText.setVisibility(View.VISIBLE);*/
+        if (r != null)
+            r.result.clear();
         globalLocation = getLastKnownLocation();
         nearestHubs();
     }
@@ -288,7 +315,8 @@ public class SearchHub extends AppCompatActivity {
                 if (!set) {
                     globalLocation = location;
                     AlertDialog.Builder builder = new AlertDialog.Builder(SearchHub.this);
-                    builder.setMessage("Your General Location Has Been Saved. You Can Disable Your GPS Now.")
+                    builder.setMessage("Your general location has been saved. You can disable your " +
+                            "GPS now.")
                             .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {

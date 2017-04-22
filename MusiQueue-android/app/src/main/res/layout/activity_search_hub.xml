@@ -11,40 +11,14 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.vince.youtubeplayertest.Activities.users_only.SearchHub">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
-
-        <Button
-            android:id="@+id/search_by_name_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/gray_bubble_button"
-            android:onClick="searchByName"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:text="By Name" />
-
-        <Button
-            android:id="@+id/search_by_location_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@drawable/gray_bubble_button"
-            android:onClick="searchByLocation"
-            android:paddingLeft="5dp"
-            android:paddingRight="5dp"
-            android:text="By Location" />
-    </LinearLayout>
-
     <TextView
         android:id="@+id/hubs_near_you_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hubs Near You"
+        android:layout_marginBottom="16dp"
+        android:text="Find Hubs"
         android:textAlignment="center"
-        android:textSize="30sp"
-        android:visibility="gone" />
+        android:textSize="30sp" />
 
     <LinearLayout
         android:id="@+id/search_bar_hubs"
@@ -80,18 +54,19 @@
         android:layout_height="wrap_content">
 
         <Button
-            android:text="@string/recent_hubs"
             android:id="@+id/search_hubs_recent_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:text="@string/recent_hubs" />
+
 
         <Button
-            android:text="@string/hubs_nearby"
             android:id="@+id/search_hubs_nearby_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:text="@string/hubs_nearby" />
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView
@@ -100,8 +75,6 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/search_bar_hubs"
         android:background="@drawable/hub_search_background">
-
-
     </android.support.v7.widget.RecyclerView>
 
 </LinearLayout>
