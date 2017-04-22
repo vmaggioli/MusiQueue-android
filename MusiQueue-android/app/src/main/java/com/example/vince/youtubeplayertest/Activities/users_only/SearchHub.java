@@ -11,7 +11,6 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -31,8 +30,6 @@ import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListAda
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListItem;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.SearchHubResponse;
 import com.example.vince.youtubeplayertest.R;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationServices;
 import com.google.gson.Gson;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
@@ -132,8 +129,10 @@ public class SearchHub extends AppCompatActivity {
             public void onClick(View view) {
                 recentHubsButton.setPressed(true);
                 recentHubsButton.setEnabled(false);
+                recentHubsButton.setBackgroundResource(R.drawable.gray_bubble_button_pressed);
                 nearbyHubsButton.setPressed(false);
                 nearbyHubsButton.setEnabled(true);
+                nearbyHubsButton.setBackgroundResource(R.drawable.gray_bubble_button);
                 hubs.clear();
                 hubsListAdapter.notifyDataSetChanged();
                 recentHubs();
@@ -146,8 +145,10 @@ public class SearchHub extends AppCompatActivity {
 
                 recentHubsButton.setPressed(false);
                 recentHubsButton.setEnabled(true);
+                recentHubsButton.setBackgroundResource(R.drawable.gray_bubble_button);
                 nearbyHubsButton.setPressed(true);
                 nearbyHubsButton.setEnabled(false);
+                nearbyHubsButton.setBackgroundResource(R.drawable.gray_bubble_button_pressed);
                 hubs.clear();
                 hubsListAdapter.notifyDataSetChanged();
                 searchByLocation(new View(getApplicationContext()));
@@ -182,8 +183,10 @@ public class SearchHub extends AppCompatActivity {
         // App starts with recent hubs button pressed
         recentHubsButton.setPressed(false);
         recentHubsButton.setEnabled(true);
+        recentHubsButton.setBackgroundResource(R.drawable.gray_bubble_button_pressed);
         nearbyHubsButton.setPressed(false);
         nearbyHubsButton.setEnabled(true);
+        nearbyHubsButton.setBackgroundResource(R.drawable.gray_bubble_button);
         searchButton.setVisibility(View.VISIBLE);
         enterHub.setVisibility(View.VISIBLE);
         recentHubs();
@@ -204,6 +207,13 @@ public class SearchHub extends AppCompatActivity {
 
     public void search(View view) {
         if (enterHub.length() != 0) {
+            recentHubsButton.setPressed(false);
+            recentHubsButton.setEnabled(true);
+            recentHubsButton.setBackgroundResource(R.drawable.gray_bubble_button);
+            nearbyHubsButton.setPressed(false);
+            nearbyHubsButton.setEnabled(true);
+            nearbyHubsButton.setBackgroundResource(R.drawable.gray_bubble_button);
+
             String contents = enterHub.getText().toString();
 
             BackgroundWorker backgroundWorker = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {

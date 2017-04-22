@@ -60,7 +60,6 @@
             android:layout_weight="1"
             android:text="@string/recent_hubs" />
 
-
         <Button
             android:id="@+id/search_hubs_nearby_button"
             android:layout_width="wrap_content"
