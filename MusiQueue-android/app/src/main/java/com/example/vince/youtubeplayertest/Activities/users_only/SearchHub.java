@@ -142,43 +142,79 @@ public class SearchHub extends AppCompatActivity {
         nearbyHubsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                boolean dialogDisplayed = false;
+                if (!set) {
+                    dialogDisplayed = true;
+                    AlertDialog.Builder builder = new AlertDialog.Builder(SearchHub.this);
+                    builder.setMessage("We need to access your location momentarily, allow us to use " +
+                            "your GPS location?").setPositiveButton("YES",
+                            new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    //searchByNameButton.setEnabled(false);
+                                    if (!set) {
+                                        configureLocation();
+                                        set = true;
 
-                recentHubsButton.setPressed(false);
-                recentHubsButton.setEnabled(true);
-                recentHubsButton.setBackgroundResource(R.drawable.gray_bubble_button);
-                nearbyHubsButton.setPressed(true);
-                nearbyHubsButton.setEnabled(false);
-                nearbyHubsButton.setBackgroundResource(R.drawable.gray_bubble_button_pressed);
-                hubs.clear();
-                hubsListAdapter.notifyDataSetChanged();
-                searchByLocation(new View(getApplicationContext()));
+                                        recentHubsButton.setPressed(false);
+                                        recentHubsButton.setEnabled(true);
+                                        recentHubsButton.setBackgroundResource(R.drawable.gray_bubble_button);
+                                        nearbyHubsButton.setPressed(true);
+                                        nearbyHubsButton.setEnabled(false);
+                                        nearbyHubsButton.setBackgroundResource(R.drawable.gray_bubble_button_pressed);
+                                        hubs.clear();
+                                        hubsListAdapter.notifyDataSetChanged();
+                                        searchByLocation(new View(getApplicationContext()));
+
+                                        AlertDialog.Builder builder = new AlertDialog.Builder(SearchHub.this);
+                                        builder.setMessage("Your general location has been saved. You can disable your " +
+                                                "GPS now.")
+                                                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        dialog.dismiss();
+                                                        //searchByNameButton.setEnabled(true);
+                                                    }
+                                                })
+                                                .setNegativeButton("CANCEL", new AlertDialog.OnClickListener() {
+                                                    @Override
+                                                    public void onClick(DialogInterface dialog, int which) {
+                                                        dialog.dismiss();
+                                                        //searchByNameButton.setEnabled(true);
+                                                    }
+                                                });
+
+                                        AlertDialog alertDialog = builder.create();
+                                        alertDialog.show();
+                                    }
+
+                                }
+                            })
+                            .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.dismiss();
+                                    //searchByName(new View(getApplicationContext()));
+                                }
+                            });
+
+                    AlertDialog alertDialog = builder.create();
+                    alertDialog.show();
+                }
+                if (set && !dialogDisplayed) {
+                    recentHubsButton.setPressed(false);
+                    recentHubsButton.setEnabled(true);
+                    recentHubsButton.setBackgroundResource(R.drawable.gray_bubble_button);
+                    nearbyHubsButton.setPressed(true);
+                    nearbyHubsButton.setEnabled(false);
+                    nearbyHubsButton.setBackgroundResource(R.drawable.gray_bubble_button_pressed);
+                    hubs.clear();
+                    hubsListAdapter.notifyDataSetChanged();
+                    searchByLocation(new View(getApplicationContext()));
+                }
             }
         });
-
-        AlertDialog.Builder builder = new AlertDialog.Builder(SearchHub.this);
-        builder.setMessage("We need to access your location momentarily, allow us to use " +
-                "your GPS location?").setPositiveButton("YES",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        //searchByNameButton.setEnabled(false);
-                        if (!set) {
-                            configureLocation();
-                        }
-
-                    }
-                })
-                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        //searchByName(new View(getApplicationContext()));
-                    }
-                });
-
-        AlertDialog alertDialog = builder.create();
-        alertDialog.show();
 
         // App starts with recent hubs button pressed
         recentHubsButton.setPressed(false);
@@ -251,6 +287,7 @@ public class SearchHub extends AppCompatActivity {
 
     public void nearestHubs() {
         //searchByNameButton.setEnabled(true);
+
         BackgroundWorker backgroundWorker = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
             @Override
             public void processFinish(String result) {
@@ -287,6 +324,7 @@ public class SearchHub extends AppCompatActivity {
         enterHub.setVisibility(View.GONE);
         hubsNearText.setText("loading...");
         hubsNearText.setVisibility(View.VISIBLE);*/
+
         if (r != null)
             r.result.clear();
         globalLocation = getLastKnownLocation();
@@ -309,7 +347,6 @@ public class SearchHub extends AppCompatActivity {
                 continue;
             }
             if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
-                // Found best last known location: %s", l);
                 bestLocation = l;
             }
         }
@@ -321,32 +358,7 @@ public class SearchHub extends AppCompatActivity {
         locationListener = new LocationListener() {
             @Override
             public void onLocationChanged(Location location) {
-
-                if (!set) {
                     globalLocation = location;
-                    AlertDialog.Builder builder = new AlertDialog.Builder(SearchHub.this);
-                    builder.setMessage("Your general location has been saved. You can disable your " +
-                            "GPS now.")
-                            .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    //searchByNameButton.setEnabled(true);
-                                }
-                            })
-                            .setNegativeButton("CANCEL", new AlertDialog.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    dialog.dismiss();
-                                    //searchByNameButton.setEnabled(true);
-                                }
-                            });
-
-                    AlertDialog alertDialog = builder.create();
-                    alertDialog.show();
-                    set = true;
-                    nearestHubs();
-                }
             }
 
             @Override
