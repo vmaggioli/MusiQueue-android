@@ -15,5 +15,7 @@
     <string name="join">JOIN</string>
     <string name="search">SEARCH</string>
     <string name="failed">Failed to initialize Youtube Player</string>
+    <string name="hubs_nearby">HUBS NEARBY</string>
+    <string name="recent_hubs">RECENT HUBS</string>
 
 </resources>
