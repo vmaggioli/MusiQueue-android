@@ -119,6 +119,7 @@ public class SearchHub extends AppCompatActivity {
                 recentHubsButton.setEnabled(false);
                 nearbyHubsButton.setPressed(false);
                 nearbyHubsButton.setEnabled(true);
+                hubsNearText.setVisibility(View.INVISIBLE);
                 recentHubs();
             }
         });
