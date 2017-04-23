@@ -1,28 +1,23 @@
 package com.example.vince.youtubeplayertest.Activities.starting_activities;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.provider.Settings;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.content.SharedPreferences;
 
-import com.example.vince.youtubeplayertest.Activities.BackendTestActivity;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
-import com.example.vince.youtubeplayertest.Activities.users_only.SearchHub;
 import com.example.vince.youtubeplayertest.R;
 
 public class MainActivity extends AppCompatActivity {
     TextView createName;
     EditText usernameText;
     Button usernameButton;
-    //Button testSearchButton;
-    //Button testDatabaseButton;
-    Button backendButton;
     HubSingleton appState;
 
     /*
@@ -47,11 +42,12 @@ public class MainActivity extends AppCompatActivity {
 
         if (username.equals("")) {
             initView();
+            usernameText = (EditText) findViewById(R.id.username_entry);
         }else{
-            // skip this view
+            initView();
             appState.setUsername(username);
-            startActivity(new Intent(MainActivity.this, GettingStarted.class));
-            finish();
+            usernameText = (EditText) findViewById(R.id.username_entry);
+            usernameText.setText(username);
         }
     }
 
@@ -59,8 +55,6 @@ public class MainActivity extends AppCompatActivity {
 
         // set textView and editText
         createName = (TextView) findViewById(R.id.create_name_text_view);
-        usernameText = (EditText) findViewById(R.id.username_entry);
-        //backendButton = (Button) findViewById(R.id.backend_button);
 
         // set username button
         usernameButton = (Button) findViewById(R.id.submit_username);
@@ -85,29 +79,5 @@ public class MainActivity extends AppCompatActivity {
                 finish();
             }
         });
-
-       /*
-        testSearchButton = (Button) findViewById(R.id.test_button_search_hubs);
-        testSearchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: change to handle data from AWS
-                startActivity(new Intent(MainActivity.this, SearchHub.class));
-            }
-        });
-
-        testDatabaseButton = (Button) findViewById(R.id.test_button_database);
-        testDatabaseButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getApplicationContext(), "Not setup yet", Toast.LENGTH_SHORT).show();
-            }
-        });*/
     }
-
-    // FUNCTION CALLED WHEN THE TEST BACKEND BUTTON IS PRESSED
-    public void toBack(View view) {
-        startActivity(new Intent(this, BackendTestActivity.class));
-    }
-
 }
