@@ -2,6 +2,7 @@ package com.example.vince.youtubeplayertest.Activities.users_only;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -41,14 +42,22 @@ public class SearchHub extends AppCompatActivity {
     HubsListAdapter hubsListAdapter;
     EditText enterHub;
     Button searchButton;
-    //Button searchByNameButton;
-    //Button searchByLocationButton;
     Button nearbyHubsButton;
     Button recentHubsButton;
     TextView hubsNearText;
     Vector<HubsListItem> hubs;
     HubSingleton hubSingleton;
     SearchHubResponse r;
+
+    public boolean isTurnedLocationServicesOn() {
+        return turnedLocationServicesOn;
+    }
+
+    public void setTurnedLocationServicesOn(boolean turnedLocationServicesOn) {
+        this.turnedLocationServicesOn = turnedLocationServicesOn;
+    }
+
+    private boolean turnedLocationServicesOn = false;
 
     LocationManager locationmanager;
     LocationListener locationListener;
@@ -57,23 +66,21 @@ public class SearchHub extends AppCompatActivity {
 
     HubsListAdapter.OnItemClickListener callback;
 
+    Context context;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_hub);
 
+        context = getApplicationContext();
+
         // initialize views
         enterHub = (EditText) findViewById(R.id.hub_name_search);
         hubsNearText = (TextView) findViewById(R.id.hubs_near_you_text);
         searchButton = (Button) findViewById(R.id.hub_name_search_button);
-        //searchByNameButton = (Button) findViewById(R.id.search_by_name_button);
-        //searchByLocationButton = (Button) findViewById(R.id.search_by_location_button);
         globalLocation = null;
         set = false;
-
-        // view starts with searchByNameButton considered pressed
-        //searchByNameButton.setEnabled(false);
-        //searchByNameButton.setPressed(true);
 
         hubsList = (RecyclerView) findViewById(R.id.hubs_list);
         hubs = new Vector<>();
@@ -98,10 +105,6 @@ public class SearchHub extends AppCompatActivity {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recentHubsButton.setPressed(false);
-                recentHubsButton.setEnabled(true);
-                nearbyHubsButton.setPressed(false);
-                nearbyHubsButton.setEnabled(true);
                 search(findViewById(R.id.hub_name_search_button));
             }
         });
@@ -127,12 +130,6 @@ public class SearchHub extends AppCompatActivity {
         recentHubsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                recentHubsButton.setPressed(true);
-                recentHubsButton.setEnabled(false);
-                recentHubsButton.setBackgroundResource(R.drawable.gray_bubble_button_pressed);
-                nearbyHubsButton.setPressed(false);
-                nearbyHubsButton.setEnabled(true);
-                nearbyHubsButton.setBackgroundResource(R.drawable.gray_bubble_button);
                 hubs.clear();
                 hubsListAdapter.notifyDataSetChanged();
                 recentHubs();
@@ -142,9 +139,9 @@ public class SearchHub extends AppCompatActivity {
         nearbyHubsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                boolean dialogDisplayed = false;
-                if (!set) {
-                    dialogDisplayed = true;
+                promptUserTurnOnLocationServices();
+                if (!set && isTurnedLocationServicesOn()) {
+                    locationmanager = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
                     AlertDialog.Builder builder = new AlertDialog.Builder(SearchHub.this);
                     builder.setMessage("We need to access your location momentarily, allow us to use " +
                             "your GPS location?").setPositiveButton("YES",
@@ -152,17 +149,11 @@ public class SearchHub extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
-                                    //searchByNameButton.setEnabled(false);
                                     if (!set) {
                                         configureLocation();
                                         set = true;
 
-                                        recentHubsButton.setPressed(false);
-                                        recentHubsButton.setEnabled(true);
-                                        recentHubsButton.setBackgroundResource(R.drawable.gray_bubble_button);
-                                        nearbyHubsButton.setPressed(true);
-                                        nearbyHubsButton.setEnabled(false);
-                                        nearbyHubsButton.setBackgroundResource(R.drawable.gray_bubble_button_pressed);
+                                        setNearbyHubsView();
                                         hubs.clear();
                                         hubsListAdapter.notifyDataSetChanged();
                                         searchByLocation(new View(getApplicationContext()));
@@ -174,14 +165,12 @@ public class SearchHub extends AppCompatActivity {
                                                     @Override
                                                     public void onClick(DialogInterface dialog, int which) {
                                                         dialog.dismiss();
-                                                        //searchByNameButton.setEnabled(true);
                                                     }
                                                 })
                                                 .setNegativeButton("CANCEL", new AlertDialog.OnClickListener() {
                                                     @Override
                                                     public void onClick(DialogInterface dialog, int which) {
                                                         dialog.dismiss();
-                                                        //searchByNameButton.setEnabled(true);
                                                     }
                                                 });
 
@@ -195,37 +184,87 @@ public class SearchHub extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
-                                    //searchByName(new View(getApplicationContext()));
                                 }
                             });
 
                     AlertDialog alertDialog = builder.create();
                     alertDialog.show();
                 }
-                if (set && !dialogDisplayed) {
-                    recentHubsButton.setPressed(false);
-                    recentHubsButton.setEnabled(true);
-                    recentHubsButton.setBackgroundResource(R.drawable.gray_bubble_button);
-                    nearbyHubsButton.setPressed(true);
-                    nearbyHubsButton.setEnabled(false);
-                    nearbyHubsButton.setBackgroundResource(R.drawable.gray_bubble_button_pressed);
-                    hubs.clear();
-                    hubsListAdapter.notifyDataSetChanged();
-                    searchByLocation(new View(getApplicationContext()));
-                }
+                else
+                    return;
             }
         });
 
         // App starts with recent hubs button pressed
+        setRecentHubsView();
+        searchButton.setVisibility(View.VISIBLE);
+        enterHub.setVisibility(View.VISIBLE);
+        recentHubs();
+    }
+
+    public void setRecentHubsView() {
         recentHubsButton.setPressed(false);
         recentHubsButton.setEnabled(true);
         recentHubsButton.setBackgroundResource(R.drawable.gray_bubble_button_pressed);
         nearbyHubsButton.setPressed(false);
         nearbyHubsButton.setEnabled(true);
         nearbyHubsButton.setBackgroundResource(R.drawable.gray_bubble_button);
-        searchButton.setVisibility(View.VISIBLE);
-        enterHub.setVisibility(View.VISIBLE);
-        recentHubs();
+    }
+
+    public void setSearchHubsView() {
+        recentHubsButton.setPressed(false);
+        recentHubsButton.setEnabled(true);
+        recentHubsButton.setBackgroundResource(R.drawable.gray_bubble_button);
+        nearbyHubsButton.setPressed(false);
+        nearbyHubsButton.setEnabled(true);
+        nearbyHubsButton.setBackgroundResource(R.drawable.gray_bubble_button);
+    }
+
+    public void setNearbyHubsView() {
+        recentHubsButton.setPressed(false);
+        recentHubsButton.setEnabled(true);
+        recentHubsButton.setBackgroundResource(R.drawable.gray_bubble_button);
+        nearbyHubsButton.setPressed(true);
+        nearbyHubsButton.setEnabled(false);
+        nearbyHubsButton.setBackgroundResource(R.drawable.gray_bubble_button_pressed);
+    }
+
+    public void promptUserTurnOnLocationServices() {
+        locationmanager = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
+        boolean gps_enabled = false;
+        try {
+            gps_enabled = locationmanager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch(Exception ex) {}
+
+        if(!gps_enabled) {
+            // notify user
+            AlertDialog.Builder dialog = new AlertDialog.Builder(SearchHub.this);
+            dialog.setMessage("Your location services aren't enabled.  " +
+                    "Would you like to turn them on?");
+            dialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                }
+            });
+            dialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    setTurnedLocationServicesOn(false);
+                }
+            });
+            dialog.show();
+        }
+
+        // check to see if they actually turned it on
+        try {
+            gps_enabled = locationmanager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch(Exception ex) {}
+        if (gps_enabled)
+            setTurnedLocationServicesOn(true);
+        else
+            setTurnedLocationServicesOn(false);
     }
 
     protected void selectHub(HubsListItem hub) {
@@ -243,12 +282,6 @@ public class SearchHub extends AppCompatActivity {
 
     public void search(View view) {
         if (enterHub.length() != 0) {
-            recentHubsButton.setPressed(false);
-            recentHubsButton.setEnabled(true);
-            recentHubsButton.setBackgroundResource(R.drawable.gray_bubble_button);
-            nearbyHubsButton.setPressed(false);
-            nearbyHubsButton.setEnabled(true);
-            nearbyHubsButton.setBackgroundResource(R.drawable.gray_bubble_button);
 
             String contents = enterHub.getText().toString();
 
@@ -267,6 +300,7 @@ public class SearchHub extends AppCompatActivity {
 
             final HubSingleton appState = HubSingleton.getInstance();
             backgroundWorker.execute("searchHub", contents, appState.getUserID());
+            setSearchHubsView();
         }
     }
 
@@ -283,11 +317,10 @@ public class SearchHub extends AppCompatActivity {
             }
         });
         backgroundWorker.execute("recentHubs", hubSingleton.getUserID());
+        setRecentHubsView();
     }
 
     public void nearestHubs() {
-        //searchByNameButton.setEnabled(true);
-
         BackgroundWorker backgroundWorker = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
             @Override
             public void processFinish(String result) {
@@ -302,32 +335,15 @@ public class SearchHub extends AppCompatActivity {
         });
         backgroundWorker.execute("nearestHubs", hubSingleton.getUserID(),
                 String.valueOf(globalLocation.getLatitude()), String.valueOf(globalLocation.getLongitude()));
+        setNearbyHubsView();
     }
 
-    /*public void searchByName(View view) {
-        searchByLocationButton.setEnabled(true);
-        searchByLocationButton.setPressed(false);
-        searchByNameButton.setEnabled(false);
-        searchByNameButton.setPressed(true);
-        hubsNearText.setVisibility(View.GONE);
-        searchButton.setVisibility(View.VISIBLE);
-        enterHub.setVisibility(View.VISIBLE);
-        recentHubs();
-    }*/
-
     public void searchByLocation(View view) {
-        /*searchByLocationButton.setEnabled(false);
-        searchByLocationButton.setPressed(true);
-        searchByNameButton.setEnabled(true);
-        searchByNameButton.setPressed(false);
-        searchButton.setVisibility(View.GONE);
-        enterHub.setVisibility(View.GONE);
-        hubsNearText.setText("loading...");
-        hubsNearText.setVisibility(View.VISIBLE);*/
-
         if (r != null)
             r.result.clear();
         globalLocation = getLastKnownLocation();
+        if (globalLocation == null)
+            return;
         nearestHubs();
     }
 
