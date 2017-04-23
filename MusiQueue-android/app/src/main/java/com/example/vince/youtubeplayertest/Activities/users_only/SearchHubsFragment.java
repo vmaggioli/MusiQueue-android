@@ -83,7 +83,7 @@ public class SearchHubsFragment extends Fragment {
         }
         setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
 
-        mAdapter = new HubsListAdapter(this, hubs, callback);
+        mAdapter = new HubsListAdapter(null, hubs, callback);
         // Set CustomAdapter as the adapter for RecyclerView.
         mRecyclerView.setAdapter(mAdapter);
 
