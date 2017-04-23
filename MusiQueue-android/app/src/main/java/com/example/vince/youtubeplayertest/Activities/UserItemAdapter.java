@@ -14,7 +14,6 @@ import android.widget.TextView;
 
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
 import com.example.vince.youtubeplayertest.Activities.hub_admin_only.QueueActivity;
-import com.example.vince.youtubeplayertest.Activities.users_only.QueueSong;
 import com.example.vince.youtubeplayertest.Activities.users_only.SearchHub;
 import com.example.vince.youtubeplayertest.R;
 
@@ -34,7 +33,7 @@ public class UserItemAdapter extends RecyclerView.Adapter<UserItemAdapter.ViewHo
     private static ArrayList<String> users;
 
     public interface OnItemClickListener {
-        void onItemClick(QueueSong videoItem);
+        void onItemClick(String user);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {

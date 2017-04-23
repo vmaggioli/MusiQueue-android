@@ -44,6 +44,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -124,6 +125,15 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
 
             }
         });
+        ArrayList<String> temp = new ArrayList<>();
+        temp.add("name 1");
+        temp.add("name 2");
+        temp.add("name 3");
+        userAdapter = new UserItemAdapter(QueueActivity.this,temp,new UserItemAdapter.OnItemClickListener() {
+            public void onItemClick(String user) {
+
+            }
+        });
         viewButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonview, boolean isChecked) {
                 if(isChecked) {
@@ -138,6 +148,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         }
 
         );
+        /*
         songListView = (RecyclerView) findViewById(R.id.songList);
         songListView.setAdapter(adapter);
         songListView.setLayoutManager(new LinearLayoutManager(this));
@@ -145,6 +156,11 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
 
         initPlayer();
         updateView();
+        */
+        songListView = (RecyclerView) findViewById(R.id.songList);
+        songListView.setAdapter(userAdapter);
+        songListView.setLayoutManager(new LinearLayoutManager(this));
+
     }
 
     public void initPlayer() {
@@ -413,6 +429,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         };
         userBW = new BackgroundWorker(othercallback);
         userBW.execute("hubUsers",hubSingleton.getHubId().toString(),hubSingleton.getUserID());
+
 
     }
     public void viewUsers() {
