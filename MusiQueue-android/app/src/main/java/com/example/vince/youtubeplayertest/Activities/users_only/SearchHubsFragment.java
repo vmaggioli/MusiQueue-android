@@ -1,7 +1,8 @@
 package com.example.vince.youtubeplayertest.Activities.users_only;
 
+import android.content.Intent;
 import android.os.Bundle;
-import android.app.Fragment;
+import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -10,10 +11,14 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.RadioButton;
 
+import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
+import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListAdapter;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListItem;
+import com.example.vince.youtubeplayertest.Activities.helper_classes.SearchHubResponse;
 import com.example.vince.youtubeplayertest.R;
 import com.google.api.services.youtube.YouTube;
+import com.google.gson.Gson;
 
 import java.util.Vector;
 
@@ -43,6 +48,18 @@ public class SearchHubsFragment extends Fragment {
     protected String[] mDataset;
     HubsListAdapter.OnItemClickListener callback;
     Vector<HubsListItem> hubs;
+    SearchHubResponse r;
+
+    // newInstance constructor for creating fragment with arguments
+    public static SearchHubsFragment newInstance(int page, String title) {
+        SearchHubsFragment fragmentFirst = new SearchHubsFragment();
+        Bundle args = new Bundle();
+        args.putInt("someInt", page);
+        args.putString("someTitle", title);
+        fragmentFirst.setArguments(args);
+        return fragmentFirst;
+    }
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -58,6 +75,7 @@ public class SearchHubsFragment extends Fragment {
             }
         };
         hubs = new Vector<>();
+
         initDataset();
     }
 
@@ -81,12 +99,25 @@ public class SearchHubsFragment extends Fragment {
             mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState
                     .getSerializable(KEY_LAYOUT_MANAGER);
         }
-        setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
 
-        mAdapter = new HubsListAdapter(null, hubs, callback);
-        // Set CustomAdapter as the adapter for RecyclerView.
-        mRecyclerView.setAdapter(mAdapter);
+        BackgroundWorker backgroundWorker = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
+            @Override
+            public void processFinish(String result) {
+                Gson gson = new Gson();
+                r = gson.fromJson(result, SearchHubResponse.class);
 
+                setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
+
+                mAdapter = new HubsListAdapter(getActivity().getApplicationContext(), r.result, callback);
+                // Set CustomAdapter as the adapter for RecyclerView.
+                mRecyclerView.setAdapter(mAdapter);
+            }
+        });
+
+        String searchContents = getArguments().getString("searchContents");
+        final HubSingleton appState = HubSingleton.getInstance();
+
+        backgroundWorker.execute("searchHub", searchContents, appState.getUserID());
         /*mLinearLayoutRadioButton = (RadioButton) rootView.findViewById(R.id.linear_layout_rb);
         mLinearLayoutRadioButton.setOnClickListener(new View.OnClickListener() {
             @Override

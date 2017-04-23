@@ -125,7 +125,7 @@ public class SearchHub extends AppCompatActivity {
         if (enterHub.length() != 0) {
             String contents = enterHub.getText().toString();
 
-            BackgroundWorker backgroundWorker = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
+            /*BackgroundWorker backgroundWorker = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
                 @Override
                 public void processFinish(String result) {
                     Gson gson = new Gson();
@@ -135,11 +135,19 @@ public class SearchHub extends AppCompatActivity {
                     hubsList.setAdapter(hubsListAdapter);
                     hubsList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                 }
-            });
+            });*/
 
 
-            final HubSingleton appState = HubSingleton.getInstance();
-            backgroundWorker.execute("searchHub", contents, appState.getUserID());
+            /*final HubSingleton appState = HubSingleton.getInstance();
+            backgroundWorker.execute("searchHub", contents, appState.getUserID());*/
+
+            /*final Intent intent = new Intent(SearchHub.this, SearchHubsFragment.class);
+            intent.putExtra("hubsFromSearch", contents);
+            startActivity(intent);*/
+            Bundle bundle = new Bundle();
+            bundle.putString("searchContents", contents);
+            SearchHubsFragment fragobj = new SearchHubsFragment();
+            fragobj.setArguments(bundle);
         }
     }
 
