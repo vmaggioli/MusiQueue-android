@@ -60,6 +60,7 @@ public class CreateHub extends AppCompatActivity  {
                 } else if (passPin.getText().length() != 4) {
                     Toast.makeText(getApplicationContext(), "Pass Pin Must Be 4 Digits", Toast.LENGTH_LONG).show();
                     return;
+
                 }
 
 
@@ -71,6 +72,7 @@ public class CreateHub extends AppCompatActivity  {
                                 dialog.dismiss();
                                 createHubButton.setEnabled(false);
                                 configureLocation();
+                                startCreate();
                             }
                         })
                         .setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -86,8 +88,6 @@ public class CreateHub extends AppCompatActivity  {
                 alertDialog.show();
             }
         });
-
-
     }
 
     public void startCreate() {
