@@ -100,7 +100,6 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                             item.setPlace(jObj.getInt("id"));
                             //hubSingleton.add(item);
                         }
-                        //TODO: Find other way of doing this
 
                         voteBW = new BackgroundWorker(callback);
 
@@ -225,7 +224,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        System.out.println(videos.size() + "pos: " + position);
+        //System.out.println(videos.size() + "pos: " + position);
         holder.bind(videos.get(position), listener);
 
     }

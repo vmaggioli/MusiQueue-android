@@ -1,5 +1,6 @@
 package com.example.vince.youtubeplayertest.Activities.helper_classes;
 
+import com.example.vince.youtubeplayertest.Activities.hub_admin_only.User;
 import com.example.vince.youtubeplayertest.Activities.users_only.QueueSong;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public class HubSingleton {
 
     private HubSingleton() {
         songsList = new ArrayList<QueueSong>();
-        users = new ArrayList<String>();
+        users = new ArrayList<User>();
     }
 
     public String getHubName() {
@@ -71,17 +72,14 @@ public class HubSingleton {
 
     public int getQueueSize() { return songsList.size();}
 
-    public void setUsers(ArrayList<String> users) {
-        this.users = users;
-    }
-
     public void clearUsers() {
-        if(users != null) {
-            users.clear();
-        }
+        users.clear();
+    }
+    public void addUser(User name) {
+        users.add(name);
     }
 
-    public ArrayList<String> getUsers() {return this.users;}
+    public ArrayList<User> getUsers() {return this.users;}
 
     private String username;
     private String hubName;
@@ -89,6 +87,6 @@ public class HubSingleton {
     private String userId;
     private Integer hubId;
     private ArrayList<QueueSong> songsList;
-    private ArrayList<String> users;
+    private ArrayList<User> users;
 
 }
