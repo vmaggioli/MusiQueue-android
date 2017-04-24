@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="styles/style.css" />
+</head>
+<body>
+    <div id="loadingScreen" class="screen">
+        Loading...
+    </div>
+
+    <div id="usernameScreen" class="screen">
+        <div class="centerBox">
+            <h1>MusiQueue</h1>
+            <h3>Please tell us your name</h3>
+            Username: <input id="usernameBox" /><br/>
+            <button id="usernameButton">Submit</button>
+        </div>
+    </div>
+
+    <div id="startScreen" class="screen">
+        <div class="centerBox">
+            <h1>MusiQueue</h1>
+            <h3 id="welcomeMessage">Welcome back, </h3>
+            <button id="toCreateScreen">Create a Hub</button>
+            <button id="toJoinScreen">Join a Hub</button>
+        </div>
+    </div>
+
+    <div id="createScreen" class="screen hidden">
+        <div class="centerBox">
+            <h1>MusiQueue</h1>
+            <h3>Create a Hub</h3>
+            <label>
+                <span>Hub Name</span>
+                <input id="createHubName" />
+            </label>
+            <label>
+                <span>Hub Pin</span>
+                <input id="createHubPin" type="text" minlength="4" maxlength="4" size=4 />
+            </label>
+            <br/>
+            <button id="createHubSubmit">Create</button>
+        </div>
+    </div>
+
+    <div id="joinScreen" class="screen hidden">
+        Join Form
+    </div>
+
+    <div id="mainScreen">
+        <h1>MusiQueue</h1>
+        <div id="player"></div>
+        <div id="songList"></div>
+    </div>
+
+    <div style="display: none">
+        <div id="songTemplate">
+            <div class="title"></div>
+            <div class="user"></div>
+            <button class="up"></button>
+            <button class="down"></button>
+        </div>
+    </div>
+
+    <script type="text/javascript" src="jquery-3.1.1.min.js"></script>
+    <script type="text/javascript" src="lodash.core.min.js"></script>
+    <script type="text/javascript" src="guid.js"></script>
+    <script type="text/javascript" src="script.js"></script>
+</body>
+</html>

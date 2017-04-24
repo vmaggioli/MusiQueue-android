@@ -32,6 +32,7 @@ import com.example.vince.youtubeplayertest.Activities.VideoItem;
 import com.example.vince.youtubeplayertest.Activities.VideoItemAdapter;
 import com.example.vince.youtubeplayertest.Activities.YoutubeConnector;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
+import com.example.vince.youtubeplayertest.Activities.starting_activities.GettingStarted;
 import com.example.vince.youtubeplayertest.Activities.users_only.QueueSong;
 import com.example.vince.youtubeplayertest.R;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -85,6 +86,8 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
             videosFound.setVisibility(View.GONE);
             songListView.setVisibility(View.VISIBLE);
         }
+        else
+            startActivity(new Intent(QueueActivity.this, GettingStarted.class));
     }
     @Override
     public void onDestroy() {

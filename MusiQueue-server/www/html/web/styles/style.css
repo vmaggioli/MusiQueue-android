@@ -1,0 +1,97 @@
+@import url("https://fonts.googleapis.com/css?family=Raleway:300,400");
+body, input, button, textarea {
+  font-family: 'Raleway', sans-serif; }
+
+h1, h2, h3 {
+  font-weight: 300;
+  font-size: 50px; }
+
+h2 {
+  font-size: 39px; }
+
+h3 {
+  font-size: 27px;
+  color: #61bafe; }
+
+.screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  overflow: hidden;
+  background: #eee; }
+
+.screen.hidden {
+  display: none; }
+
+#loadingScreen {
+  opacity: 1;
+  pointer-events: auto;
+  transition: opacity linear 0.2s;
+  z-index: 10; }
+
+#loadingScreen.hidden {
+  pointer-events: none;
+  opacity: 0;
+  display: block; }
+
+#usernameScreen {
+  z-index: 9; }
+
+#startScreen {
+  z-index: 5; }
+
+#createScreen,
+#joinScreen {
+  z-index: 3; }
+
+#mainScreen {
+  z-index: 1; }
+
+.screen .centerBox {
+  width: 500px;
+  margin-left: -250px;
+  padding-left: 50%;
+  text-align: center;
+  margin-top: 100px; }
+  .screen .centerBox button {
+    display: inline-block;
+    background: #fff;
+    padding: 10px 12px;
+    font-size: 20px;
+    border: 0px none;
+    color: #999;
+    font-weight: 300px;
+    border-radius: 3px;
+    margin: 0 10px;
+    cursor: pointer;
+    transition: color 0.2s, box-shadow 0.2s;
+    box-shadow: 2px 2px 1px #ddd;
+    outline: none; }
+    .screen .centerBox button:hover, .screen .centerBox button:focus {
+      color: #61bafe;
+      box-shadow: 2px 2px 1px #bbb; }
+  .screen .centerBox input {
+    display: inline-block;
+    background: #fff;
+    padding: 10px 12px;
+    font-size: 20px;
+    border: 0px none;
+    color: #999;
+    font-weight: 300px;
+    border-radius: 3px;
+    margin: 0 10px;
+    box-shadow: inset -2px -2px 1px #ddd;
+    text-align: center; }
+
+label {
+  display: block;
+  font-size: 18px;
+  color: #333;
+  margin: 5px 0; }
+  label span {
+    display: block;
+    margin: 5px 0; }
+
+/*# sourceMappingURL=style.css.map */
