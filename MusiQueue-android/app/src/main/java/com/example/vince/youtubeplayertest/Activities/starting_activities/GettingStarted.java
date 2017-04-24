@@ -1,8 +1,8 @@
 package com.example.vince.youtubeplayertest.Activities.starting_activities;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -31,7 +31,6 @@ public class GettingStarted extends AppCompatActivity {
         createHub.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: send new Intent to creating a hub
                 startActivity(new Intent(GettingStarted.this, CreateHub.class));
             }
         });
@@ -39,13 +38,15 @@ public class GettingStarted extends AppCompatActivity {
         joinHub.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: send new Intent to creating a hub
                 startActivity(new Intent(getApplicationContext(), SearchHub.class));
             }
         });
 
         final HubSingleton appState = HubSingleton.getInstance();
+    }
 
-
+    @Override
+    public void onBackPressed() {
+        startActivity(new Intent(GettingStarted.this, MainActivity.class));
     }
 }
