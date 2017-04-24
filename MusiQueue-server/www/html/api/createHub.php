@@ -11,6 +11,7 @@ createHub:
         lat - the latitude of the created hub (0 if user didn't allow location)
         long - the longitude of the created hub (0 if user didn't allow location)
     Returns on success:
+        networkName - the name of the wifi network the hubCreator is apart of (0 if user didn't allow wifi)
         info about the hub we connect to:
         {
             hub_id - int
@@ -23,8 +24,6 @@ createHub:
 assertGiven("hubName");
 assertGiven("phoneId");
 assertGiven("username");
-assertGiven("lat");
-assertGiven("long");
 
 $phoneId = mysqli_real_escape_string($conn, $_REQUEST['phoneId']);
 $username = mysqli_real_escape_string($conn, $_REQUEST['username']);
@@ -37,6 +36,7 @@ if(isset($_REQUEST['hubPin'])) {
 }
 $lat = mysqli_real_escape_string($conn, $_REQUEST['lat']);
 $long = mysqli_real_escape_string($conn, $_REQUEST['long']);
+$networkName = mysqli_real_escape_string($conn, $_REQUEST['networkName']);
 
 // check if this hub name is available
 $result = mysqli_query($conn, "
@@ -90,7 +90,7 @@ if($taken) {
 	$result = mysqli_query($conn, "
 		INSERT INTO Hubs
 		(hub_name, time_last_active, hub_pin, latitude, longitude)
-		VALUES ('$hubName', CURRENT_TIME(), ".($hasPin ? "'$hubPin'" : 'NULL').", $lat, $long)
+		VALUES ('$hubName', CURRENT_TIME(), ".($hasPin ? "'$hubPin'" : 'NULL').", $lat, $long, $networkName)
 	");
 	$hubId = mysqli_insert_id($conn);
 
