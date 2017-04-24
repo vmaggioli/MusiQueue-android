@@ -415,3 +415,4 @@ public class CreateHub extends AppCompatActivity  {
         appState.setHubName(hubNameText.getText().toString());
     }
 }
+

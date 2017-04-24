@@ -16,15 +16,18 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
 import com.example.vince.youtubeplayertest.Activities.PollData;
 import com.example.vince.youtubeplayertest.Activities.UpdateResultReceiver;
+import com.example.vince.youtubeplayertest.Activities.UserItemAdapter;
 import com.example.vince.youtubeplayertest.Activities.VideoItem;
 import com.example.vince.youtubeplayertest.Activities.VideoItemAdapter;
 import com.example.vince.youtubeplayertest.Activities.YoutubeConnector;
@@ -42,6 +45,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.List;
 
 public class QueueActivity extends AppCompatActivity implements UpdateResultReceiver.Receiver {
@@ -52,20 +57,28 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
     Button searchButton;
 
     BackgroundWorker.AsyncResponse callback;
+    BackgroundWorker.AsyncResponse othercallback;
     BackgroundWorker addBW;
     BackgroundWorker listBW;
     BackgroundWorker removeBW;
+    BackgroundWorker userBW;
     String id;
     String title;
     String removeId;
     RecyclerView songListView;
+    RecyclerView userListView;
     HubSingleton hubSingleton;
     VideoItemAdapter adapter;
+    UserItemAdapter userAdapter;
     UpdateResultReceiver receiver;
     String currentlyPlaying;
+    ToggleButton viewButton;
     private List<VideoItem> searchResults;
     private ListView videosFound;
     private Handler handler;
+    boolean song = true;
+
+
     @Override
     public void onBackPressed() {
         if (songListView != null && videosFound != null && videosFound.getVisibility() == View.VISIBLE) {
@@ -91,6 +104,8 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         searchEdit = (EditText) findViewById(R.id.search_edit);
         searchButton = (Button) findViewById(R.id.search_button);
         videosFound = (ListView)findViewById(R.id.videos_found);
+        viewButton = (ToggleButton) findViewById(R.id.q_view);
+
         handler = new Handler();
         addClickListener();
         searchEdit.setOnEditorActionListener(new TextView.OnEditorActionListener() {
@@ -106,12 +121,41 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
 
         hubSingleton = HubSingleton.getInstance();
 
+
+        System.out.println("num of users found in uia: " + hubSingleton.getUsers().size());
+        ArrayList<String> temp = new ArrayList<>();
+        temp.add("name1");
+        temp.add("name2");
+        temp.add("naem3");
+        userAdapter = new UserItemAdapter(QueueActivity.this,hubSingleton.getUsers(),new UserItemAdapter.OnItemClickListener() {
+            public void onItemClick(User user) {
+
+            }
+        });
+
         adapter = new VideoItemAdapter(QueueActivity.this, hubSingleton.getEntireList(), new VideoItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(QueueSong videoItem) {
 
             }
         });
+        viewButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            public void onCheckedChanged(CompoundButton buttonview, boolean isChecked) {
+                if(isChecked) {
+                    userListView.setVisibility(View.VISIBLE);
+                    songListView.setVisibility(View.GONE);
+                }
+                else {
+                    userListView.setVisibility(View.GONE);
+                    songListView.setVisibility(View.VISIBLE);
+                }
+                //TODO: call view function (song)
+
+            }
+        }
+
+        );
+
         songListView = (RecyclerView) findViewById(R.id.songList);
         songListView.setAdapter(adapter);
         songListView.setLayoutManager(new LinearLayoutManager(this));
@@ -119,6 +163,15 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
 
         initPlayer();
         updateView();
+
+
+        userListView = (RecyclerView) findViewById(R.id.userList);
+        userListView.setVisibility(View.GONE);
+        userListView.setAdapter(userAdapter);
+        userListView.setLayoutManager(new LinearLayoutManager(this));
+        userListView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).color(Color.LTGRAY).sizeResId(R.dimen.divider).marginResId(R.dimen.margin5dp, R.dimen.margin5dp).build());
+
+
     }
 
     public void initPlayer() {
@@ -197,11 +250,12 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                     }
                     hubSingleton.clearList();
                     JSONObject json = new JSONObject(result);
-                    JSONArray jsonArray = json.getJSONArray("result");
-                    for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonArray = json.getJSONObject("result");
+                    JSONArray songs = jsonArray.getJSONArray("songs");
+                    JSONArray users = jsonArray.getJSONArray("users");
+                    for (int i = 0; i < songs.length(); i++) {
                         QueueSong item = new QueueSong();
-
-                        JSONObject jObj = jsonArray.getJSONObject(i);
+                        JSONObject jObj = songs.getJSONObject(i);
 
                         item.setTitle(jObj.getString("song_title"));
                         item.setUpVotes(jObj.getInt("up_votes"));
@@ -212,7 +266,20 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
 
                         hubSingleton.add(item);
                     }
+                    hubSingleton.clearUsers();
+
+                    User user;
+                    for(int i = 0; i < users.length();i++){
+                        user = new User();
+                        JSONObject name = users.getJSONObject(i);
+                        user.setName(name.getString("name"));
+                        user.setId(name.getString("id"));
+                        hubSingleton.addUser(user);
+                    }
+
+
                     adapter.notifyDataSetChanged();
+                    userAdapter.notifyDataSetChanged();
                     if (currentlyPlaying.equals("") && hubSingleton.getQueueSize() != 0)
                         queueIfNothingPlaying(hubSingleton.getSongAt(0).getId());
                     else if (reInit && mYouTubePlayer != null && hubSingleton.getEntireList() != null && hubSingleton.getEntireList().size() != 0)
@@ -252,6 +319,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
             return;
         }
         songListView.setVisibility(View.GONE);
+        userListView.setVisibility(View.GONE);
         videosFound.setVisibility(View.VISIBLE);
         searchOnYoutube(searchEdit.getText().toString());
         searchEdit.setText("");
@@ -277,7 +345,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
                 if(convertView == null){
-                    convertView = getLayoutInflater().inflate(R.layout.video_item, parent, false);
+                     convertView = getLayoutInflater().inflate(R.layout.video_item, parent, false);
                 }
                 ImageView thumbnail = (ImageView)convertView.findViewById(R.id.video_thumbnail);
                 TextView title = (TextView)convertView.findViewById(R.id.video_title);
@@ -326,32 +394,47 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         String result = resultData.getString("result");
         Boolean reInit = false;
         try {
+
             if (hubSingleton.getEntireList().size() == 0) {
                 reInit = true;
             }
             hubSingleton.clearList();
             JSONObject json = new JSONObject(result);
-            JSONArray jsonArray = json.getJSONArray("result");
-            for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonArray = json.getJSONObject("result");
+            JSONArray songs = jsonArray.getJSONArray("songs");
+            JSONArray users = jsonArray.getJSONArray("users");
+            for (int i = 0; i < songs.length(); i++) {
                 QueueSong item = new QueueSong();
-                JSONObject jObj = jsonArray.getJSONObject(i);
+                JSONObject jObj = songs.getJSONObject(i);
 
-                id = jObj.getString("song_id");
                 item.setTitle(jObj.getString("song_title"));
                 item.setUpVotes(jObj.getInt("up_votes"));
                 item.setDownVotes(jObj.getInt("down_votes"));
                 item.setId(jObj.getString("song_id"));
                 item.setUser(jObj.getString("user_name"));
                 item.setPlace(jObj.getInt("id"));
+
                 hubSingleton.add(item);
             }
+            hubSingleton.clearUsers();
+            User user;
+            for(int i = 0; i < users.length();i++){
+                user = new User();
+                JSONObject name = users.getJSONObject(i);
+                user.setName(name.getString("name"));
+                user.setId(name.getString("id"));
+                hubSingleton.addUser(user);
+
+                //System.out.println(name.getString("name"));
+
+            }
+
             adapter.notifyDataSetChanged();
+            userAdapter.notifyDataSetChanged();
             if (currentlyPlaying.equals("") && hubSingleton.getQueueSize() != 0)
                 queueIfNothingPlaying(hubSingleton.getSongAt(0).getId());
             else if (reInit && mYouTubePlayer != null && hubSingleton.getEntireList() != null && hubSingleton.getEntireList().size() != 0)
                 mYouTubePlayer.loadVideo(hubSingleton.getSongAt(0).getId());
-            //else if (reInit && mYouTubePlayer == null)
-                //initPlayer();
             updateView();
         } catch (JSONException e) {
             e.printStackTrace();
@@ -362,4 +445,5 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         if (currentlyPlaying.equals("") && video_id != null && mYouTubePlayer != null)
                 mYouTubePlayer.loadVideo(video_id);
     }
+
 }

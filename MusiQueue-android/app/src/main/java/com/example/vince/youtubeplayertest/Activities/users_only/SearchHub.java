@@ -44,10 +44,10 @@ public class SearchHub extends AppCompatActivity {
     Button searchButton;
     Button nearbyHubsButton;
     Button recentHubsButton;
-    TextView hubsNearText;
     Vector<HubsListItem> hubs;
     HubSingleton hubSingleton;
     SearchHubResponse r;
+    static boolean dialogShown = false;
 
     public boolean isTurnedLocationServicesOn() {
         return turnedLocationServicesOn;
@@ -77,7 +77,6 @@ public class SearchHub extends AppCompatActivity {
 
         // initialize views
         enterHub = (EditText) findViewById(R.id.hub_name_search);
-        hubsNearText = (TextView) findViewById(R.id.hubs_near_you_text);
         searchButton = (Button) findViewById(R.id.hub_name_search_button);
         globalLocation = null;
         set = false;
@@ -86,16 +85,20 @@ public class SearchHub extends AppCompatActivity {
         hubs = new Vector<>();
         hubSingleton = HubSingleton.getInstance();
 
+        final HubsListAdapter hubsListAdapter = new HubsListAdapter(this, hubs, callback);
+        hubsList.setAdapter(hubsListAdapter);
+        hubsList.setLayoutManager(new LinearLayoutManager(this));
+
+        hubsList.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).color(Color.LTGRAY).sizeResId(R.dimen.divider).marginResId(R.dimen.margin5dp, R.dimen.margin5dp).build());
+
         // ALLOWS SEARCHING FROM KEYBOARD INSTEAD OF CLICKING SEARCH BUTTON
         enterHub.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    recentHubsButton.setPressed(false);
-                    recentHubsButton.setEnabled(true);
-                    nearbyHubsButton.setPressed(false);
-                    nearbyHubsButton.setEnabled(true);
-                    search(findViewById(R.id.hub_name_search_button));
+                    hubs.clear();
+                    hubsListAdapter.notifyDataSetChanged();
+                    setSearchHubsView();
                     return true;
                 }
                 return false;
@@ -105,7 +108,10 @@ public class SearchHub extends AppCompatActivity {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                search(findViewById(R.id.hub_name_search_button));
+                hubs.clear();
+                hubsListAdapter.notifyDataSetChanged();
+                setSearchHubsView();
+                search(new View(getApplicationContext()));
             }
         });
 
@@ -117,13 +123,6 @@ public class SearchHub extends AppCompatActivity {
             }
         };
 
-        final HubsListAdapter hubsListAdapter = new HubsListAdapter(this, hubs, callback);
-        hubsList.setAdapter(hubsListAdapter);
-        hubsList.setLayoutManager(new LinearLayoutManager(this));
-
-        hubsList.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).color(Color.LTGRAY).sizeResId(R.dimen.divider).marginResId(R.dimen.margin5dp, R.dimen.margin5dp).build());
-
-
         recentHubsButton = (Button) findViewById(R.id.search_hubs_recent_button);
         nearbyHubsButton = (Button) findViewById(R.id.search_hubs_nearby_button);
 
@@ -133,6 +132,7 @@ public class SearchHub extends AppCompatActivity {
                 hubs.clear();
                 hubsListAdapter.notifyDataSetChanged();
                 recentHubs();
+                setRecentHubsView();
             }
         });
 
@@ -149,13 +149,13 @@ public class SearchHub extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
+                                    dialogShown = true;
                                     if (!set) {
                                         configureLocation();
                                         set = true;
-
-                                        setNearbyHubsView();
                                         hubs.clear();
                                         hubsListAdapter.notifyDataSetChanged();
+                                        setNearbyHubsView();
                                         searchByLocation(new View(getApplicationContext()));
 
                                         AlertDialog.Builder builder = new AlertDialog.Builder(SearchHub.this);
@@ -184,14 +184,19 @@ public class SearchHub extends AppCompatActivity {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
                                     dialog.dismiss();
+                                    globalLocation = null;
                                 }
                             });
 
                     AlertDialog alertDialog = builder.create();
                     alertDialog.show();
                 }
-                else
-                    return;
+                else {
+                    if (dialogShown) {
+                        setNearbyHubsView();
+                        searchByLocation(new View(getApplicationContext()));
+                    }
+                }
             }
         });
 
@@ -327,7 +332,6 @@ public class SearchHub extends AppCompatActivity {
                 Gson gson = new Gson();
                 r = gson.fromJson(result, SearchHubResponse.class);
 
-                hubsNearText.setText("Hubs Near You");
                 HubsListAdapter hubsListAdapter = new HubsListAdapter(getApplicationContext(), r.result, callback);
                 hubsList.setAdapter(hubsListAdapter);
                 hubsList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
