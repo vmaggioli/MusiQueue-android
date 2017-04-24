@@ -169,7 +169,7 @@ var actions = [
 	r => s2Id = testEndpoint('api/hubSongList.php', {
 			hubId: hubId,
 			phoneId: phoneId1
-		}).result[1].id,
+		}).result.songs[1].id,
 	r => testEndpoint('api/voteDownSong.php', {
 			hubId: hubId,
 			phoneId: phoneId1,
@@ -210,7 +210,7 @@ var actions = [
 	r => songs = testEndpoint('api/hubSongList.php', {
 			hubId: hubId,
 			phoneId: phoneId2
-		}).result,
+		}).result.songs,
 	r => {
 			if(songs.length != 3) {
 				error("song listing incorrect - wrong number of songs");
@@ -267,7 +267,7 @@ var actions = [
 	r => songs = testEndpoint('api/hubSongList.php', {
 			hubId: hubId,
 			phoneId: phoneId2
-		}).result,
+		}).result.songs,
 	r => {
 			if(songs.length != 2) {
 				error("song listing incorrect - wrong number of songs");
