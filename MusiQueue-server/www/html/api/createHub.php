@@ -10,8 +10,9 @@ createHub:
         username - the name the user wants to be called
         lat - the latitude of the created hub (0 if user didn't allow location)
         long - the longitude of the created hub (0 if user didn't allow location)
-    Returns on success:
         networkName - the name of the wifi network the hubCreator is apart of (0 if user didn't allow wifi)
+
+    Returns on success:
         info about the hub we connect to:
         {
             hub_id - int
