@@ -4,6 +4,8 @@ var hubInfo = {
     isCreator: false,
     playingSong: false,
     songQueue: [],
+    userLat: 0,
+    userLong: 0,
 };
 var player; // the youtube player
 
@@ -33,6 +35,14 @@ function init() {
         $('#welcomeMessage').text("Welcome back, " + localStorage.getItem("username"));
     }
     hideLoadingScreen();
+
+    // get location
+    if("geolocation" in navigator) {
+        navigator.geolocation.getCurrentPosition(l => {
+            hubInfo.userLat = l.coords.latitude;
+            hubInfo.userLong = l.coords.longitude;
+        });
+    }
 }
 $(document).ready(init);
 
@@ -84,8 +94,8 @@ function createHubSubmit() {
     api("createHub.php", {
         hubName: n,
         hubPin: p,
-        lat: 0,
-        long: 0,
+        lat: hubInfo.userLat,
+        long: hubInfo.userLong,
         username: localStorage.getItem("username"),
     }, hubCreated);
     hubInfo.name = n;
