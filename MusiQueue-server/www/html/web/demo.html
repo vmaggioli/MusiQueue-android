@@ -26,7 +26,7 @@
             <h1>MusiQueue</h1>
             <h3 id="welcomeMessage">Welcome back, </h3>
             <button id="toCreateScreen">Create a Hub</button>
-            <button id="toJoinScreen">Join a Hub</button>
+            <button id="toHubSearchScreen">Join a Hub</button>
         </div>
     </div>
 
@@ -47,8 +47,33 @@
         </div>
     </div>
 
+    <div id="hubSearchScreen" class="screen hidden">
+        <div class="centerBox">
+            <h1>MusiQueue</h1>
+            <h3>Search for a Hub</h3>
+            <label>
+                <span>Hub Name</span>
+                <input id="searchHubNameBox" />
+            </label>
+            <div id="searchHubResultArea">Hub Area</div>
+        </div>
+    </div>
+
     <div id="joinScreen" class="screen hidden">
-        Join Form
+        <div class="centerBox">
+            <h1>MusiQueue</h1>
+            <h3>Join a Hub</h3>
+            <label>
+                <span>Hub Name</span>
+                <div id="joinHubName"></div>
+            </label>
+            <label>
+                <span>Hub Pin</span>
+                <input id="joinHubPin" type="text" minlength="4" maxlength="4" size=4 />
+            </label>
+            <br/>
+            <button id="joinHubSubmit">Join</button>
+        </div>
     </div>
 
     <div id="mainScreen">
@@ -63,6 +88,12 @@
             <div class="user"></div>
             <button class="up"></button>
             <button class="down"></button>
+        </div>
+
+        <div id="hubTemplate">
+            <div class="name">Name</div>
+            <div class="creator">Creator</div>
+            <button class="join">Join</button>
         </div>
     </div>
 

@@ -73,11 +73,81 @@ function toCreateScreen() {
 $('#toCreateScreen').click(toCreateScreen);
 
 
+function toHubSearchScreen() {
+    $('#startScreen').addClass('hidden');
+    $('#hubSearchScreen').removeClass('hidden');
+}
+$('#toHubSearchScreen').click(toHubSearchScreen);
+
+function doHubSearch() {
+    var n = $('#searchHubNameBox').val();
+    api("searchHub.php", {hubName: n}, searchHubCallback);
+}
+$('#searchHubNameBox').keyup(doHubSearch);
+
+function searchHubCallback(response) {
+    $el = $("#searchHubResultArea");
+    $el.empty();
+    response.result.forEach(r => {
+        $l = $('#hubTemplate').clone();
+        $l.attr('id', '');
+        $l.find('.name').text(r.hub_name);
+        $l.find('.creator').text(r.hub_creator_name);
+        if(r.hub_pin_required) {
+            $l.addClass("locked");
+        }
+        if(r.is_rejoin) {
+            $l.addClass('isRejoin');
+        }
+        $l.click({
+            name: r.hub_name,
+            pinRequired: r.hub_pin_required,
+        }, hubListingClick);
+        $el.append($l);
+    });
+}
+
+function hubListingClick(e) {
+    hubInfo.name = e.data.name;
+    if(e.data.pinRequired) {
+        toJoinScreen();
+    } else {
+        joinHubSubmit();
+    }
+}
+
 function toJoinScreen() {
     $('#startScreen').addClass('hidden');
+    $('#hubSearchScreen').addClass('hidden');
     $('#joinScreen').removeClass('hidden');
+    $('#joinHubName').text(hubInfo.name);
 }
-$('#toJoinScreen').click(toJoinScreen);
+
+function joinHubSubmit() {
+    // hub name is already set in hubInfo
+    api("joinHub.php", {
+        hubName: hubInfo.name,
+        hubPin: $('#joinHubPin').val(),
+        username: localStorage['username'],
+    }, joinCallback);
+}
+$('#joinHubSubmit').click(joinHubSubmit);
+
+function joinCallback(response) {
+    if(response.error) {
+        if(response.errorCode == "HUB_PIN_WRONG") {
+            alert("That hub pin is not correct!");
+            $('#joinHubPin').val("");
+            $('#joinHubPin').focus();
+        }
+        return;
+    }
+    $('#joinScreen').addClass('hidden');
+    $('#hubSearchScreen').addClass('hidden');
+    hubInfo.id = response.result.hub_id;
+    hubInfo.isCreator = response.result.is_creator;
+    initHub();
+}
 
 
 function createHubSubmit() {
@@ -115,6 +185,7 @@ function initHub() {
         initPlayer();
     }
 
+    loadSongQueue();
     setInterval(loadSongQueue, 4000);
 }
 
@@ -125,7 +196,7 @@ function loadSongQueue() {
 function loadSongQueueCallback(response) {
     hubInfo.songQueue = response.result.songs;
     showSongs();
-    if(!hubInfo.playingSong) {
+    if(hubInfo.isCreator && !hubInfo.playingSong) {
         playNext();
     }
 }
