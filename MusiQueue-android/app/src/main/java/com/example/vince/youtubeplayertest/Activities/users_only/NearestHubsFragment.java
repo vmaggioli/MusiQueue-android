@@ -48,13 +48,13 @@ public class NearestHubsFragment extends Fragment {
     SearchHubResponse r;
 
     // newInstance constructor for creating fragment with arguments
-    public static SearchHubsFragment newInstance(int page, String title) {
-        SearchHubsFragment fragmentThird = new SearchHubsFragment();
+    public static NearestHubsFragment newInstance(int page, String title) {
+        NearestHubsFragment fragmentSecond = new NearestHubsFragment();
         Bundle args = new Bundle();
         args.putInt("someInt", page);
         args.putString("someTitle", title);
-        fragmentThird.setArguments(args);
-        return fragmentThird;
+        fragmentSecond.setArguments(args);
+        return fragmentSecond;
     }
 
 

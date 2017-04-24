@@ -31,11 +31,11 @@ public class HubsFragmentAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0: // Fragment # 0 - This will show FirstFragment
-                return RecentHubsFragment.newInstance(0, "Page # 1");
+                return SearchHubsFragment.newInstance(0, "Page # 1");
             case 1: // Fragment # 0 - This will show FirstFragment different title
-                return NearestHubsFragment.newInstance(1, "Page # 2");
+                return RecentHubsFragment.newInstance(1, "Page # 2");
             case 2: // Fragment # 1 - This will show SecondFragment
-                return SearchHubsFragment.newInstance(2, "Page # 3");
+                return NearestHubsFragment.newInstance(2, "Page # 3");
             default:
                 return null;
         }
@@ -44,6 +44,13 @@ public class HubsFragmentAdapter extends FragmentPagerAdapter {
     // Returns the page title for the top indicator
     @Override
     public CharSequence getPageTitle(int position) {
-        return "Page " + position;
+        //return "Page " + position;
+        if (position == 0) {
+            return "Search";
+        } else if (position == 1) {
+            return "Recent Hubs";
+        } else {
+            return "Nearby Hubs";
+        }
     }
 }

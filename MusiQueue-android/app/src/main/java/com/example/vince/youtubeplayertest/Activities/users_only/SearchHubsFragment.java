@@ -6,10 +6,15 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.RadioButton;
+import android.widget.TextView;
 
 import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
@@ -50,6 +55,9 @@ public class SearchHubsFragment extends Fragment {
     Vector<HubsListItem> hubs;
     SearchHubResponse r;
 
+    EditText searchText;
+    Button searchButton;
+
     // newInstance constructor for creating fragment with arguments
     public static SearchHubsFragment newInstance(int page, String title) {
         SearchHubsFragment fragmentThird = new SearchHubsFragment();
@@ -68,6 +76,8 @@ public class SearchHubsFragment extends Fragment {
         // Initialize dataset, this data would usually come from a local content provider or
         // remote server.
 
+
+
         callback = new HubsListAdapter.OnItemClickListener(){
             @Override
             public void onItemClick(HubsListItem hub) {
@@ -77,6 +87,31 @@ public class SearchHubsFragment extends Fragment {
         hubs = new Vector<>();
 
         //initDataset();
+    }
+
+    public void search(View view) {
+        if (searchText.length() != 0) {
+            String contents = searchText.getText().toString();
+
+            BackgroundWorker backgroundWorker = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
+                @Override
+                public void processFinish(String result) {
+                    Gson gson = new Gson();
+                    r = gson.fromJson(result, SearchHubResponse.class);
+
+                    setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
+
+                    mAdapter = new HubsListAdapter(getActivity(), r.result, callback);
+                    // Set CustomAdapter as the adapter for RecyclerView.
+                    mRecyclerView.setAdapter(mAdapter);
+                }
+            });
+
+            final HubSingleton appState = HubSingleton.getInstance();
+
+            backgroundWorker.execute("searchHub", contents, appState.getUserID());
+
+        }
     }
 
     protected void selectHub(HubsListItem hub) {
@@ -95,8 +130,29 @@ public class SearchHubsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.hubs_fragment, container, false);
+        final View rootView = inflater.inflate(R.layout.search_hubs_fragment, container, false);
         rootView.setTag(TAG);
+
+        searchText = (EditText) rootView.findViewById(R.id.hub_name_search);
+        searchButton = (Button) rootView.findViewById(R.id.hub_name_search_button);
+
+        searchText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                    search(rootView.findViewById(R.id.hub_name_search_button));
+                    return true;
+                }
+                return false;
+            }
+        });
+
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                search(rootView.findViewById(R.id.hub_name_search_button));
+            }
+        });
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.hubs_list);
 
@@ -113,24 +169,6 @@ public class SearchHubsFragment extends Fragment {
                     .getSerializable(KEY_LAYOUT_MANAGER);
         }
 
-        BackgroundWorker backgroundWorker = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
-            @Override
-            public void processFinish(String result) {
-                Gson gson = new Gson();
-                r = gson.fromJson(result, SearchHubResponse.class);
-
-                setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
-
-                mAdapter = new HubsListAdapter(getActivity(), r.result, callback);
-                // Set CustomAdapter as the adapter for RecyclerView.
-                mRecyclerView.setAdapter(mAdapter);
-            }
-        });
-
-        String searchString = getArguments().getString("searchString");
-        String userId = getArguments().getString("userId");
-
-        backgroundWorker.execute("searchHub", searchString, userId);
         /*mLinearLayoutRadioButton = (RadioButton) rootView.findViewById(R.id.linear_layout_rb);
         mLinearLayoutRadioButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -49,13 +49,13 @@ public class RecentHubsFragment extends Fragment {
     SearchHubResponse r;
 
     // newInstance constructor for creating fragment with arguments
-    public static SearchHubsFragment newInstance(int page, String title) {
-        SearchHubsFragment fragmentThird = new SearchHubsFragment();
+    public static RecentHubsFragment newInstance(int page, String title) {
+        RecentHubsFragment fragmentFirst = new RecentHubsFragment();
         Bundle args = new Bundle();
         args.putInt("someInt", page);
         args.putString("someTitle", title);
-        fragmentThird.setArguments(args);
-        return fragmentThird;
+        fragmentFirst.setArguments(args);
+        return fragmentFirst;
     }
 
 

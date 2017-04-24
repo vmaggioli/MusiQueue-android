@@ -42,8 +42,8 @@ import java.util.Vector;
 public class SearchHub extends AppCompatActivity {
     RecyclerView hubsList;
     HubsListAdapter hubsListAdapter;
-    EditText enterHub;
-    Button searchButton;
+    //EditText enterHub;
+    //Button searchButton;
     //Button searchByNameButton;
     //Button searchByLocationButton;
     TextView hubsNearText;
@@ -72,9 +72,9 @@ public class SearchHub extends AppCompatActivity {
         vpPager.setAdapter(adapterViewPager);
 
         // initialize views
-        enterHub = (EditText) findViewById(R.id.hub_name_search);
+        //enterHub = (EditText) findViewById(R.id.hub_name_search);
         hubsNearText = (TextView) findViewById(R.id.hubs_near_you_text);
-        searchButton = (Button) findViewById(R.id.hub_name_search_button);
+        //searchButton = (Button) findViewById(R.id.hub_name_search_button);
         //searchByNameButton = (Button) findViewById(R.id.search_by_name_button);
         //searchByLocationButton = (Button) findViewById(R.id.search_by_location_button);
         globalLocation = null;
@@ -89,7 +89,7 @@ public class SearchHub extends AppCompatActivity {
         hubSingleton = HubSingleton.getInstance();
 
         // ALLOWS SEARCHING FROM KEYBOARD INSTEAD OF CLICKING SEARCH BUTTON
-        enterHub.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+        /*enterHub.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_SEARCH) {
@@ -98,7 +98,7 @@ public class SearchHub extends AppCompatActivity {
                 }
                 return false;
             }
-        });
+        });*/
 
         // setup callback
         /*callback = new HubsListAdapter.OnItemClickListener(){
@@ -130,11 +130,11 @@ public class SearchHub extends AppCompatActivity {
         }
     }*/
 
-    public void search(View view) {
+    /*public void search(View view) {
         if (enterHub.length() != 0) {
             String contents = enterHub.getText().toString();
 
-            /*BackgroundWorker backgroundWorker = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
+            BackgroundWorker backgroundWorker = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
                 @Override
                 public void processFinish(String result) {
                     Gson gson = new Gson();
@@ -144,22 +144,18 @@ public class SearchHub extends AppCompatActivity {
                     hubsList.setAdapter(hubsListAdapter);
                     hubsList.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
                 }
-            });*/
+            });
 
 
             final HubSingleton appState = HubSingleton.getInstance();
-            //backgroundWorker.execute("searchHub", contents, appState.getUserID());*/
 
-            /*final Intent intent = new Intent(SearchHub.this, SearchHubsFragment.class);
-            intent.putExtra("hubsFromSearch", contents);
-            startActivity(intent);*/
             Bundle bundle = new Bundle();
             bundle.putString("searchString", contents);
             bundle.putString("userId", appState.getUserID());
             SearchHubsFragment fragobj = new SearchHubsFragment();
             fragobj.setArguments(bundle);
         }
-    }
+    }*/
 
     public void recentHubs() {
         /*BackgroundWorker backgroundWorker = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
@@ -210,8 +206,8 @@ public class SearchHub extends AppCompatActivity {
         searchByNameButton.setEnabled(false);
         searchByNameButton.setPressed(true);*/
         hubsNearText.setVisibility(View.GONE);
-        searchButton.setVisibility(View.VISIBLE);
-        enterHub.setVisibility(View.VISIBLE);
+        /*searchButton.setVisibility(View.VISIBLE);
+        enterHub.setVisibility(View.VISIBLE);*/
         recentHubs();
     }
 
@@ -220,8 +216,8 @@ public class SearchHub extends AppCompatActivity {
         searchByLocationButton.setPressed(true);
         searchByNameButton.setEnabled(true);
         searchByNameButton.setPressed(false);*/
-        searchButton.setVisibility(View.GONE);
-        enterHub.setVisibility(View.GONE);
+        /*searchButton.setVisibility(View.GONE);
+        enterHub.setVisibility(View.GONE);*/
         hubsNearText.setText("loading...");
         hubsNearText.setVisibility(View.VISIBLE);
         r.result.clear();
