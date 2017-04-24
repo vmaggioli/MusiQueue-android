@@ -52,12 +52,12 @@ public class SearchHubsFragment extends Fragment {
 
     // newInstance constructor for creating fragment with arguments
     public static SearchHubsFragment newInstance(int page, String title) {
-        SearchHubsFragment fragmentFirst = new SearchHubsFragment();
+        SearchHubsFragment fragmentThird = new SearchHubsFragment();
         Bundle args = new Bundle();
         args.putInt("someInt", page);
         args.putString("someTitle", title);
-        fragmentFirst.setArguments(args);
-        return fragmentFirst;
+        fragmentThird.setArguments(args);
+        return fragmentThird;
     }
 
 
@@ -71,12 +71,25 @@ public class SearchHubsFragment extends Fragment {
         callback = new HubsListAdapter.OnItemClickListener(){
             @Override
             public void onItemClick(HubsListItem hub) {
-                //selectHub(hub);
+                selectHub(hub);
             }
         };
         hubs = new Vector<>();
 
-        initDataset();
+        //initDataset();
+    }
+
+    protected void selectHub(HubsListItem hub) {
+        if(hub.getHub_pin_required()) {
+            final Intent i = new Intent(getActivity(), JoinHub.class);
+            i.putExtra("hubName", hub.getHub_name());
+            startActivity(i);
+        }else{
+            final Intent i = new Intent(getActivity(), ConnectToHubActivity.class);
+            i.putExtra("hubName", hub.getHub_name());
+            i.putExtra("hubPin","");
+            startActivity(i);
+        }
     }
 
     @Override
@@ -108,16 +121,16 @@ public class SearchHubsFragment extends Fragment {
 
                 setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
 
-                mAdapter = new HubsListAdapter(getActivity().getApplicationContext(), r.result, callback);
+                mAdapter = new HubsListAdapter(getActivity(), r.result, callback);
                 // Set CustomAdapter as the adapter for RecyclerView.
                 mRecyclerView.setAdapter(mAdapter);
             }
         });
 
-        String searchContents = getArguments().getString("searchContents");
-        final HubSingleton appState = HubSingleton.getInstance();
+        String searchString = getArguments().getString("searchString");
+        String userId = getArguments().getString("userId");
 
-        backgroundWorker.execute("searchHub", searchContents, appState.getUserID());
+        backgroundWorker.execute("searchHub", searchString, userId);
         /*mLinearLayoutRadioButton = (RadioButton) rootView.findViewById(R.id.linear_layout_rb);
         mLinearLayoutRadioButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,10 +193,10 @@ public class SearchHubsFragment extends Fragment {
      * Generates Strings for RecyclerView's adapter. This data would usually come
      * from a local content provider or remote server.
      */
-    private void initDataset() {
+    /*private void initDataset() {
         mDataset = new String[DATASET_COUNT];
         for (int i = 0; i < DATASET_COUNT; i++) {
             mDataset[i] = "This is element #" + i;
         }
-    }
+    }*/
 }

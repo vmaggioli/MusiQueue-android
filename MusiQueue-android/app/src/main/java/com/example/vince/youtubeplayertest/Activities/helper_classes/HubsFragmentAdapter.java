@@ -31,11 +31,11 @@ public class HubsFragmentAdapter extends FragmentPagerAdapter {
     public Fragment getItem(int position) {
         switch (position) {
             case 0: // Fragment # 0 - This will show FirstFragment
-                return SearchHubsFragment.newInstance(0, "Page # 1");
+                return RecentHubsFragment.newInstance(0, "Page # 1");
             case 1: // Fragment # 0 - This will show FirstFragment different title
-                return RecentHubsFragment.newInstance(1, "Page # 2");
+                return NearestHubsFragment.newInstance(1, "Page # 2");
             case 2: // Fragment # 1 - This will show SecondFragment
-                return NearestHubsFragment.newInstance(2, "Page # 3");
+                return SearchHubsFragment.newInstance(2, "Page # 3");
             default:
                 return null;
         }
