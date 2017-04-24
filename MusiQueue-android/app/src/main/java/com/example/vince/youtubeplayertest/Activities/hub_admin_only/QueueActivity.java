@@ -65,6 +65,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
     String title;
     String removeId;
     RecyclerView songListView;
+    RecyclerView userListView;
     HubSingleton hubSingleton;
     VideoItemAdapter adapter;
     UserItemAdapter userAdapter;
@@ -117,7 +118,6 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         });
 
         hubSingleton = HubSingleton.getInstance();
-        getUsers();
 
         adapter = new VideoItemAdapter(QueueActivity.this, hubSingleton.getEntireList(), new VideoItemAdapter.OnItemClickListener() {
             @Override
@@ -125,11 +125,8 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
 
             }
         });
-        ArrayList<String> temp = new ArrayList<>();
-        temp.add("name 1");
-        temp.add("name 2");
-        temp.add("name 3");
-        userAdapter = new UserItemAdapter(QueueActivity.this,temp,new UserItemAdapter.OnItemClickListener() {
+        //TODO: stop using suckasss dummy data and get that good good.
+        userAdapter = new UserItemAdapter(QueueActivity.this,hubSingleton.getUsers(),new UserItemAdapter.OnItemClickListener() {
             public void onItemClick(String user) {
 
             }
@@ -137,10 +134,12 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         viewButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             public void onCheckedChanged(CompoundButton buttonview, boolean isChecked) {
                 if(isChecked) {
-                    song = false;
+                    userListView.setVisibility(View.VISIBLE);
+                    songListView.setVisibility(View.GONE);
                 }
                 else {
-                    song = true;
+                    userListView.setVisibility(View.GONE);
+                    songListView.setVisibility(View.VISIBLE);
                 }
                 //TODO: call view function (song)
 
@@ -148,7 +147,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         }
 
         );
-        /*
+
         songListView = (RecyclerView) findViewById(R.id.songList);
         songListView.setAdapter(adapter);
         songListView.setLayoutManager(new LinearLayoutManager(this));
@@ -156,10 +155,11 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
 
         initPlayer();
         updateView();
-        */
-        songListView = (RecyclerView) findViewById(R.id.songList);
-        songListView.setAdapter(userAdapter);
-        songListView.setLayoutManager(new LinearLayoutManager(this));
+
+        userListView = (RecyclerView) findViewById(R.id.userList);
+        //userListView.setVisibility(View.GONE);
+        userListView.setAdapter(userAdapter);
+        userListView.setLayoutManager(new LinearLayoutManager(this));
 
     }
 
@@ -239,11 +239,12 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                     }
                     hubSingleton.clearList();
                     JSONObject json = new JSONObject(result);
-                    JSONArray jsonArray = json.getJSONArray("result");
-                    for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonArray = json.getJSONObject("result");
+                    JSONArray songs = jsonArray.getJSONArray("songs");
+                    JSONArray users = jsonArray.getJSONArray("users");
+                    for (int i = 0; i < songs.length(); i++) {
                         QueueSong item = new QueueSong();
-
-                        JSONObject jObj = jsonArray.getJSONObject(i);
+                        JSONObject jObj = songs.getJSONObject(i);
 
                         item.setTitle(jObj.getString("song_title"));
                         item.setUpVotes(jObj.getInt("up_votes"));
@@ -254,6 +255,12 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
 
                         hubSingleton.add(item);
                     }
+                    ArrayList<String> names = new ArrayList<>();
+                    for(int i = 0; i < users.length();i++){
+                        JSONObject name = users.getJSONObject(i);
+                        names.add(name.getString("name"));
+                    }
+                    hubSingleton.setUsers(names);
                     adapter.notifyDataSetChanged();
                     if (currentlyPlaying.equals("") && hubSingleton.getQueueSize() != 0)
                         queueIfNothingPlaying(hubSingleton.getSongAt(0).getId());
@@ -294,6 +301,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
             return;
         }
         songListView.setVisibility(View.GONE);
+        userListView.setVisibility(View.GONE);
         videosFound.setVisibility(View.VISIBLE);
         searchOnYoutube(searchEdit.getText().toString());
         searchEdit.setText("");
@@ -368,25 +376,35 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         String result = resultData.getString("result");
         Boolean reInit = false;
         try {
+
             if (hubSingleton.getEntireList().size() == 0) {
                 reInit = true;
             }
             hubSingleton.clearList();
+            hubSingleton.clearList();
             JSONObject json = new JSONObject(result);
-            JSONArray jsonArray = json.getJSONArray("result");
-            for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonArray = json.getJSONObject("result");
+            JSONArray songs = jsonArray.getJSONArray("songs");
+            JSONArray users = jsonArray.getJSONArray("users");
+            for (int i = 0; i < songs.length(); i++) {
                 QueueSong item = new QueueSong();
-                JSONObject jObj = jsonArray.getJSONObject(i);
+                JSONObject jObj = songs.getJSONObject(i);
 
-                id = jObj.getString("song_id");
                 item.setTitle(jObj.getString("song_title"));
                 item.setUpVotes(jObj.getInt("up_votes"));
                 item.setDownVotes(jObj.getInt("down_votes"));
                 item.setId(jObj.getString("song_id"));
                 item.setUser(jObj.getString("user_name"));
                 item.setPlace(jObj.getInt("id"));
+
                 hubSingleton.add(item);
             }
+            ArrayList<String> names = new ArrayList<>();
+            for(int i = 0; i < users.length();i++){
+                JSONObject name = users.getJSONObject(i);
+                names.add(name.getString("name"));
+            }
+            hubSingleton.setUsers(names);
             adapter.notifyDataSetChanged();
             if (currentlyPlaying.equals("") && hubSingleton.getQueueSize() != 0)
                 queueIfNothingPlaying(hubSingleton.getSongAt(0).getId());
