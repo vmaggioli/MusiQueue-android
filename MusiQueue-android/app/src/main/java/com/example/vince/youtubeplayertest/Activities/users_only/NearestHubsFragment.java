@@ -222,6 +222,8 @@ public class NearestHubsFragment extends Fragment {
         });*/
 
 
+        } else {
+            promptUserTurnOnLocationServices();
         }
         return rootView;
     }
