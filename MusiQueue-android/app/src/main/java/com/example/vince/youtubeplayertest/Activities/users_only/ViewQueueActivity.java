@@ -17,12 +17,15 @@ import com.example.vince.youtubeplayertest.Activities.SearchActivity;
 import com.example.vince.youtubeplayertest.Activities.UpdateResultReceiver;
 import com.example.vince.youtubeplayertest.Activities.VideoItemAdapter;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
+import com.example.vince.youtubeplayertest.Activities.hub_admin_only.User;
 import com.example.vince.youtubeplayertest.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import java.util.ArrayList;
 
 public class ViewQueueActivity extends AppCompatActivity implements UpdateResultReceiver.Receiver {
     TextView hubNameView;
@@ -71,12 +74,12 @@ public class ViewQueueActivity extends AppCompatActivity implements UpdateResult
                 try {
                     hubSingleton.clearList();
                     JSONObject json = new JSONObject(result);
-                    Log.d("foobar", json.toString());
-                    JSONArray jsonArray = json.getJSONArray("result");
-                    for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonArray = json.getJSONObject("result");
+                    JSONArray songs = jsonArray.getJSONArray("songs");
+                    JSONArray users = jsonArray.getJSONArray("users");
+                    for (int i = 0; i < songs.length(); i++) {
                         QueueSong item = new QueueSong();
-
-                        JSONObject jObj = jsonArray.getJSONObject(i);
+                        JSONObject jObj = songs.getJSONObject(i);
 
                         item.setTitle(jObj.getString("song_title"));
                         item.setUpVotes(jObj.getInt("up_votes"));
@@ -86,7 +89,16 @@ public class ViewQueueActivity extends AppCompatActivity implements UpdateResult
                         item.setPlace(jObj.getInt("id"));
 
                         hubSingleton.add(item);
-                        Log.d("list in bw", hubSingleton.toString());
+                    }
+                    hubSingleton.clearUsers();
+                    User user;
+                    for(int i = 0; i < users.length();i++){
+                        user = new User();
+                        JSONObject name = users.getJSONObject(i);
+                        user.setName(name.getString("name"));
+                        user.setId(name.getString("id"));
+                        hubSingleton.addUser(user);
+
                     }
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
@@ -124,12 +136,12 @@ public class ViewQueueActivity extends AppCompatActivity implements UpdateResult
         try {
             hubSingleton.clearList();
             JSONObject json = new JSONObject(result);
-            Log.d("foobar", json.toString());
-            JSONArray jsonArray = json.getJSONArray("result");
-            for (int i = 0; i < jsonArray.length(); i++) {
+            JSONObject jsonArray = json.getJSONObject("result");
+            JSONArray songs = jsonArray.getJSONArray("songs");
+            JSONArray users = jsonArray.getJSONArray("users");
+            for (int i = 0; i < songs.length(); i++) {
                 QueueSong item = new QueueSong();
-
-                JSONObject jObj = jsonArray.getJSONObject(i);
+                JSONObject jObj = songs.getJSONObject(i);
 
                 item.setTitle(jObj.getString("song_title"));
                 item.setUpVotes(jObj.getInt("up_votes"));
@@ -137,8 +149,19 @@ public class ViewQueueActivity extends AppCompatActivity implements UpdateResult
                 item.setId(jObj.getString("song_id"));
                 item.setUser(jObj.getString("user_name"));
                 item.setPlace(jObj.getInt("id"));
+
                 hubSingleton.add(item);
-                Log.d("list in bw", hubSingleton.toString());
+            }
+            hubSingleton.clearUsers();
+
+            User user;
+            for(int i = 0; i < users.length();i++){
+                user = new User();
+                JSONObject name = users.getJSONObject(i);
+                user.setName(name.getString("name"));
+                user.setId(name.getString("id"));
+                hubSingleton.addUser(user);
+
             }
             adapter.notifyDataSetChanged();
             updateView();
