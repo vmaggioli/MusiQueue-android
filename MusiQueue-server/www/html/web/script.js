@@ -113,7 +113,7 @@ function loadSongQueue() {
 }
 
 function loadSongQueueCallback(response) {
-    hubInfo.songQueue = response.result;
+    hubInfo.songQueue = response.result.songs;
     showSongs();
     if(!hubInfo.playingSong) {
         playNext();
