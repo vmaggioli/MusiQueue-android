@@ -22,6 +22,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.math.BigInteger;
 import java.util.ArrayList;
 
 //import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListAdapter;
@@ -44,6 +45,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
     public interface OnItemClickListener {
         void onItemClick(QueueSong videoItem);
     }
+
     static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView videoTitle;
         public Button upButton;
@@ -57,6 +59,17 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
         BackgroundWorker voteBW;
         BackgroundWorker.AsyncResponse callback;
 
+        public int getColor(String title){
+            String hex = String.format("%06x", new BigInteger(1, title.getBytes()));
+            int color = Integer.parseInt(hex.substring(1, 2), 16);
+            hex = hex.substring(hex.length() - 4, hex.length());
+            if (color % 3 == 0) return Integer.parseInt(hex, 16) * 256 + 0xff000096;
+            if (color % 3 == 1) return Integer.parseInt(hex, 16) + 0xff960000;
+
+            String hex1 = hex.substring(hex.length() - 2, hex.length());
+            String hex2 = hex.substring(hex.length() - 4, hex.length() - 2);
+            return Integer.parseInt(hex1, 16) + 0xff009600 + Integer.parseInt(hex2, 16) * 65536;
+        }
 
         ViewHolder(View itemView) {
             super(itemView);
@@ -72,6 +85,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
 //                videoTitle.setText(videoItem.getTitle().trim().substring(0, 28) + "...");
 //            else
             videoTitle.setText(videoItem.getTitle());
+            videoTitle.setBackgroundColor(getColor(videoItem.getTitle()));
             videoUser.setText(videoItem.getUser());
             upButton.setText(Integer.toString(videoItem.getUpVotes()));
             downButton.setText(Integer.toString(videoItem.getDownVotes()));
