@@ -111,6 +111,7 @@ public class SearchHub extends AppCompatActivity {
                 hubs.clear();
                 hubsListAdapter.notifyDataSetChanged();
                 setSearchHubsView();
+                search(new View(getApplicationContext()));
             }
         });
 
