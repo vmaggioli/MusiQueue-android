@@ -2,12 +2,18 @@ package com.example.vince.youtubeplayertest.Activities.hub_admin_only;
 
 import android.Manifest;
 import android.app.AlertDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.wifi.p2p.WifiP2pDevice;
+import android.net.wifi.p2p.WifiP2pDeviceList;
+import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -20,10 +26,14 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
+import com.example.vince.youtubeplayertest.Activities.WiFiBroadcastReceiver;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.JoinHubResponse;
 import com.example.vince.youtubeplayertest.R;
 import com.google.gson.Gson;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class CreateHub extends AppCompatActivity  {
     EditText hubNameText;
@@ -33,13 +43,51 @@ public class CreateHub extends AppCompatActivity  {
     LocationManager locationmanager;
     LocationListener locationListener;
     Location globalLocation;
+    WifiP2pManager wifiP2pManager;
+    WifiP2pManager.Channel channel;
+    BroadcastReceiver broadcastReceiver;
+    IntentFilter intentFilter;
+    List<WifiP2pDevice> peers = new ArrayList<WifiP2pDevice>();
     static boolean set = false;
 
+
+    /* register the broadcast receiver with the intent values to be matched */
+    @Override
+    protected void onResume() {
+        super.onResume();
+        registerReceiver(broadcastReceiver, intentFilter);
+    }
+    /* unregister the broadcast receiver */
+    @Override
+    protected void onPause() {
+        super.onPause();
+        unregisterReceiver(broadcastReceiver);
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_hub);
+
+        intentFilter = new IntentFilter();
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
+        intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+        wifiP2pManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
+        channel = wifiP2pManager.initialize(this, getMainLooper(), null);
+        broadcastReceiver = new WiFiBroadcastReceiver(wifiP2pManager, channel, this);
+        WifiP2pManager.PeerListListener peerListener = new WifiP2pManager.PeerListListener() {
+            @Override
+            public void onPeersAvailable(WifiP2pDeviceList peerList) {
+                List<WifiP2pDevice> refreshedPeers = (List<WifiP2pDevice>) peerList.getDeviceList();
+                if (!refreshedPeers.equals(peers)) {
+                    peers.clear();
+                    peers.addAll(refreshedPeers);
+                }
+            }
+        };
+
 
         globalLocation = null;
         // set editTexts
@@ -65,24 +113,42 @@ public class CreateHub extends AppCompatActivity  {
 
 
                 AlertDialog.Builder builder = new AlertDialog.Builder(CreateHub.this);
-                builder.setMessage("Would You Like To Allow Users To Search Your Hub Based On Your Current Location?")
-                        .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
+                final CharSequence[] items = {"WiFi", "GPS Location"};
+                final ArrayList selectedItems = new ArrayList();
+                builder.setTitle("Select How You Want Users To Find Your Hub");
+                builder.setMultiChoiceItems(items, null, new DialogInterface.OnMultiChoiceClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
+                        if (isChecked)
+                            selectedItems.add(indexSelected);
+                        else if (selectedItems.contains(indexSelected))
+                            selectedItems.remove(Integer.valueOf(indexSelected));
+                    }
+                })
+                //builder.setMessage("Would You Like To Allow Users To Search Your Hub Based On Your Current Location?")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            if (selectedItems.contains(0)) {// WiFi
+                                createHubButton.setEnabled(false);
+                                configureWiFi();
+                            }
+                            if (selectedItems.contains(1)) {// GPS Location
                                 createHubButton.setEnabled(false);
                                 configureLocation();
-                                startCreate();
                             }
-                        })
-                        .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.dismiss();
-                                createHubButton.setEnabled(false);
-                                startCreate();
-                            }
-                        });
+                            startCreate();
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            //createHubButton.setEnabled(false);
+                            //startCreate();
+                        }
+                    });
 
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
@@ -90,26 +156,23 @@ public class CreateHub extends AppCompatActivity  {
         });
     }
 
-    public void startCreate() {
-        BackgroundWorker backgroundWorker = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
+    private void configureWiFi() {
+        wifiP2pManager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
+
             @Override
-            public void processFinish(String result) {
-                Gson gson = new Gson();
-                JoinHubResponse r = gson.fromJson(result, JoinHubResponse.class);
-                if (r.error) {
-                    connectError(r.errorCode, r.errorMessage);
-                } else {
-                    connectSuccess(r.getHubId());
-                }
+            public void onSuccess() {
+
+            }
+
+            @Override
+            public void onFailure(int reason) {
+                // TODO: display message that says the user was unable to do this
+                // TODO: probably just ensure wifi is connected or something
             }
         });
-        if (globalLocation == null)
-            backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID(), appState.getUsername(), "0", "0");
-        else
-            backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID(), appState.getUsername(),
-                    String.valueOf(globalLocation.getLatitude()), String.valueOf(globalLocation.getLongitude()));
-        appState.setHubName(hubNameText.getText().toString());
     }
+
+
 
     private void connectSuccess(Integer hubId) {
         appState = HubSingleton.getInstance();
@@ -209,5 +272,29 @@ public class CreateHub extends AppCompatActivity  {
             }
             locationmanager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
             System.out.println("second: " + locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER));        }
+    }
+
+    public void setIsWifiP2pEnabled(boolean b) {
+    }
+
+    public void startCreate() {
+        BackgroundWorker backgroundWorker = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
+            @Override
+            public void processFinish(String result) {
+                Gson gson = new Gson();
+                JoinHubResponse r = gson.fromJson(result, JoinHubResponse.class);
+                if (r.error) {
+                    connectError(r.errorCode, r.errorMessage);
+                } else {
+                    connectSuccess(r.getHubId());
+                }
+            }
+        });
+        if (globalLocation == null)
+            backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID(), appState.getUsername(), "0", "0");
+        else
+            backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID(), appState.getUsername(),
+                    String.valueOf(globalLocation.getLatitude()), String.valueOf(globalLocation.getLongitude()));
+        appState.setHubName(hubNameText.getText().toString());
     }
 }
