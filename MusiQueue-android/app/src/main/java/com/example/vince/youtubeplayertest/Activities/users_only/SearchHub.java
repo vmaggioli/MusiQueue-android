@@ -429,4 +429,6 @@ public class SearchHub extends AppCompatActivity {
             System.out.println("second: " + locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER));        }
     }
 
+    public void setIsWifiP2pEnabled(boolean b) {
+    }
 }
