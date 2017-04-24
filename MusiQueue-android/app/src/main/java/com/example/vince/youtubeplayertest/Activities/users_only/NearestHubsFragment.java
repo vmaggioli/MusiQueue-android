@@ -1,7 +1,6 @@
 package com.example.vince.youtubeplayertest.Activities.users_only;
 
 import android.Manifest;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -13,7 +12,6 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -42,7 +40,6 @@ public class NearestHubsFragment extends Fragment {
     private static final String TAG = "RecyclerViewFragment";
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
     private static final int SPAN_COUNT = 2;
-    private static final int DATASET_COUNT = 60;
 
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
@@ -51,33 +48,17 @@ public class NearestHubsFragment extends Fragment {
 
     protected LayoutManagerType mCurrentLayoutManagerType;
 
-    //protected RadioButton mLinearLayoutRadioButton;
-    //protected RadioButton mGridLayoutRadioButton;
-
     protected RecyclerView mRecyclerView;
     protected HubsListAdapter mAdapter;
     protected RecyclerView.LayoutManager mLayoutManager;
-    protected String[] mDataset;
     HubsListAdapter.OnItemClickListener callback;
     Vector<HubsListItem> hubs;
     SearchHubResponse r;
 
-    Location globalLocation;
+    public Location globalLocation;
+    View rootView;
     LocationManager locationmanager;
     LocationListener locationListener;
-    View rootView;
-
-    static boolean dialogShown = false;
-    static boolean set = false;
-    private boolean turnedLocationServicesOn = false;
-
-    public boolean isTurnedLocationServicesOn() {
-        return turnedLocationServicesOn;
-    }
-
-    public void setTurnedLocationServicesOn(boolean turnedLocationServicesOn) {
-        this.turnedLocationServicesOn = turnedLocationServicesOn;
-    }
 
     // newInstance constructor for creating fragment with arguments
     public static NearestHubsFragment newInstance(int page, String title) {
@@ -105,158 +86,8 @@ public class NearestHubsFragment extends Fragment {
         };
         hubs = new Vector<>();
 
-    }
-
-    protected void selectHub(HubsListItem hub) {
-        if(hub.getHub_pin_required()) {
-            final Intent i = new Intent(getActivity(), JoinHub.class);
-            i.putExtra("hubName", hub.getHub_name());
-            startActivity(i);
-        }else{
-            final Intent i = new Intent(getActivity(), ConnectToHubActivity.class);
-            i.putExtra("hubName", hub.getHub_name());
-            i.putExtra("hubPin","");
-            startActivity(i);
-        }
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        if (isTurnedLocationServicesOn()) {
-            locationmanager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
-            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-            builder.setMessage("We need to access your location momentarily, allow us to use " +
-                    "your GPS location?").setPositiveButton("YES",
-                    new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            dialogShown = true;
-                            if (!set) {
-                                configureLocation();
-                                set = true;
-                                hubs.clear();
-                                mAdapter.notifyDataSetChanged();
-                                //setNearbyHubsView();
-                                //searchByLocation(new View(getApplicationContext()));
-                                globalLocation = getLastKnownLocation();
-                                if (globalLocation == null)
-                                    return;
-
-                                AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-                                builder.setMessage("Your general location has been saved. You can disable your " +
-                                        "GPS now.")
-                                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                            }
-                                        })
-                                        .setNegativeButton("CANCEL", new AlertDialog.OnClickListener() {
-                                            @Override
-                                            public void onClick(DialogInterface dialog, int which) {
-                                                dialog.dismiss();
-                                            }
-                                        });
-
-                                AlertDialog alertDialog = builder.create();
-                                alertDialog.show();
-                            }
-                        }
-                    });
-
-            rootView = inflater.inflate(R.layout.hubs_fragment, container, false);
-            rootView.setTag(TAG);
-
-            mRecyclerView = (RecyclerView) rootView.findViewById(R.id.hubs_list);
-
-            // LinearLayoutManager is used here, this will layout the elements in a similar fashion
-            // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
-            // elements are laid out.
-            mLayoutManager = new LinearLayoutManager(getActivity());
-
-            mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-
-            if (savedInstanceState != null) {
-                // Restore saved layout manager type.
-                mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState
-                        .getSerializable(KEY_LAYOUT_MANAGER);
-            }
-
-            BackgroundWorker backgroundWorker = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
-                @Override
-                public void processFinish(String result) {
-                    Gson gson = new Gson();
-                    r = gson.fromJson(result, SearchHubResponse.class);
-
-                    setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
-
-                    mAdapter = new HubsListAdapter(getActivity(), r.result, callback);
-                    // Set CustomAdapter as the adapter for RecyclerView.
-                    mRecyclerView.setAdapter(mAdapter);
-                }
-            });
-
-            globalLocation = getLastKnownLocation();
-
-            String userId = HubSingleton.getInstance().getUserID();
-            String latitude = String.valueOf(globalLocation.getLatitude());
-            String longitude = String.valueOf(globalLocation.getLongitude());
-
-            backgroundWorker.execute("nearestHubs", userId, latitude, longitude);
-        /*mLinearLayoutRadioButton = (RadioButton) rootView.findViewById(R.id.linear_layout_rb);
-        mLinearLayoutRadioButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setRecyclerViewLayoutManager(LayoutManagerType.LINEAR_LAYOUT_MANAGER);
-            }
-        });
-
-        mGridLayoutRadioButton = (RadioButton) rootView.findViewById(R.id.grid_layout_rb);
-        mGridLayoutRadioButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                setRecyclerViewLayoutManager(LayoutManagerType.GRID_LAYOUT_MANAGER);
-            }
-        });*/
-
-
-        } else {
-            promptUserTurnOnLocationServices();
-        }
-        return rootView;
-    }
-
-    /*public void searchByLocation(View view) {
-        if (r != null)
-            r.result.clear();
+        configureLocation();
         globalLocation = getLastKnownLocation();
-        if (globalLocation == null)
-            return;
-        nearestHubs();
-    }*/
-
-    private Location getLastKnownLocation() {
-
-        locationmanager = (LocationManager)getActivity().getSystemService(LOCATION_SERVICE);
-        List<String> providers = locationmanager.getProviders(true);
-        Location bestLocation = null;
-        for (String provider : providers) {
-            Location l = null;
-            if ( ContextCompat.checkSelfPermission( getActivity(),
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION )
-                    == PackageManager.PERMISSION_GRANTED ) {
-                l = locationmanager.getLastKnownLocation(provider);
-            }
-            if (l == null) {
-                continue;
-            }
-            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
-                bestLocation = l;
-            }
-        }
-        return bestLocation;
     }
 
     private void configureLocation() {
@@ -280,7 +111,10 @@ public class NearestHubsFragment extends Fragment {
             public void onProviderDisabled(String provider) {
             }
         };
-        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(getActivity(),
+                        Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(new String[]{
                         Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
@@ -315,34 +149,82 @@ public class NearestHubsFragment extends Fragment {
             System.out.println("second: " + locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER));        }
     }
 
-    public void promptUserTurnOnLocationServices() {
+    private Location getLastKnownLocation() {
+
         locationmanager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
-        boolean gps_enabled = false;
-        try {
-            gps_enabled = locationmanager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch (Exception ex) {
+        List<String> providers = locationmanager.getProviders(true);
+        Location bestLocation = null;
+        for (String provider : providers) {
+            Location l = null;
+            if ( ContextCompat.checkSelfPermission(getActivity(),
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION )
+                    == PackageManager.PERMISSION_GRANTED ) {
+                l = locationmanager.getLastKnownLocation(provider);
+            }
+            if (l == null) {
+                continue;
+            }
+            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
+                bestLocation = l;
+            }
         }
+        return bestLocation;
+    }
 
-        if (!gps_enabled) {
-            // notify user
-            AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
-            dialog.setMessage("Your location services aren't enabled.  " +
-                    "Would you like to turn them on?");
-            dialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+    protected void selectHub(HubsListItem hub) {
+        if(hub.getHub_pin_required()) {
+            final Intent i = new Intent(getActivity(), JoinHub.class);
+            i.putExtra("hubName", hub.getHub_name());
+            startActivity(i);
+        }else{
+            final Intent i = new Intent(getActivity(), ConnectToHubActivity.class);
+            i.putExtra("hubName", hub.getHub_name());
+            i.putExtra("hubPin","");
+            startActivity(i);
+        }
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+            rootView = inflater.inflate(R.layout.hubs_fragment, container, false);
+            rootView.setTag(TAG);
+
+            mRecyclerView = (RecyclerView) rootView.findViewById(R.id.hubs_list);
+
+            // LinearLayoutManager is used here, this will layout the elements in a similar fashion
+            // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
+            // elements are laid out.
+            mLayoutManager = new LinearLayoutManager(getActivity());
+
+            mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+
+            if (savedInstanceState != null) {
+                // Restore saved layout manager type.
+                mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState
+                        .getSerializable(KEY_LAYOUT_MANAGER);
+            }
+
+            BackgroundWorker backgroundWorker = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
                 @Override
-                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                public void processFinish(String result) {
+                    Gson gson = new Gson();
+                    r = gson.fromJson(result, SearchHubResponse.class);
+
+                    setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
+
+                    mAdapter = new HubsListAdapter(getActivity(), r.result, callback);
+                    // Set CustomAdapter as the adapter for RecyclerView.
+                    mRecyclerView.setAdapter(mAdapter);
                 }
             });
-            dialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
 
-                @Override
-                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    setTurnedLocationServicesOn(false);
-                }
-            });
-            dialog.show();
-        }
+            String userId = HubSingleton.getInstance().getUserID();
+            String latitude = String.valueOf(globalLocation.getLatitude());
+            String longitude = String.valueOf(globalLocation.getLongitude());
+
+            backgroundWorker.execute("nearestHubs", userId, latitude, longitude);
+        return rootView;
     }
 
     /**
