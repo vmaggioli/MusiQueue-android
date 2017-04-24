@@ -1,6 +1,5 @@
 package com.example.vince.youtubeplayertest.Activities.hub_admin_only;
 
-import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,10 +7,8 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.Settings;
-import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -25,6 +22,8 @@ import com.example.vince.youtubeplayertest.Activities.helper_classes.JoinHubResp
 import com.example.vince.youtubeplayertest.R;
 import com.google.gson.Gson;
 
+import java.util.List;
+
 public class CreateHub extends AppCompatActivity  {
     EditText hubNameText;
     EditText passPin;
@@ -34,7 +33,17 @@ public class CreateHub extends AppCompatActivity  {
     LocationListener locationListener;
     Location globalLocation;
     static boolean set = false;
+    static boolean runningThrough = false;
 
+    public boolean isTurnedLocationServicesOn() {
+        return turnedLocationServicesOn;
+    }
+
+    public void setTurnedLocationServicesOn(boolean turnedLocationServicesOn) {
+        this.turnedLocationServicesOn = turnedLocationServicesOn;
+    }
+
+    private boolean turnedLocationServicesOn = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,23 +64,38 @@ public class CreateHub extends AppCompatActivity  {
             @Override
             public void onClick(View v) {
                 if (hubNameText.getText().length() == 0) {
-                    Toast.makeText(getApplicationContext(), "Must Have Hub Name", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Must Have Hub Name",
+                            Toast.LENGTH_LONG).show();
                     return;
                 } else if (passPin.getText().length() != 4) {
-                    Toast.makeText(getApplicationContext(), "Pass Pin Must Be 4 Digits", Toast.LENGTH_LONG).show();
+                    Toast.makeText(getApplicationContext(), "Pass Pin Must Be 4 Digits",
+                            Toast.LENGTH_LONG).show();
                     return;
 
                 }
 
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(CreateHub.this);
-                builder.setMessage("Would You Like To Allow Users To Search Your Hub Based On Your Current Location?")
+                builder.setMessage("Would You Like To Allow Users To Search Your Hub Based On " +
+                        "Your Current Location?")
                         .setPositiveButton("YES", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 dialog.dismiss();
-                                createHubButton.setEnabled(false);
                                 configureLocation();
+
+                                boolean gps_enabled = false;
+                                try {
+                                    gps_enabled = locationmanager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                                } catch(Exception ex) {}
+                                if (gps_enabled)
+                                    setTurnedLocationServicesOn(true);
+                                else
+                                    setTurnedLocationServicesOn(false);
+
+                                if (!isTurnedLocationServicesOn()) {
+                                    promptUserTurnOnLocationServices();
+                                    return;
+                                }
                                 startCreate();
                             }
                         })
@@ -90,6 +114,28 @@ public class CreateHub extends AppCompatActivity  {
         });
     }
 
+    private Location getLastKnownLocation() {
+
+        locationmanager = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
+        List<String> providers = locationmanager.getProviders(true);
+        Location bestLocation = null;
+        for (String provider : providers) {
+            Location l = null;
+            if ( ContextCompat.checkSelfPermission( this,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION )
+                    == PackageManager.PERMISSION_GRANTED ) {
+                l = locationmanager.getLastKnownLocation(provider);
+            }
+            if (l == null) {
+                continue;
+            }
+            if (bestLocation == null || l.getAccuracy() < bestLocation.getAccuracy()) {
+                bestLocation = l;
+            }
+        }
+        return bestLocation;
+    }
+
     public void startCreate() {
         BackgroundWorker backgroundWorker = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
             @Override
@@ -103,12 +149,57 @@ public class CreateHub extends AppCompatActivity  {
                 }
             }
         });
+
+        globalLocation = getLastKnownLocation();
+
         if (globalLocation == null)
-            backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID(), appState.getUsername(), "0", "0");
+            backgroundWorker.execute("createHub", hubNameText.getText().toString(),
+                    passPin.getText().toString(), appState.getUserID(),
+                    appState.getUsername(), "0", "0");
         else
-            backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID(), appState.getUsername(),
-                    String.valueOf(globalLocation.getLatitude()), String.valueOf(globalLocation.getLongitude()));
+            backgroundWorker.execute("createHub", hubNameText.getText().toString(),
+                    passPin.getText().toString(), appState.getUserID(), appState.getUsername(),
+                    String.valueOf(globalLocation.getLatitude()),
+                    String.valueOf(globalLocation.getLongitude()));
         appState.setHubName(hubNameText.getText().toString());
+    }
+
+    public void promptUserTurnOnLocationServices() {
+        runningThrough = true;
+        locationmanager = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
+        boolean gps_enabled = false;
+        try {
+            gps_enabled = locationmanager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch(Exception ex) {}
+
+        if(!gps_enabled) {
+            // notify user
+            AlertDialog.Builder dialog = new AlertDialog.Builder(CreateHub.this);
+            dialog.setMessage("Your location services aren't enabled.  " +
+                    "Would you like to turn them on?");
+            dialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    startActivity
+                            (new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                }
+            });
+            dialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                }
+            });
+            dialog.show();
+        }
+
+        try {
+            gps_enabled = locationmanager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch(Exception ex) {}
+        if (gps_enabled)
+            setTurnedLocationServicesOn(true);
+        else
+            setTurnedLocationServicesOn(false);
     }
 
     private void connectSuccess(Integer hubId) {
@@ -176,10 +267,14 @@ public class CreateHub extends AppCompatActivity  {
 
             }
         };
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+        /*if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED &&
+                ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED) {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 requestPermissions(new String[]{
-                        Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
+                        Manifest.permission.ACCESS_FINE_LOCATION,
+                        Manifest.permission.ACCESS_COARSE_LOCATION
                 }, 10);
                 int off;
                 try {
@@ -208,6 +303,6 @@ public class CreateHub extends AppCompatActivity  {
                 e.printStackTrace();
             }
             locationmanager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-            System.out.println("second: " + locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER));        }
+            System.out.println("second: " + locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER));}*/
     }
 }
