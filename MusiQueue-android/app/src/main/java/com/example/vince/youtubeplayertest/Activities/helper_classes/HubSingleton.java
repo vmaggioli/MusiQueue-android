@@ -16,6 +16,7 @@ public class HubSingleton {
 
     private HubSingleton() {
         songsList = new ArrayList<QueueSong>();
+        users = new ArrayList<String>();
     }
 
     public String getHubName() {

@@ -30,7 +30,10 @@ public class UserItemAdapter extends RecyclerView.Adapter<UserItemAdapter.ViewHo
 
     private static Context mContext;
     private UserItemAdapter.OnItemClickListener listener;
-    private static ArrayList<String> users;
+    ArrayList<String> users = null;
+    HubSingleton hubSingleton = HubSingleton.getInstance();
+
+
 
     public interface OnItemClickListener {
         void onItemClick(String user);
