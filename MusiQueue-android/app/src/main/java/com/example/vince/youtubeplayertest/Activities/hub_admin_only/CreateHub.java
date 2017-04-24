@@ -269,6 +269,7 @@ public class CreateHub extends AppCompatActivity  {
             public void onSuccess() {
                 final WifiInfo wifiInfo = wifiManager.getConnectionInfo();
                 networkName = wifiInfo.getSSID();
+                System.out.println("networkName: " + networkName);
             }
 
             @Override
@@ -398,7 +399,7 @@ public class CreateHub extends AppCompatActivity  {
                 }
             }
         });
-        globalLocation = getLastKnownLocation();
+        //globalLocation = getLastKnownLocation();
 
         if (globalLocation == null && (networkName == null || networkName.length() == 0))
             backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID(), appState.getUsername(), "0", "0", "0");
