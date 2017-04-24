@@ -124,7 +124,8 @@ public class RecentHubsFragment extends Fragment {
             }
         });
 
-        String userId = getArguments().getString("userId");
+        //String userId = getArguments().getString("userId");
+        String userId = HubSingleton.getInstance().getUserID();
 
         backgroundWorker.execute("recentHubs", userId);
         /*mLinearLayoutRadioButton = (RadioButton) rootView.findViewById(R.id.linear_layout_rb);

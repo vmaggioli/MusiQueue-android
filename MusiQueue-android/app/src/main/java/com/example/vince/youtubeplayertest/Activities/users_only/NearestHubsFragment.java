@@ -65,6 +65,7 @@ public class NearestHubsFragment extends Fragment {
     Location globalLocation;
     LocationManager locationmanager;
     LocationListener locationListener;
+    View rootView;
 
     static boolean dialogShown = false;
     static boolean set = false;
@@ -165,7 +166,7 @@ public class NearestHubsFragment extends Fragment {
                         }
                     });
 
-            View rootView = inflater.inflate(R.layout.hubs_fragment, container, false);
+            rootView = inflater.inflate(R.layout.hubs_fragment, container, false);
             rootView.setTag(TAG);
 
             mRecyclerView = (RecyclerView) rootView.findViewById(R.id.hubs_list);
