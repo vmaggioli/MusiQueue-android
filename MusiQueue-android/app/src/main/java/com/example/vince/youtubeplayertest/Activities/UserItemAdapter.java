@@ -14,6 +14,8 @@ import android.widget.TextView;
 
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
 import com.example.vince.youtubeplayertest.Activities.hub_admin_only.QueueActivity;
+import com.example.vince.youtubeplayertest.Activities.hub_admin_only.User;
+import com.example.vince.youtubeplayertest.Activities.users_only.QueueSong;
 import com.example.vince.youtubeplayertest.Activities.users_only.SearchHub;
 import com.example.vince.youtubeplayertest.R;
 
@@ -30,33 +32,77 @@ public class UserItemAdapter extends RecyclerView.Adapter<UserItemAdapter.ViewHo
 
     private static Context mContext;
     private UserItemAdapter.OnItemClickListener listener;
-    ArrayList<String> users = null;
+    ArrayList<User> users = null;
     HubSingleton hubSingleton = HubSingleton.getInstance();
 
 
 
     public interface OnItemClickListener {
-        void onItemClick(String user);
+        void onItemClick(User user);
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView user;
+        public Button removeUser;
+        BackgroundWorker.AsyncResponse callback;
+        BackgroundWorker rmUser;
+
+
 
         ViewHolder(View itemView) {
             super(itemView);
             user = (TextView) itemView.findViewById(R.id.useritem);
+            removeUser = (Button) itemView.findViewById(R.id.removeUser);
         }
 
-        public void bind(final String name, final UserItemAdapter.OnItemClickListener listener) {
-            user.setText(name);
+        public void bind(final User name, final OnItemClickListener listener) {
+            user.setText(name.getName());
+            final HubSingleton hubSingleton = HubSingleton.getInstance();
+
+
+            removeUser.setOnClickListener(new View.OnClickListener() {
+                public void onClick(View v) {
+                    callback = new BackgroundWorker.AsyncResponse() {
+                        @Override
+                        public void processFinish(String result) {
+                            try {
+                                JSONObject json = new JSONObject(result);
+                                JSONObject jsonArray = json.getJSONObject("result");
+                                JSONArray users = jsonArray.getJSONArray("users");
+
+                                hubSingleton.clearUsers();
+
+                                User user;
+                                for(int i = 0; i < users.length();i++){
+                                    user = new User();
+                                    JSONObject name = users.getJSONObject(i);
+                                    user.setName(name.getString("name"));
+                                    user.setId(name.getString("id"));
+
+                                }
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    };
+                    rmUser = new BackgroundWorker(callback);
+
+                    //TODO mlast 2 params may be swapped/wrong
+                    if(!hubSingleton.getUsername().equals(name.getName())) {
+                        rmUser.execute("removeUser", hubSingleton.getHubId().toString(), hubSingleton.getUserID(), name.getId());
+                    }
+                }
+            });
         }
 
     }
 
-    public UserItemAdapter(Context context, ArrayList<String> users, UserItemAdapter.OnItemClickListener listener) {
+    public UserItemAdapter(Context context, ArrayList<User> users, OnItemClickListener listener) {
         this.mContext = context;
         this.listener = listener;
         this.users = users;
+        System.out.println(users);
+        System.out.println("users in adapter size: " + users.size());
 
     }
 
@@ -71,7 +117,7 @@ public class UserItemAdapter extends RecyclerView.Adapter<UserItemAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(UserItemAdapter.ViewHolder holder, int position) {
-        System.out.println(users.size() + "pos: " + position);
+        System.out.println(users.size() + "user pos: " + position);
         holder.bind(users.get(position), listener);
 
     }

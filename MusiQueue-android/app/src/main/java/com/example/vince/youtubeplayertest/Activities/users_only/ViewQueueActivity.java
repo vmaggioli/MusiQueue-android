@@ -17,6 +17,7 @@ import com.example.vince.youtubeplayertest.Activities.SearchActivity;
 import com.example.vince.youtubeplayertest.Activities.UpdateResultReceiver;
 import com.example.vince.youtubeplayertest.Activities.VideoItemAdapter;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
+import com.example.vince.youtubeplayertest.Activities.hub_admin_only.User;
 import com.example.vince.youtubeplayertest.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
@@ -89,12 +90,16 @@ public class ViewQueueActivity extends AppCompatActivity implements UpdateResult
 
                         hubSingleton.add(item);
                     }
-                    ArrayList<String> names = new ArrayList<>();
+                    hubSingleton.clearUsers();
+                    User user;
                     for(int i = 0; i < users.length();i++){
+                        user = new User();
                         JSONObject name = users.getJSONObject(i);
-                        names.add(name.getString("name"));
+                        user.setName(name.getString("name"));
+                        user.setId(name.getString("id"));
+                        hubSingleton.addUser(user);
+
                     }
-                    hubSingleton.setUsers(names);
                     adapter.notifyDataSetChanged();
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -147,12 +152,17 @@ public class ViewQueueActivity extends AppCompatActivity implements UpdateResult
 
                 hubSingleton.add(item);
             }
-            ArrayList<String> names = new ArrayList<>();
+            hubSingleton.clearUsers();
+
+            User user;
             for(int i = 0; i < users.length();i++){
+                user = new User();
                 JSONObject name = users.getJSONObject(i);
-                names.add(name.getString("name"));
+                user.setName(name.getString("name"));
+                user.setId(name.getString("id"));
+                hubSingleton.addUser(user);
+
             }
-            hubSingleton.setUsers(names);
             adapter.notifyDataSetChanged();
             updateView();
         } catch (JSONException e) {
