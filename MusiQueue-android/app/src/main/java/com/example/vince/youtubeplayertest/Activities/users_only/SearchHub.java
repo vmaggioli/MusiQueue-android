@@ -68,7 +68,7 @@ public class SearchHub extends AppCompatActivity {
 
             @Override
             public void onPageSelected(int position) {
-                if (position == 2) {
+                if (position == 3) {
                     promptUserTurnOnLocationServices();
                     if (!isTurnedLocationServicesOn())
                         vpPager.setCurrentItem(1);

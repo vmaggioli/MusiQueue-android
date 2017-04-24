@@ -12,6 +12,7 @@ import android.provider.Settings;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -77,6 +78,8 @@ public class NearestHubsFragment extends Fragment {
 
         // Initialize dataset, this data would usually come from a local content provider or
         // remote server.
+
+        ViewPager vp = (ViewPager) getActivity().findViewById(R.id.vpPager);
 
         callback = new HubsListAdapter.OnItemClickListener(){
             @Override
