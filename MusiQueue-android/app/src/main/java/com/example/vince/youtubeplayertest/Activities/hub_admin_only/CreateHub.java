@@ -11,6 +11,8 @@ import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
+import android.net.wifi.WifiInfo;
+import android.net.wifi.WifiManager;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pDeviceList;
 import android.net.wifi.p2p.WifiP2pManager;
@@ -48,6 +50,8 @@ public class CreateHub extends AppCompatActivity  {
     BroadcastReceiver broadcastReceiver;
     IntentFilter intentFilter;
     List<WifiP2pDevice> peers = new ArrayList<WifiP2pDevice>();
+    String groupWifiPassword;
+    String networkName;
     static boolean set = false;
 
 
@@ -68,7 +72,6 @@ public class CreateHub extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_hub);
-
         intentFilter = new IntentFilter();
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
@@ -76,7 +79,6 @@ public class CreateHub extends AppCompatActivity  {
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
         wifiP2pManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
         channel = wifiP2pManager.initialize(this, getMainLooper(), null);
-        broadcastReceiver = new WiFiBroadcastReceiver(wifiP2pManager, channel, this);
         WifiP2pManager.PeerListListener peerListener = new WifiP2pManager.PeerListListener() {
             @Override
             public void onPeersAvailable(WifiP2pDeviceList peerList) {
@@ -87,7 +89,7 @@ public class CreateHub extends AppCompatActivity  {
                 }
             }
         };
-
+        broadcastReceiver = new WiFiBroadcastReceiver(wifiP2pManager, channel, peerListener, this);
 
         globalLocation = null;
         // set editTexts
@@ -129,10 +131,13 @@ public class CreateHub extends AppCompatActivity  {
                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            if (selectedItems.contains(0)) {// WiFi
+
+                            if (selectedItems.contains(0)) {// Wifi
                                 createHubButton.setEnabled(false);
-                                configureWiFi();
+                                if (!configureWiFi(false)) {
+                                    createHubButton.setEnabled(true);
+                                    return;
+                                }
                             }
                             if (selectedItems.contains(1)) {// GPS Location
                                 createHubButton.setEnabled(false);
@@ -156,12 +161,35 @@ public class CreateHub extends AppCompatActivity  {
         });
     }
 
-    private void configureWiFi() {
+    private boolean configureWiFi(final boolean isOnly) {
+        final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        if (!wifiManager.isWifiEnabled()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(CreateHub.this);
+            builder.setMessage("You Must Have WiFi Connection")
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                            startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            dialog.dismiss();
+                        }
+                    });
+
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+            return false;
+        }
         wifiP2pManager.discoverPeers(channel, new WifiP2pManager.ActionListener() {
 
             @Override
             public void onSuccess() {
-
+                final WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+                networkName = wifiInfo.getSSID();
             }
 
             @Override
@@ -170,6 +198,7 @@ public class CreateHub extends AppCompatActivity  {
                 // TODO: probably just ensure wifi is connected or something
             }
         });
+        return true;
     }
 
 
@@ -247,7 +276,7 @@ public class CreateHub extends AppCompatActivity  {
                 int off;
                 try {
                     off = Settings.Secure.getInt(getContentResolver(), Settings.Secure.LOCATION_MODE);
-                    if(off==0){
+                    if (off == 0) {
                         Intent onGPS = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                         startActivity(onGPS);
                     }
@@ -256,14 +285,13 @@ public class CreateHub extends AppCompatActivity  {
                 }
 
                 locationmanager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-                System.out.println(locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
                 return;
             }
         } else {
             int off;
             try {
                 off = Settings.Secure.getInt(getContentResolver(), Settings.Secure.LOCATION_MODE);
-                if(off==0){
+                if (off == 0) {
                     Intent onGPS = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                     startActivity(onGPS);
                 }
@@ -271,10 +299,11 @@ public class CreateHub extends AppCompatActivity  {
                 e.printStackTrace();
             }
             locationmanager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-            System.out.println("second: " + locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER));        }
+        }
     }
 
     public void setIsWifiP2pEnabled(boolean b) {
+        // TODO: prompt user to turn on wifi settings
     }
 
     public void startCreate() {
@@ -290,11 +319,17 @@ public class CreateHub extends AppCompatActivity  {
                 }
             }
         });
-        if (globalLocation == null)
-            backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID(), appState.getUsername(), "0", "0");
-        else
+        if (globalLocation == null && (networkName == null || networkName.length() == 0))
+            backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID(), appState.getUsername(), "0", "0", "0");
+        else if (globalLocation != null && (networkName == null || networkName.length() == 0))
             backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID(), appState.getUsername(),
-                    String.valueOf(globalLocation.getLatitude()), String.valueOf(globalLocation.getLongitude()));
+                    String.valueOf(globalLocation.getLatitude()), String.valueOf(globalLocation.getLongitude()), "0");
+        else if (globalLocation == null && networkName != null && networkName.length() != 0)
+            backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID(), appState.getUsername(),
+                    "0", "0", networkName);
+        else if (globalLocation != null &&  networkName != null && networkName.length() != 0)
+            backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID(), appState.getUsername(),
+                    String.valueOf(globalLocation.getLatitude()), String.valueOf(globalLocation.getLongitude()), networkName);
         appState.setHubName(hubNameText.getText().toString());
     }
 }
