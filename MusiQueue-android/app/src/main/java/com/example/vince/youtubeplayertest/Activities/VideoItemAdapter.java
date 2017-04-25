@@ -3,6 +3,7 @@ package com.example.vince.youtubeplayertest.Activities;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -75,6 +76,21 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
             videoUser.setText(videoItem.getUser());
             upButton.setText(Integer.toString(videoItem.getUpVotes()));
             downButton.setText(Integer.toString(videoItem.getDownVotes()));
+            if(videoItem.getState() == 0) {
+                upButton.setBackgroundResource(R.drawable.ic_thumb_up_black_24dp_2);
+                downButton.setBackgroundResource(R.drawable.ic_thumb_down_black_24dp_2);
+
+            }
+            else if(videoItem.getState() == -1) {
+                downButton.setBackgroundResource(R.drawable.ic_thumb_down_black_24dp);
+                upButton.setBackgroundResource(R.drawable.ic_thumb_up_black_24dp_2);
+
+            }
+            else {
+                upButton.setBackgroundResource(R.drawable.ic_thumb_up_black_24dp);
+                downButton.setBackgroundResource(R.drawable.ic_thumb_down_black_24dp_2);
+
+            }
 
 
 
@@ -125,8 +141,11 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                     voteUpBW.execute("voteUpSong",hub,phone,String.valueOf(videoItem.getPlace()));
                     //upButton.setClickable(false);
                     upButton.setPressed(true);
+
+
                     //downButton.setClickable(true);
                     downButton.setPressed(false);
+
                     //upButton.setEnabled(false);
                     return true;
                 }
@@ -158,8 +177,10 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                     voteDownBW.execute("voteDownSong",hub,phone,String.valueOf(videoItem.getPlace()));
                     //downButton.setClickable(false);
                     downButton.setPressed(true);
+
                     //upButton.setClickable(true);
                     upButton.setPressed(false);
+
                     //downButton.setEnabled(false);
                     return true;
                 }

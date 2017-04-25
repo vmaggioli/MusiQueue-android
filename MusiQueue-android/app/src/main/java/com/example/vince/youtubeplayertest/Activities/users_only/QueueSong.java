@@ -11,6 +11,7 @@ public class QueueSong {
     private String id;
     private String user;
     private int place;
+    private int state;
 
     public String getTitle() {
         return this.title;
@@ -34,12 +35,18 @@ public class QueueSong {
     public void setId(String id) {this.id = id;}
     public void setUser(String user) {this.user= user;}
     public String getUser(){return this.user;}
-
     public int getPlace() {
         return place;
     }
-
     public void setPlace(int place) {
         this.place = place;
+    }
+
+    public int getState() {
+        return state;
+    }
+
+    public void setState(int state) {
+        this.state = state;
     }
 }
