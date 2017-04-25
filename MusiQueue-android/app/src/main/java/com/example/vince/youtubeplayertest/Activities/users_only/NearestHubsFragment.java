@@ -100,6 +100,12 @@ public class NearestHubsFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         hubs = new Vector<>();
+        callback = new HubsListAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(HubsListItem hub) {
+                selectHub(hub);
+            }
+        };
     }
 
     private void configureLocation() {
@@ -206,7 +212,7 @@ public class NearestHubsFragment extends Fragment {
 
             confirmLocation = (Button) rootView.findViewById(R.id.confirm_button);
 
-            mRecyclerView = (RecyclerView) rootView.findViewById(R.id.nearest_hubs_list);
+            mRecyclerView = (RecyclerView) rootView.findViewById(R.id.hubs_list);
             mRecyclerView.setVisibility(View.INVISIBLE);
 
             confirmLocation.setOnClickListener(new View.OnClickListener() {
@@ -272,7 +278,7 @@ public class NearestHubsFragment extends Fragment {
             scrollPosition = ((LinearLayoutManager) mRecyclerView.getLayoutManager())
                     .findFirstCompletelyVisibleItemPosition();
         }
-
+        System.out.println("position: " + scrollPosition);
         switch (layoutManagerType) {
             case GRID_LAYOUT_MANAGER:
                 mLayoutManager = new GridLayoutManager(getActivity(), SPAN_COUNT);
@@ -286,6 +292,7 @@ public class NearestHubsFragment extends Fragment {
                 mLayoutManager = new LinearLayoutManager(getActivity());
                 mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
         }
+        System.out.println("position again: " + scrollPosition);
 
         mRecyclerView.setLayoutManager(mLayoutManager);
         mRecyclerView.scrollToPosition(scrollPosition);
