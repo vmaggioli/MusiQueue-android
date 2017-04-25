@@ -73,7 +73,6 @@ public class ConnectToHubActivity extends AppCompatActivity {
     }
 
     private void connectError(String errorCode, String errorMessage) {
-        // TODO?
         Toast.makeText(this, errorCode + " - " + errorMessage, Toast.LENGTH_LONG).show();
         finish();
     }

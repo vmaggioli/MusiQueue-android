@@ -60,11 +60,34 @@ if(!$result) {
     respondError("DB_ISSUE", "mysql error in hubSongList: " . $conn->error);
 }
 
-$arr = array();
+$songs = array();
 while($assoc = mysqli_fetch_assoc($result)) {
     $assoc['playing'] = !!$assoc['playing'];
-    $arr[] = $assoc;
+    $songs[] = $assoc;
 }
 
-respondSuccess($arr);
+// Users
+$result = $conn->query("
+    SELECT
+        id,
+        name,
+        last_active
+    FROM Users
+    WHERE
+        Users.hub_id='$hubId'
+        AND active = 1
+        AND kicked = 0
+");
+
+if(!$result) {
+    respondError("DB_ISSUE", "mysql error in hubUsers: " . $conn->error);
+}
+
+$users = array();
+while($assoc = mysqli_fetch_assoc($result)) {
+    $users[] = $assoc;
+}
+
+
+respondSuccess(array("songs" => $songs, "users" => $users));
 ?>

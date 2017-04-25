@@ -51,8 +51,8 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
 
     String type;
 
-    // TODO: NONE OF THE FOLLOWING FUNCTIONS SHOULD EVER BE CALLED MANUALLY FROM AN ACTIVITY
-    // TODO: BACKGROUNDWORKER.EXECUTE() SHOULD BE CALLED AND THESE WILL RUN AUTOMATICALLY
+    // NOTE: NONE OF THE FOLLOWING FUNCTIONS SHOULD EVER BE CALLED MANUALLY FROM AN ACTIVITY
+    // BACKGROUNDWORKER.EXECUTE() SHOULD BE CALLED AND THESE WILL RUN AUTOMATICALLY
 
     @Override
     protected String doInBackground(String... params) {
@@ -81,6 +81,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                 paramNames.add("username");
                 paramNames.add("lat");
                 paramNames.add("long");
+                paramNames.add("networkName");
                 break;
             case "joinHub":
                 paramNames.add("hubName");
@@ -117,6 +118,14 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                 paramNames.add("phoneId");
                 paramNames.add("songId");
                 break;
+            case "hubUsers":
+                paramNames.add("hubId");
+                paramNames.add("phoneId");
+                break;
+            case "removeUser":
+                paramNames.add("hubId");
+                paramNames.add("phoneId");
+                paramNames.add("userId");
 
         }
 

@@ -25,6 +25,13 @@
             <!--app:popupTheme="@style/AppTheme.PopupOverlay" />-->
 
     <!--</android.support.design.widget.AppBarLayout>-->
+    <ToggleButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:text="Users"
+        android:id="@+id/q_view"
+        />
 
     <fragment
         android:id="@+id/youtube_player"
@@ -77,11 +84,19 @@
                 />
     </LinearLayout>
     <android.support.v7.widget.RecyclerView
+        android:id="@+id/userList"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerHorizontal="true"
+        android:layout_centerVertical="true"/>
+    <android.support.v7.widget.RecyclerView
         android:id="@+id/songList"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerHorizontal="true"
-        android:layout_centerVertical="true"></android.support.v7.widget.RecyclerView>
+        android:layout_centerVertical="true"/>
+
+
 
     <ListView
         android:id="@+id/videos_found"

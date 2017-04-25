@@ -1,9 +1,19 @@
 package com.example.vince.youtubeplayertest.Activities.users_only;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
 import android.widget.TextView;
@@ -13,6 +23,7 @@ import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsFragmen
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListItem;
 import com.example.vince.youtubeplayertest.R;
 
+import java.util.List;
 import java.util.Vector;
 
 public class SearchHub extends AppCompatActivity {
