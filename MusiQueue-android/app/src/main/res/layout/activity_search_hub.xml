@@ -15,65 +15,23 @@
         android:id="@+id/hubs_near_you_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="Find Hubs"
         android:textAlignment="center"
-        android:textSize="30sp" />
+        android:text="Hubs Near You"
+        android:textSize="30sp"
+        android:visibility="gone" />
 
-    <LinearLayout
-        android:id="@+id/search_bar_hubs"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:background="#C4C2C1"
-        android:orientation="horizontal">
-
-        <EditText
-            android:id="@+id/hub_name_search"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="2"
-            android:background="@color/white"
-            android:hint="@string/hub_name"
-            android:imeOptions="actionSearch"
-            android:inputType="text" />
-
-        <Button
-            android:id="@+id/hub_name_search_button"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:background="@color/colorPrimaryDark"
-            android:onClick="search"
-            android:text="@string/search" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/hub_type_bar"
+    <android.support.v4.view.ViewPager
+        android:id="@+id/vpPager"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <Button
-            android:id="@+id/search_hubs_recent_button"
-            android:layout_width="wrap_content"
+        <android.support.v4.view.PagerTabStrip
+            android:id="@+id/pager_header"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/recent_hubs" />
+            android:layout_gravity="top"
+            android:paddingBottom="4dp"
+            android:paddingTop="4dp" />
 
-        <Button
-            android:id="@+id/search_hubs_nearby_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/hubs_nearby" />
-    </LinearLayout>
-
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/hubs_list"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/search_bar_hubs"
-        android:background="@drawable/hub_search_background">
-    </android.support.v7.widget.RecyclerView>
-
+    </android.support.v4.view.ViewPager>
 </LinearLayout>
