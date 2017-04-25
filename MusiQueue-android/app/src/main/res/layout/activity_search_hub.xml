@@ -20,6 +20,16 @@
         android:textSize="30sp"
         android:visibility="gone" />
 
+    <TextView
+        android:id="@+id/hubs_over_wifi"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:text="Hubs Over WiFi"
+        android:textSize="30sp"
+        android:visibility="gone"
+        />
+
     <android.support.v4.view.ViewPager
         android:id="@+id/vpPager"
         android:layout_width="match_parent"
