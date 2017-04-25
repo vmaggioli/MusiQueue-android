@@ -48,7 +48,7 @@ public class CreateHub extends AppCompatActivity  {
     BroadcastReceiver broadcastReceiver;
     IntentFilter intentFilter;
     List<WifiP2pDevice> peers = new ArrayList<WifiP2pDevice>();
-    String groupWifiPassword;
+    boolean useWifi = false;
     String networkName;
     static boolean set = false;
     static boolean runningThrough = false;
@@ -99,10 +99,6 @@ public class CreateHub extends AppCompatActivity  {
             }
         };
         broadcastReceiver = new WiFiBroadcastReceiver(wifiP2pManager, channel, peerListener, this);
-        final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        final WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        networkName = wifiInfo.getSSID();
-        System.out.println("networkName0: " + networkName);
 
         globalLocation = null;
         // set editTexts
@@ -246,7 +242,7 @@ public class CreateHub extends AppCompatActivity  {
     }
 
     private boolean configureWiFi(final boolean isOnly) {
-        final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (!wifiManager.isWifiEnabled()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(CreateHub.this);
             builder.setMessage("You Must Have WiFi Connection")
@@ -255,6 +251,7 @@ public class CreateHub extends AppCompatActivity  {
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
                             startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                            useWifi = true;
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -272,9 +269,7 @@ public class CreateHub extends AppCompatActivity  {
 
             @Override
             public void onSuccess() {
-                final WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-                networkName = wifiInfo.getSSID();
-                System.out.println("networkName0: " + networkName);
+
             }
 
             @Override
@@ -374,9 +369,11 @@ public class CreateHub extends AppCompatActivity  {
         });
       
         globalLocation = getLastKnownLocation();
-        final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-        final WifiInfo wifiInfo = wifiManager.getConnectionInfo();
-        networkName = wifiInfo.getSSID();
+        if (useWifi == true) {
+            WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+            networkName = wifiInfo.getSSID();
+        }
 
         if (globalLocation == null && (networkName == null || networkName.length() == 0))
             backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID(), appState.getUsername(), "0", "0", "0");

@@ -18,6 +18,7 @@ import java.util.Vector;
 public class SearchHub extends AppCompatActivity {
     RecyclerView hubsList;
     TextView hubsNearText;
+    TextView hubsWifiText;
     Vector<HubsListItem> hubs;
     HubSingleton hubSingleton;
     Location globalLocation;
@@ -39,6 +40,7 @@ public class SearchHub extends AppCompatActivity {
 
         // initialize views
         hubsNearText = (TextView) findViewById(R.id.hubs_near_you_text);
+        hubsWifiText = (TextView) findViewById(R.id.hubs_over_wifi);
         globalLocation = null;
         set = false;
 

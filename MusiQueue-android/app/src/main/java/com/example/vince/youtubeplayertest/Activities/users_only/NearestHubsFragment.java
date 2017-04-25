@@ -206,7 +206,7 @@ public class NearestHubsFragment extends Fragment {
 
             confirmLocation = (Button) rootView.findViewById(R.id.confirm_button);
 
-            mRecyclerView = (RecyclerView) rootView.findViewById(R.id.hubs_list);
+            mRecyclerView = (RecyclerView) rootView.findViewById(R.id.nearest_hubs_list);
             mRecyclerView.setVisibility(View.INVISIBLE);
 
             confirmLocation.setOnClickListener(new View.OnClickListener() {

@@ -4,15 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <Button
-        android:id="@+id/confirm_button"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="CLICK TO ENABLE LOCATION AND VIEW NEARBY HUBS" />
-
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/nearest_hubs_list"
+        android:id="@+id/hubs_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="20"
