@@ -148,8 +148,8 @@ public class CreateHub extends AppCompatActivity  {
                                 }
                             }
                             if (selectedItems.contains(1)) {// GPS Location
-                                configureLocation();
                                 boolean gps_enabled = false;
+                                configureLocation();
                                 try {
                                     gps_enabled = locationmanager.isProviderEnabled(LocationManager.GPS_PROVIDER);
                                 } catch(Exception ex) {}
@@ -162,6 +162,7 @@ public class CreateHub extends AppCompatActivity  {
                                     promptUserTurnOnLocationServices();
                                     return;
                                 }
+                                globalLocation = getLastKnownLocation();
                             }
                             startCreate();
                         }
@@ -348,38 +349,6 @@ public class CreateHub extends AppCompatActivity  {
 
             }
         };
-//        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-//            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//                requestPermissions(new String[]{
-//                        Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION
-//                }, 10);
-//                int off;
-//                try {
-//                    off = Settings.Secure.getInt(getContentResolver(), Settings.Secure.LOCATION_MODE);
-//                    if (off == 0) {
-//                        Intent onGPS = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-//                        startActivity(onGPS);
-//                    }
-//                } catch (Settings.SettingNotFoundException e) {
-//                    e.printStackTrace();
-//                }
-//
-//                locationmanager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-//                return;
-//            }
-//        } else {
-//            int off;
-//            try {
-//                off = Settings.Secure.getInt(getContentResolver(), Settings.Secure.LOCATION_MODE);
-//                if (off == 0) {
-//                    Intent onGPS = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-//                    startActivity(onGPS);
-//                }
-//            } catch (Settings.SettingNotFoundException e) {
-//                e.printStackTrace();
-//            }
-//            locationmanager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-//        }
     }
 
     public void setIsWifiP2pEnabled(boolean b) {
@@ -399,7 +368,6 @@ public class CreateHub extends AppCompatActivity  {
                 }
             }
         });
-        //globalLocation = getLastKnownLocation();
 
         if (globalLocation == null && (networkName == null || networkName.length() == 0))
             backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID(), appState.getUsername(), "0", "0", "0");
