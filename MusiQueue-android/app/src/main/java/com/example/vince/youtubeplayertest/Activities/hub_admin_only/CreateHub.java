@@ -148,7 +148,7 @@ public class CreateHub extends AppCompatActivity  {
                                 }
                             }
                             if (selectedItems.contains(1)) {// GPS Location
-                                boolean gps_enabled = true;
+                                boolean gps_enabled = false;
                                 configureLocation();
                                 try {
                                     gps_enabled = locationmanager.isProviderEnabled(LocationManager.GPS_PROVIDER);
