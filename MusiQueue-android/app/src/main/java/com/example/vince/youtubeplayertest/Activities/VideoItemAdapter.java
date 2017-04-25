@@ -179,7 +179,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                 }
             });
 
-            if (mContext.getClass() == QueueActivity.class) {
+            if (mContext.getClass() == QueueActivity.class && videoItem != hubSingleton.getSongAt(0)) {
                 removeSongButton.setOnClickListener(new View.OnClickListener() {
                     public void onClick(View v) {
                         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
