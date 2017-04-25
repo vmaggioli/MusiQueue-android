@@ -1,6 +1,7 @@
 package com.example.vince.youtubeplayertest.Activities.users_only;
 
 import android.Manifest;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
@@ -13,6 +14,7 @@ import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -42,10 +44,15 @@ public class NearestHubsFragment extends Fragment {
     private static final String KEY_LAYOUT_MANAGER = "layoutManager";
     private static final int SPAN_COUNT = 2;
 
+    private static boolean set = false;
+    private static boolean dialogShown = false;
+
     private enum LayoutManagerType {
         GRID_LAYOUT_MANAGER,
         LINEAR_LAYOUT_MANAGER
     }
+
+    private ViewPager vpPager;
 
     protected LayoutManagerType mCurrentLayoutManagerType;
 
@@ -60,6 +67,16 @@ public class NearestHubsFragment extends Fragment {
     View rootView;
     LocationManager locationmanager;
     LocationListener locationListener;
+
+    public boolean isTurnedLocationServicesOn() {
+        return turnedLocationServicesOn;
+    }
+
+    public void setTurnedLocationServicesOn(boolean turnedLocationServicesOn) {
+        this.turnedLocationServicesOn = turnedLocationServicesOn;
+    }
+
+    private boolean turnedLocationServicesOn = false;
 
     // newInstance constructor for creating fragment with arguments
     public static NearestHubsFragment newInstance(int page, String title) {
@@ -79,7 +96,17 @@ public class NearestHubsFragment extends Fragment {
         // Initialize dataset, this data would usually come from a local content provider or
         // remote server.
 
-        ViewPager vp = (ViewPager) getActivity().findViewById(R.id.vpPager);
+        vpPager = (ViewPager) getActivity().findViewById(R.id.vpPager);
+        promptUserTurnOnLocationServices();
+        if (!isTurnedLocationServicesOn()) {
+            vpPager.setCurrentItem(2);
+            return;
+        }
+        promptUserAllowLocation();
+        if (!dialogShown) {
+            vpPager.setCurrentItem(2);
+            return;
+        }
 
         callback = new HubsListAdapter.OnItemClickListener(){
             @Override
@@ -91,6 +118,54 @@ public class NearestHubsFragment extends Fragment {
 
         configureLocation();
         globalLocation = getLastKnownLocation();
+    }
+
+    private void promptUserAllowLocation() {
+        locationmanager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity().getApplicationContext());
+        builder.setMessage("We need to access your location momentarily, allow us to use " +
+                "your GPS location?").setPositiveButton("YES",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        dialogShown = true;
+                        if (!set) {
+                            configureLocation();
+                            set = true;
+                            hubs.clear();
+                            globalLocation = getLastKnownLocation();
+                            if (globalLocation == null)
+                                return;
+
+                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity().getApplicationContext());
+                            builder.setMessage("Your general location has been saved. You can disable your " +
+                                    "GPS now.")
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    })
+                                    .setNegativeButton("CANCEL", new AlertDialog.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
+
+                            AlertDialog alertDialog = builder.create();
+                            alertDialog.show();
+                        }
+                    }
+                }
+        ).setNegativeButton("NO",
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        vpPager.setCurrentItem(1);
+                    }
+                });
     }
 
     private void configureLocation() {
@@ -267,5 +342,34 @@ public class NearestHubsFragment extends Fragment {
         // Save currently selected layout manager.
         savedInstanceState.putSerializable(KEY_LAYOUT_MANAGER, mCurrentLayoutManagerType);
         super.onSaveInstanceState(savedInstanceState);
+    }
+    public void promptUserTurnOnLocationServices() {
+        locationmanager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
+        boolean gps_enabled = false;
+        try {
+            gps_enabled = locationmanager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        } catch (Exception ex) {
+        }
+
+        if (!gps_enabled) {
+            // notify user
+            AlertDialog.Builder dialog = new AlertDialog.Builder(getActivity());
+            dialog.setMessage("Your location services aren't enabled.  " +
+                    "Would you like to turn them on?");
+            dialog.setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    startActivity(new Intent(android.provider.Settings.ACTION_LOCATION_SOURCE_SETTINGS));
+                }
+            });
+            dialog.setNegativeButton("NO", new DialogInterface.OnClickListener() {
+
+                @Override
+                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                    setTurnedLocationServicesOn(false);
+                }
+            });
+            dialog.show();
+        }
     }
 }
