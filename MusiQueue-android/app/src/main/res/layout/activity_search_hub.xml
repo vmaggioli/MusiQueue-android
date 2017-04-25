@@ -11,32 +11,6 @@
     android:orientation="vertical"
     tools:context="com.example.vince.youtubeplayertest.Activities.users_only.SearchHub">
 
-    <!--<LinearLayout-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:orientation="horizontal"-->
-        <!--&gt;-->
-        <!--<Button-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:id="@+id/search_by_name_button"-->
-            <!--android:text="By Name"-->
-            <!--android:background="@drawable/gray_bubble_button"-->
-            <!--android:onClick="searchByName"-->
-            <!--android:paddingLeft="5dp"-->
-            <!--android:paddingRight="5dp"-->
-            <!--/>-->
-        <!--<Button-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:id="@+id/search_by_location_button"-->
-            <!--android:text="By Location"-->
-            <!--android:background="@drawable/gray_bubble_button"-->
-            <!--android:onClick="searchByLocation"-->
-            <!--android:paddingLeft="5dp"-->
-            <!--android:paddingRight="5dp"-->
-            <!--/>-->
-    <!--</LinearLayout>-->
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -61,35 +35,5 @@
             android:paddingTop="4dp" />
 
     </android.support.v4.view.ViewPager>
-
-    <!--<LinearLayout-->
-        <!--android:id="@+id/search_bar_hubs"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:background="#C4C2C1"-->
-        <!--android:orientation="horizontal"-->
-        <!--android:layout_marginBottom="16dp">-->
-
-        <!--<EditText-->
-            <!--android:id="@+id/hub_name_search"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="match_parent"-->
-            <!--android:layout_weight="2"-->
-            <!--android:background="@color/white"-->
-            <!--android:hint="@string/hub_name"-->
-            <!--android:imeOptions="actionSearch"-->
-            <!--android:inputType="text"-->
-            <!--/>-->
-
-        <!--<Button-->
-            <!--android:id="@+id/hub_name_search_button"-->
-            <!--android:layout_width="0dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_weight="1"-->
-            <!--android:background="@color/colorPrimaryDark"-->
-            <!--android:text="@string/search"-->
-            <!--android:onClick="search"-->
-            <!--/>-->
-    <!--</LinearLayout>-->
 
 </LinearLayout>
