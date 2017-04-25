@@ -179,37 +179,41 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                 }
             });
 
-            if (mContext.getClass() == QueueActivity.class && videoItem != hubSingleton.getSongAt(0)) {
-                removeSongButton.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
-                        builder.setMessage("Are you sure you want to remove this song from the playlist?")
-                                .setPositiveButton("YES", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                        removeSongBW = new BackgroundWorker(callback);
-                                        String hubId = hubSingleton.getHubId().toString();
-                                        String songId = String.valueOf(videoItem.getPlace());
-                                        String phoneId = hubSingleton.getUserID();
-                                        videos.remove(videoItem);
-                                        removeSongBW.execute("removeSong", hubId, phoneId, songId);
-                                        removeSongButton.setPressed(true);
+            if (mContext.getClass() == QueueActivity.class) {
+                if (videoItem != hubSingleton.getSongAt(0)) {
+                    removeSongButton.setOnClickListener(new View.OnClickListener() {
+                        public void onClick(View v) {
+                            AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+                            builder.setMessage("Are you sure you want to remove this song from the playlist?")
+                                    .setPositiveButton("YES", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                            removeSongBW = new BackgroundWorker(callback);
+                                            String hubId = hubSingleton.getHubId().toString();
+                                            String songId = String.valueOf(videoItem.getPlace());
+                                            String phoneId = hubSingleton.getUserID();
+                                            videos.remove(videoItem);
+                                            removeSongBW.execute("removeSong", hubId, phoneId, songId);
+                                            removeSongButton.setPressed(true);
 
-                                    }
-                                })
-                                .setNegativeButton("NO", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        dialog.dismiss();
-                                    }
-                                });
+                                        }
+                                    })
+                                    .setNegativeButton("NO", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
+                                            dialog.dismiss();
+                                        }
+                                    });
 
-                        AlertDialog alertDialog = builder.create();
-                        alertDialog.show();
+                            AlertDialog alertDialog = builder.create();
+                            alertDialog.show();
 
-                    }
-                });
+                        }
+                    });
+                } else {
+                    removeSongButton.setVisibility(View.GONE);
+                }
             }
 
         }
