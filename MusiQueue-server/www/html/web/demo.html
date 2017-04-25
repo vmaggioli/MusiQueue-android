@@ -55,7 +55,7 @@
                 <span>Hub Name</span>
                 <input id="searchHubNameBox" />
             </label>
-            <div id="searchHubResultArea">Hub Area</div>
+            <div id="searchHubResultArea" class="listArea"></div>
         </div>
     </div>
 
@@ -79,18 +79,18 @@
     <div id="mainScreen">
         <h1>MusiQueue</h1>
         <div id="player"></div>
-        <div id="songList"></div>
+        <div id="songList" class="listArea"></div>
     </div>
 
     <div style="display: none">
-        <div id="songTemplate">
+        <div id="songTemplate" class="listRow songRow">
             <div class="title"></div>
             <div class="user"></div>
             <button class="up"></button>
             <button class="down"></button>
         </div>
 
-        <div id="hubTemplate">
+        <div id="hubTemplate" class="listRow hubRow">
             <div class="name">Name</div>
             <div class="creator">Creator</div>
             <button class="join">Join</button>
