@@ -21,6 +21,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
@@ -68,6 +69,11 @@ public class NearestHubsFragment extends Fragment {
     LocationManager locationmanager;
     LocationListener locationListener;
 
+    Button confirmLocation;
+
+    String latitude = null;
+    String longitude = null;
+
     public boolean isTurnedLocationServicesOn() {
         return turnedLocationServicesOn;
     }
@@ -93,79 +99,7 @@ public class NearestHubsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        // Initialize dataset, this data would usually come from a local content provider or
-        // remote server.
-
-        vpPager = (ViewPager) getActivity().findViewById(R.id.vpPager);
-        promptUserTurnOnLocationServices();
-        if (!isTurnedLocationServicesOn()) {
-            vpPager.setCurrentItem(2);
-            return;
-        }
-        promptUserAllowLocation();
-        if (!dialogShown) {
-            vpPager.setCurrentItem(2);
-            return;
-        }
-
-        callback = new HubsListAdapter.OnItemClickListener(){
-            @Override
-            public void onItemClick(HubsListItem hub) {
-                selectHub(hub);
-            }
-        };
         hubs = new Vector<>();
-
-        configureLocation();
-        globalLocation = getLastKnownLocation();
-    }
-
-    private void promptUserAllowLocation() {
-        locationmanager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity().getApplicationContext());
-        builder.setMessage("We need to access your location momentarily, allow us to use " +
-                "your GPS location?").setPositiveButton("YES",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                        dialogShown = true;
-                        if (!set) {
-                            configureLocation();
-                            set = true;
-                            hubs.clear();
-                            globalLocation = getLastKnownLocation();
-                            if (globalLocation == null)
-                                return;
-
-                            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity().getApplicationContext());
-                            builder.setMessage("Your general location has been saved. You can disable your " +
-                                    "GPS now.")
-                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                        }
-                                    })
-                                    .setNegativeButton("CANCEL", new AlertDialog.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-                                            dialog.dismiss();
-                                        }
-                                    });
-
-                            AlertDialog alertDialog = builder.create();
-                            alertDialog.show();
-                        }
-                    }
-                }
-        ).setNegativeButton("NO",
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        vpPager.setCurrentItem(1);
-                    }
-                });
     }
 
     private void configureLocation() {
@@ -200,17 +134,19 @@ public class NearestHubsFragment extends Fragment {
                 int off;
                 try {
                     off = Settings.Secure.getInt(getActivity().getContentResolver(), Settings.Secure.LOCATION_MODE);
-                    if(off==0){
+                    if (off == 0) {
                         Intent onGPS = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
                         startActivity(onGPS);
                     }
                 } catch (Settings.SettingNotFoundException e) {
                     e.printStackTrace();
                 }
-
-                locationmanager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
-                System.out.println(locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
-                return;
+                if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED) {
+                    locationmanager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, locationListener);
+                    System.out.println(locationmanager.getLastKnownLocation(LocationManager.GPS_PROVIDER));
+                    return;
+                }
             }
         } else {
             int off;
@@ -265,10 +201,48 @@ public class NearestHubsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-            rootView = inflater.inflate(R.layout.hubs_fragment, container, false);
+            rootView = inflater.inflate(R.layout.hubs_fragment_nearest, container, false);
             rootView.setTag(TAG);
 
+            confirmLocation = (Button) rootView.findViewById(R.id.confirm_button);
+
             mRecyclerView = (RecyclerView) rootView.findViewById(R.id.hubs_list);
+            mRecyclerView.setVisibility(View.INVISIBLE);
+
+            confirmLocation.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    promptUserTurnOnLocationServices();
+                    if (isTurnedLocationServicesOn()) {
+                        BackgroundWorker backgroundWorker = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
+                            @Override
+                            public void processFinish(String result) {
+                                Gson gson = new Gson();
+                                r = gson.fromJson(result, SearchHubResponse.class);
+
+                                setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
+
+                                mAdapter = new HubsListAdapter(getActivity(), r.result, callback);
+                                // Set CustomAdapter as the adapter for RecyclerView.
+                                mRecyclerView.setAdapter(mAdapter);
+                            }
+                        });
+
+                        configureLocation();
+                        globalLocation = getLastKnownLocation();
+
+                        if (globalLocation == null)
+                            return;
+
+                        latitude = String.valueOf(globalLocation.getLatitude());
+                        longitude = String.valueOf(globalLocation.getLongitude());
+
+                        backgroundWorker.execute("nearestHubs", HubSingleton.getInstance().getUserID(), latitude, longitude);
+                        mRecyclerView.setVisibility(View.VISIBLE);
+                        confirmLocation.setVisibility(View.GONE);
+                    }
+                }
+            });
 
             // LinearLayoutManager is used here, this will layout the elements in a similar fashion
             // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
@@ -282,26 +256,6 @@ public class NearestHubsFragment extends Fragment {
                 mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState
                         .getSerializable(KEY_LAYOUT_MANAGER);
             }
-
-            BackgroundWorker backgroundWorker = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
-                @Override
-                public void processFinish(String result) {
-                    Gson gson = new Gson();
-                    r = gson.fromJson(result, SearchHubResponse.class);
-
-                    setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
-
-                    mAdapter = new HubsListAdapter(getActivity(), r.result, callback);
-                    // Set CustomAdapter as the adapter for RecyclerView.
-                    mRecyclerView.setAdapter(mAdapter);
-                }
-            });
-
-            String userId = HubSingleton.getInstance().getUserID();
-            String latitude = String.valueOf(globalLocation.getLatitude());
-            String longitude = String.valueOf(globalLocation.getLongitude());
-
-            backgroundWorker.execute("nearestHubs", userId, latitude, longitude);
         return rootView;
     }
 
@@ -343,6 +297,7 @@ public class NearestHubsFragment extends Fragment {
         savedInstanceState.putSerializable(KEY_LAYOUT_MANAGER, mCurrentLayoutManagerType);
         super.onSaveInstanceState(savedInstanceState);
     }
+
     public void promptUserTurnOnLocationServices() {
         locationmanager = (LocationManager) getActivity().getSystemService(LOCATION_SERVICE);
         boolean gps_enabled = false;
@@ -370,6 +325,7 @@ public class NearestHubsFragment extends Fragment {
                 }
             });
             dialog.show();
-        }
+        } else
+            setTurnedLocationServicesOn(true);
     }
 }
