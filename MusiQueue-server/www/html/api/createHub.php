@@ -90,8 +90,8 @@ if($taken) {
 	// create the hub
 	$result = mysqli_query($conn, "
 		INSERT INTO Hubs
-		(hub_name, time_last_active, hub_pin, latitude, longitude)
-		VALUES ('$hubName', CURRENT_TIME(), ".($hasPin ? "'$hubPin'" : 'NULL').", $lat, $long, $networkName)
+		(hub_name, time_last_active, hub_pin, latitude, longitude, network_name)
+		VALUES ('$hubName', CURRENT_TIME(), ".($hasPin ? "'$hubPin'" : 'NULL').", $lat, $long, '$networkName')
 	");
 	$hubId = mysqli_insert_id($conn);
 

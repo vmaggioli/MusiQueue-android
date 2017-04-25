@@ -81,6 +81,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                 paramNames.add("username");
                 paramNames.add("lat");
                 paramNames.add("long");
+                paramNames.add("networkName");
                 break;
             case "joinHub":
                 paramNames.add("hubName");
