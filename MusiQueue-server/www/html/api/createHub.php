@@ -37,7 +37,11 @@ if(isset($_REQUEST['hubPin'])) {
 }
 $lat = mysqli_real_escape_string($conn, $_REQUEST['lat']);
 $long = mysqli_real_escape_string($conn, $_REQUEST['long']);
-$networkName = mysqli_real_escape_string($conn, $_REQUEST['networkName']);
+if(array_key_exists('networkName', $_REQUEST)) {
+	$networkName = mysqli_real_escape_string($conn, $_REQUEST['networkName']);
+}else{
+	$networkName = '';
+}
 
 // check if this hub name is available
 $result = mysqli_query($conn, "
