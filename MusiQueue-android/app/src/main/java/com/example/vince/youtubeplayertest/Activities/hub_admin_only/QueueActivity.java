@@ -45,7 +45,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,11 +56,9 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
     Button searchButton;
 
     BackgroundWorker.AsyncResponse callback;
-    BackgroundWorker.AsyncResponse othercallback;
     BackgroundWorker addBW;
     BackgroundWorker listBW;
     BackgroundWorker removeBW;
-    BackgroundWorker userBW;
     String id;
     String title;
     String removeId;
@@ -76,7 +73,6 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
     private List<VideoItem> searchResults;
     private ListView videosFound;
     private Handler handler;
-    boolean song = true;
 
 
     @Override
@@ -105,6 +101,10 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         searchButton = (Button) findViewById(R.id.search_button);
         videosFound = (ListView)findViewById(R.id.videos_found);
         viewButton = (ToggleButton) findViewById(R.id.q_view);
+
+        viewButton.setText("USERS");
+        viewButton.setTextOff("USERS");
+        viewButton.setTextOn("QUEUE");
 
         handler = new Handler();
         addClickListener();
