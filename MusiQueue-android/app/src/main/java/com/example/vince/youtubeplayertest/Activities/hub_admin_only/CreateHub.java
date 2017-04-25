@@ -99,6 +99,10 @@ public class CreateHub extends AppCompatActivity  {
             }
         };
         broadcastReceiver = new WiFiBroadcastReceiver(wifiP2pManager, channel, peerListener, this);
+        final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        final WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        networkName = wifiInfo.getSSID();
+        System.out.println("networkName0: " + networkName);
 
         globalLocation = null;
         // set editTexts
@@ -270,7 +274,7 @@ public class CreateHub extends AppCompatActivity  {
             public void onSuccess() {
                 final WifiInfo wifiInfo = wifiManager.getConnectionInfo();
                 networkName = wifiInfo.getSSID();
-                System.out.println("networkName: " + networkName);
+                System.out.println("networkName0: " + networkName);
             }
 
             @Override
@@ -368,6 +372,11 @@ public class CreateHub extends AppCompatActivity  {
                 }
             }
         });
+      
+        globalLocation = getLastKnownLocation();
+        final WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+        final WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        networkName = wifiInfo.getSSID();
 
         if (globalLocation == null && (networkName == null || networkName.length() == 0))
             backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID(), appState.getUsername(), "0", "0", "0");
