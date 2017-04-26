@@ -122,11 +122,6 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         hubSingleton = HubSingleton.getInstance();
 
 
-        System.out.println("num of users found in uia: " + hubSingleton.getUsers().size());
-        ArrayList<String> temp = new ArrayList<>();
-        temp.add("name1");
-        temp.add("name2");
-        temp.add("naem3");
         userAdapter = new UserItemAdapter(QueueActivity.this,hubSingleton.getUsers(),new UserItemAdapter.OnItemClickListener() {
             public void onItemClick(User user) {
 
@@ -149,8 +144,6 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                     userListView.setVisibility(View.GONE);
                     songListView.setVisibility(View.VISIBLE);
                 }
-                //TODO: call view function (song)
-
             }
         }
 

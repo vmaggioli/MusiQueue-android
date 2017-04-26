@@ -58,6 +58,7 @@ public class UserItemAdapter extends RecyclerView.Adapter<UserItemAdapter.ViewHo
         public void bind(final User name, final OnItemClickListener listener) {
             user.setText(name.getName());
             final HubSingleton hubSingleton = HubSingleton.getInstance();
+            removeUser.setBackgroundResource(R.drawable.ic_remove_circle_black_24dp);
 
 
             removeUser.setOnClickListener(new View.OnClickListener() {
