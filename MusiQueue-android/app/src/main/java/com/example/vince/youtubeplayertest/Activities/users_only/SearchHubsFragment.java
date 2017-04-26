@@ -13,7 +13,6 @@ import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.TextView;
 
 import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
@@ -22,7 +21,6 @@ import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListAda
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubsListItem;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.SearchHubResponse;
 import com.example.vince.youtubeplayertest.R;
-import com.google.api.services.youtube.YouTube;
 import com.google.gson.Gson;
 
 import java.util.Vector;
@@ -60,6 +58,7 @@ public class SearchHubsFragment extends Fragment {
 
     // newInstance constructor for creating fragment with arguments
     public static SearchHubsFragment newInstance(int page, String title) {
+        System.out.println("search Page: " + page);
         SearchHubsFragment fragmentThird = new SearchHubsFragment();
         Bundle args = new Bundle();
         args.putInt("someInt", page);
@@ -168,6 +167,12 @@ public class SearchHubsFragment extends Fragment {
             mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState
                     .getSerializable(KEY_LAYOUT_MANAGER);
         }
+        r = new SearchHubResponse();
+        r.result = new Vector<HubsListItem>();
+        mAdapter = new HubsListAdapter(getActivity(), r.result, callback);
+        // Set CustomAdapter as the adapter for RecyclerView.
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(mLayoutManager);
 
         /*mLinearLayoutRadioButton = (RadioButton) rootView.findViewById(R.id.linear_layout_rb);
         mLinearLayoutRadioButton.setOnClickListener(new View.OnClickListener() {

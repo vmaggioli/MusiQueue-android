@@ -109,7 +109,12 @@ public class RecentHubsFragment extends Fragment {
             mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState
                     .getSerializable(KEY_LAYOUT_MANAGER);
         }
-
+        r = new SearchHubResponse();
+        r.result = new Vector<HubsListItem>();
+        mAdapter = new HubsListAdapter(getActivity(), r.result, callback);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+        // Set CustomAdapter as the adapter for RecyclerView.
+        mRecyclerView.setAdapter(mAdapter);
         BackgroundWorker backgroundWorker = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
             @Override
             public void processFinish(String result) {
@@ -117,11 +122,10 @@ public class RecentHubsFragment extends Fragment {
                 r = gson.fromJson(result, SearchHubResponse.class);
 
                 setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
-
                 mAdapter = new HubsListAdapter(getActivity(), r.result, callback);
+                mRecyclerView.setLayoutManager(mLayoutManager);
                 // Set CustomAdapter as the adapter for RecyclerView.
-                mRecyclerView.setAdapter(mAdapter);
-            }
+                mRecyclerView.setAdapter(mAdapter);            }
         });
 
         //String userId = getArguments().getString("userId");

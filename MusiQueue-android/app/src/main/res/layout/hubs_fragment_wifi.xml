@@ -3,11 +3,16 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
-
+    <Button
+        android:id="@+id/conf_wifi_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="CLICK TO ENABLE wifi AND VIEW hubs on your wifi network"
+        />
     <android.support.v7.widget.RecyclerView
         android:id="@+id/hubs_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="20"
-        android:background="@drawable/getting_started_container" />
+        android:background="@drawable/getting_started_container"
+        android:visibility="gone"/>
 </LinearLayout>

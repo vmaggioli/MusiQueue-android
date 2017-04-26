@@ -15,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import com.example.vince.youtubeplayertest.Activities.BackgroundWorker;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
@@ -54,6 +55,8 @@ public class WifiHubsFragment extends Fragment {
     HubsListAdapter.OnItemClickListener callback;
     Vector<HubsListItem> hubs;
     SearchHubResponse r;
+    Button confWifiButton;
+    boolean bkrndFinished = false;
 
     // newInstance constructor for creating fragment with arguments
     public static WifiHubsFragment newInstance(int page, String title) {
@@ -80,7 +83,6 @@ public class WifiHubsFragment extends Fragment {
             }
         };
         hubs = new Vector<>();
-
     }
 
     protected void selectHub(HubsListItem hub) {
@@ -103,8 +105,33 @@ public class WifiHubsFragment extends Fragment {
         rootView.setTag(TAG);
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.hubs_list);
+        confWifiButton = (Button) rootView.findViewById(R.id.conf_wifi_button);
+        confWifiButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                configureWiFi();
+                BackgroundWorker worker = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
+                    @Override
+                    public void processFinish(String result) {
+                        Gson gson = new Gson();
+                        r = gson.fromJson(result, SearchHubResponse.class);
 
-        // LinearLayoutManager is used here, this will layout the elements in a similar fashion
+                        setRecyclerViewLayoutManager(mCurrentLayoutManagerType);
+
+                        mAdapter = new HubsListAdapter(getActivity(), r.result, callback);
+                        // Set CustomAdapter as the adapter for RecyclerView.
+                        mRecyclerView.setAdapter(mAdapter);
+                        confWifiButton.setVisibility(View.GONE);
+                        mRecyclerView.setVisibility(View.VISIBLE);
+                    }
+                });
+                worker.execute("wifiHubs", HubSingleton.getInstance().getUserID(), networkName);
+
+            }
+        });
+
+
+                // LinearLayoutManager is used here, this will layout the elements in a similar fashion
         // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
         // elements are laid out.
         mLayoutManager = new LinearLayoutManager(getActivity());
@@ -116,7 +143,15 @@ public class WifiHubsFragment extends Fragment {
             mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState
                     .getSerializable(KEY_LAYOUT_MANAGER);
         }
-        configureWiFi();
+        r = new SearchHubResponse();
+        r.result = new Vector<HubsListItem>();
+        mAdapter = new HubsListAdapter(getActivity(), r.result, callback);
+        // Set CustomAdapter as the adapter for RecyclerView.
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        //configureWiFi();
+
 
         BackgroundWorker backgroundWorker = new BackgroundWorker(new BackgroundWorker.AsyncResponse() {
             @Override
@@ -134,7 +169,7 @@ public class WifiHubsFragment extends Fragment {
 
         //String userId = getArguments().getString("userId");
         String userId = HubSingleton.getInstance().getUserID();
-
+        System.out.println("the networkName: " + networkName);
         backgroundWorker.execute("wifiHubs", userId, networkName);
         /*mLinearLayoutRadioButton = (RadioButton) rootView.findViewById(R.id.linear_layout_rb);
         mLinearLayoutRadioButton.setOnClickListener(new View.OnClickListener() {
@@ -202,7 +237,9 @@ public class WifiHubsFragment extends Fragment {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                            confWifiButton.setVisibility(View.VISIBLE);
+                            mRecyclerView.setVisibility(View.GONE);
+                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
