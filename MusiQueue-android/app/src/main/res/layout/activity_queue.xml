@@ -15,8 +15,10 @@
     <fragment
         android:id="@+id/youtube_player"
         android:name="com.google.android.youtube.player.YouTubePlayerFragment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_width="300dp"
+        android:layout_height="150dp"
+        android:layout_gravity="center_horizontal"
+        />
 
     <ListView
         android:id="@+id/queuedSongs"
@@ -24,18 +26,23 @@
         android:layout_height="wrap_content"
         android:dividerHeight="3dp" />
 
+    <ToggleButton
+        android:id="@+id/q_view"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
+        android:layout_marginTop="-5dp"
         android:weightSum="7">
-
         <EditText
             android:id="@+id/search_edit"
             android:layout_width="0dp"
             android:layout_height="50dp"
-            android:layout_weight="4"
+            android:layout_weight="5"
             android:hint="Search For Song" />
 
         <Button
@@ -44,14 +51,11 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:onClick="searchVideo"
-            android:text="Search Song" />
-
-        <ToggleButton
-            android:id="@+id/q_view"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1" />
-
+            android:text="Search Song"
+            android:background="@drawable/blue_bubble_button"
+            android:layout_marginBottom="10dp"
+            android:layout_marginTop="-10dp"
+            />
     </LinearLayout>
 
     <android.support.v7.widget.RecyclerView

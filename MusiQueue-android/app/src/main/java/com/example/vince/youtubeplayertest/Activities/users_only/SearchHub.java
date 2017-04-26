@@ -1,11 +1,14 @@
 package com.example.vince.youtubeplayertest.Activities.users_only;
 
+import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.view.PagerTabStrip;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
+import android.util.TypedValue;
 import android.widget.TextView;
 
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
@@ -22,6 +25,7 @@ public class SearchHub extends AppCompatActivity {
     Vector<HubsListItem> hubs;
     HubSingleton hubSingleton;
     Location globalLocation;
+    PagerTabStrip pagerTabStrip;
     boolean set;
 
     FragmentPagerAdapter adapterViewPager;
@@ -33,6 +37,10 @@ public class SearchHub extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_hub);
+        pagerTabStrip = (PagerTabStrip) findViewById(R.id.pager_header);
+        pagerTabStrip.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
+        pagerTabStrip.setTabIndicatorColor(Color.parseColor("#303F9F"));
+
 
         final ViewPager vpPager = (ViewPager) findViewById(R.id.vpPager);
         adapterViewPager = new HubsFragmentAdapter(getSupportFragmentManager());
