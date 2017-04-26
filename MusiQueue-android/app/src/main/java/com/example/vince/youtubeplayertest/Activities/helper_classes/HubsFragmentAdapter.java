@@ -20,6 +20,15 @@ public class HubsFragmentAdapter extends FragmentPagerAdapter {
         super(fragmentManager);
     }
 
+    @Override
+    public boolean isViewFromObject(android.view.View view, Object object) {
+        if(object != null){
+            return ((Fragment)object).getView() == view;
+        }else{
+            return false;
+        }
+    }
+
     // Returns total number of pages
     @Override
     public int getCount() {
@@ -29,6 +38,7 @@ public class HubsFragmentAdapter extends FragmentPagerAdapter {
     // Returns the fragment to display for that page
     @Override
     public Fragment getItem(int position) {
+        System.out.println("position: " + position);
         switch (position) {
             case 0: // Fragment # 0 - This will show FirstFragment different title
                 return RecentHubsFragment.newInstance(0, "Page # 1");
@@ -57,4 +67,10 @@ public class HubsFragmentAdapter extends FragmentPagerAdapter {
             return "Nearby Hubs";
         }
     }
+
+    @Override
+    public int getItemPosition(Object object) {
+        return super.getItemPosition(object);
+    }
+
 }

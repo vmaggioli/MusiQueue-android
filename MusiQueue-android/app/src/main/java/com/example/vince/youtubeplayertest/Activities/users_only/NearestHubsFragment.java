@@ -211,9 +211,26 @@ public class NearestHubsFragment extends Fragment {
             rootView.setTag(TAG);
 
             confirmLocation = (Button) rootView.findViewById(R.id.confirm_button);
+            // LinearLayoutManager is used here, this will layout the elements in a similar fashion
+            // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
+            // elements are laid out.
+            mLayoutManager = new LinearLayoutManager(getActivity());
 
+            mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
+
+            if (savedInstanceState != null) {
+                // Restore saved layout manager type.
+                mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState
+                        .getSerializable(KEY_LAYOUT_MANAGER);
+            }
             mRecyclerView = (RecyclerView) rootView.findViewById(R.id.hubs_list);
             mRecyclerView.setVisibility(View.INVISIBLE);
+            r = new SearchHubResponse();
+            r.result = new Vector<HubsListItem>();
+            mAdapter = new HubsListAdapter(getActivity(), r.result, callback);
+            // Set CustomAdapter as the adapter for RecyclerView.
+            mRecyclerView.setAdapter(mAdapter);
+            mRecyclerView.setLayoutManager(mLayoutManager);
 
             confirmLocation.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -250,18 +267,7 @@ public class NearestHubsFragment extends Fragment {
                 }
             });
 
-            // LinearLayoutManager is used here, this will layout the elements in a similar fashion
-            // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
-            // elements are laid out.
-            mLayoutManager = new LinearLayoutManager(getActivity());
 
-            mCurrentLayoutManagerType = LayoutManagerType.LINEAR_LAYOUT_MANAGER;
-
-            if (savedInstanceState != null) {
-                // Restore saved layout manager type.
-                mCurrentLayoutManagerType = (LayoutManagerType) savedInstanceState
-                        .getSerializable(KEY_LAYOUT_MANAGER);
-            }
         return rootView;
     }
 
