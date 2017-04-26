@@ -41,6 +41,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
     private static ArrayList<QueueSong> videos;
     private static Context mContext;
     private OnItemClickListener listener;
+    String caller=null;
 
 
     public interface OnItemClickListener {
@@ -59,6 +60,8 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
         public BackgroundWorker removeSongBW;
         BackgroundWorker voteBW;
         BackgroundWorker.AsyncResponse callback;
+        public String caller=null;
+
 
         public int getColor(String title){
             String hex = String.format("%06x", new BigInteger(1, title.getBytes()));
@@ -81,7 +84,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
             removeSongButton = (Button) itemView.findViewById(R.id.removeSong);
 
         }
-        public void bind(final QueueSong videoItem, final OnItemClickListener listener) {
+        public void bind(final QueueSong videoItem, final OnItemClickListener listener,String caller) {
 //            if (videoItem.getTitle().replaceAll("\\s+"," ").length() >= 25)
 //                videoTitle.setText(videoItem.getTitle().trim().substring(0, 28) + "...");
 //            else
@@ -90,7 +93,10 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
             videoUser.setText(videoItem.getUser());
             upButton.setText(Integer.toString(videoItem.getUpVotes()));
             downButton.setText(Integer.toString(videoItem.getDownVotes()));
-            removeSongButton.setBackgroundResource(R.drawable.ic_remove_circle_black_24dp);
+            if(caller.equals("owner")) {
+                System.out.println("OWNDER IS IN HUB");
+                removeSongButton.setBackgroundResource(R.drawable.ic_remove_circle_black_24dp);
+            }
             if(videoItem.getState() == 0) {
                 upButton.setBackgroundResource(R.drawable.ic_thumb_up_black_24dp_2);
                 downButton.setBackgroundResource(R.drawable.ic_thumb_down_black_24dp_2);
@@ -217,7 +223,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                                             String phoneId = hubSingleton.getUserID();
                                             videos.remove(videoItem);
                                             removeSongBW.execute("removeSong", hubId, phoneId, songId);
-                                            removeSongButton.setPressed(true);
+                                            //removeSongButton.setPressed(true);
 
                                         }
                                     })
@@ -234,17 +240,18 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                         }
                     });
                 } else {
-                    removeSongButton.setVisibility(View.GONE);
+                    //removeSongButton.setVisibility(View.GONE);
                 }
             }
 
         }
     }
 
-    public VideoItemAdapter(Context context, ArrayList<QueueSong> videos, OnItemClickListener listener) {
+    public VideoItemAdapter(Context context, ArrayList<QueueSong> videos,String caller, OnItemClickListener listener) {
         this.mContext = context;
         this.videos = videos;
         this.listener = listener;
+        this.caller = caller;
 
     }
 
@@ -265,7 +272,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         //System.out.println(videos.size() + "pos: " + position);
-        holder.bind(videos.get(position), listener);
+        holder.bind(videos.get(position), listener,caller);
 
     }
 

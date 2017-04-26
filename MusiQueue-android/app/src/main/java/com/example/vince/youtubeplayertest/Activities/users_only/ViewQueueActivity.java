@@ -55,7 +55,7 @@ public class ViewQueueActivity extends AppCompatActivity implements UpdateResult
         hubNameView = (TextView) findViewById(R.id.hub_name);
         hubNameView.setText(hubSingleton.getHubName());
 
-        adapter = new VideoItemAdapter(ViewQueueActivity.this, hubSingleton.getEntireList(), new VideoItemAdapter.OnItemClickListener() {
+        adapter = new VideoItemAdapter(ViewQueueActivity.this, hubSingleton.getEntireList(),"notowner", new VideoItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(QueueSong videoItem) {
 
