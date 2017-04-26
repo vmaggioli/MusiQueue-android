@@ -202,7 +202,7 @@ public class WifiHubsFragment extends Fragment {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             dialog.dismiss();
-                            startActivity(new Intent(Settings.ACTION_WIRELESS_SETTINGS));
+                            startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                         }
                     })
                     .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
