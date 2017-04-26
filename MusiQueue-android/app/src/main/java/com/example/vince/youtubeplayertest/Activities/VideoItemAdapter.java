@@ -3,7 +3,6 @@ package com.example.vince.youtubeplayertest.Activities;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,12 +10,12 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
 import com.example.vince.youtubeplayertest.Activities.hub_admin_only.QueueActivity;
 import com.example.vince.youtubeplayertest.Activities.users_only.QueueSong;
-import com.example.vince.youtubeplayertest.Activities.users_only.SearchHub;
 import com.example.vince.youtubeplayertest.R;
 
 import org.json.JSONArray;
@@ -60,6 +59,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
         public BackgroundWorker removeSongBW;
         BackgroundWorker voteBW;
         BackgroundWorker.AsyncResponse callback;
+        LinearLayout queueItemTitleBkrnd;
         public String caller=null;
 
 
@@ -82,7 +82,8 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
             downButton = (Button) itemView.findViewById(R.id.button2);
             videoUser = (TextView) itemView.findViewById(R.id.queueItem_user);
             removeSongButton = (Button) itemView.findViewById(R.id.removeSong);
-
+            queueItemTitleBkrnd = (LinearLayout) itemView.findViewById(R.id.queue_item_title_bkrnd);
+            
         }
         public void bind(final QueueSong videoItem, final OnItemClickListener listener,String caller) {
 //            if (videoItem.getTitle().replaceAll("\\s+"," ").length() >= 25)
@@ -90,6 +91,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
 //            else
             videoTitle.setText(videoItem.getTitle());
             videoTitle.setBackgroundColor(getColor(videoItem.getTitle()));
+            queueItemTitleBkrnd.setBackgroundColor(getColor(videoItem.getTitle()));
             videoUser.setText(videoItem.getUser());
             upButton.setText(Integer.toString(videoItem.getUpVotes()));
             downButton.setText(Integer.toString(videoItem.getDownVotes()));
