@@ -142,6 +142,7 @@ public class CreateHub extends AppCompatActivity  {
                         public void onClick(DialogInterface dialog, int which) {
 
                             if (selectedItems.contains(0)) {// Wifi
+                                useWifi = true;
                                 if (!configureWiFi(false)) {
                                     createHubButton.setEnabled(true);
                                     return;
@@ -369,7 +370,7 @@ public class CreateHub extends AppCompatActivity  {
         });
       
         globalLocation = getLastKnownLocation();
-        if (useWifi == true) {
+        if (useWifi) {
             WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             WifiInfo wifiInfo = wifiManager.getConnectionInfo();
             networkName = wifiInfo.getSSID();

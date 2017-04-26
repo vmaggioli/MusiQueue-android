@@ -36,7 +36,7 @@ public class HubsFragmentAdapter extends FragmentPagerAdapter {
                 return SearchHubsFragment.newInstance(1, "Page # 2");
             case 2:
                 return WifiHubsFragment.newInstance(2, "Page # 3");
-            case 3: // Fragment # 1 - This will show SecondFragment
+            case 3:
                 return NearestHubsFragment.newInstance(3, "Page # 4");
             default:
                 return null;

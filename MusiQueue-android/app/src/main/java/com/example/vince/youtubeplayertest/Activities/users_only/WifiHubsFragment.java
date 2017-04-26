@@ -57,12 +57,12 @@ public class WifiHubsFragment extends Fragment {
 
     // newInstance constructor for creating fragment with arguments
     public static WifiHubsFragment newInstance(int page, String title) {
-        WifiHubsFragment fragmentFirst = new WifiHubsFragment();
+        WifiHubsFragment fragmentWifi = new WifiHubsFragment();
         Bundle args = new Bundle();
         args.putInt("someInt", page);
         args.putString("someTitle", title);
-        fragmentFirst.setArguments(args);
-        return fragmentFirst;
+        fragmentWifi.setArguments(args);
+        return fragmentWifi;
     }
 
 
@@ -99,7 +99,7 @@ public class WifiHubsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.hubs_fragment, container, false);
+        View rootView = inflater.inflate(R.layout.hubs_fragment_wifi, container, false);
         rootView.setTag(TAG);
 
         mRecyclerView = (RecyclerView) rootView.findViewById(R.id.hubs_list);
