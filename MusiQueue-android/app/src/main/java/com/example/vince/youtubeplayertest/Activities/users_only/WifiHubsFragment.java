@@ -194,7 +194,7 @@ public class WifiHubsFragment extends Fragment {
         super.onSaveInstanceState(savedInstanceState);
     }
     private void configureWiFi() {
-        WifiManager wifiManager = (WifiManager) getContext().getSystemService(Context.WIFI_SERVICE);
+        WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (!wifiManager.isWifiEnabled()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
             builder.setMessage("You Must Have WiFi Connection")
