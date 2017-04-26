@@ -32,7 +32,6 @@ import com.example.vince.youtubeplayertest.Activities.VideoItem;
 import com.example.vince.youtubeplayertest.Activities.VideoItemAdapter;
 import com.example.vince.youtubeplayertest.Activities.YoutubeConnector;
 import com.example.vince.youtubeplayertest.Activities.helper_classes.HubSingleton;
-import com.example.vince.youtubeplayertest.Activities.starting_activities.GettingStarted;
 import com.example.vince.youtubeplayertest.Activities.users_only.QueueSong;
 import com.example.vince.youtubeplayertest.R;
 import com.google.android.youtube.player.YouTubeInitializationResult;
@@ -45,7 +44,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class QueueActivity extends AppCompatActivity implements UpdateResultReceiver.Receiver {
@@ -80,9 +78,11 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         if (songListView != null && videosFound != null && videosFound.getVisibility() == View.VISIBLE) {
             videosFound.setVisibility(View.GONE);
             songListView.setVisibility(View.VISIBLE);
+        } else if (songListView != null && userListView != null && userListView.getVisibility() == View.VISIBLE) {
+            userListView.setVisibility(View.GONE);
+            songListView.setVisibility(View.VISIBLE);
+            viewButton.setChecked(false);
         }
-        else
-            startActivity(new Intent(QueueActivity.this, GettingStarted.class));
     }
     @Override
     public void onDestroy() {
@@ -138,7 +138,8 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
             public void onCheckedChanged(CompoundButton buttonview, boolean isChecked) {
                 if(isChecked) {
                     userListView.setVisibility(View.VISIBLE);
-                    songListView.setVisibility(View.GONE);
+                    if (songListView != null && songListView.getVisibility() == View.VISIBLE) songListView.setVisibility(View.GONE);
+                    if (videosFound != null && videosFound.getVisibility() == View.VISIBLE) videosFound.setVisibility(View.GONE);
                 }
                 else {
                     userListView.setVisibility(View.GONE);
@@ -312,6 +313,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
             Toast.makeText(getApplicationContext(), "No Search Input", Toast.LENGTH_LONG).show();
             return;
         }
+        if (userListView.getVisibility() == View.VISIBLE) viewButton.setChecked(false);
         songListView.setVisibility(View.GONE);
         userListView.setVisibility(View.GONE);
         videosFound.setVisibility(View.VISIBLE);
