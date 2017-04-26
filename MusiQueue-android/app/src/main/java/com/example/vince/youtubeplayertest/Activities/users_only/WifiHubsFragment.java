@@ -216,6 +216,8 @@ public class WifiHubsFragment extends Fragment {
             alertDialog.show();
         }
         WifiInfo wifiInfo = wifiManager.getConnectionInfo();
+        System.out.println(wifiInfo);
         networkName = wifiInfo.getSSID();
+        System.out.println(networkName);
     }
 }

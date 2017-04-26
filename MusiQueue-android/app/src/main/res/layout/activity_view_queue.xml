@@ -38,7 +38,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:background="@drawable/hub_search_background"
+        android:background="@drawable/getting_started_container"
         >
     </android.support.v7.widget.RecyclerView>
 

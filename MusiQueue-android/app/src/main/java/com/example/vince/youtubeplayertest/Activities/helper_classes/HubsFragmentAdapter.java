@@ -30,10 +30,10 @@ public class HubsFragmentAdapter extends FragmentPagerAdapter {
     @Override
     public Fragment getItem(int position) {
         switch (position) {
-            case 0: // Fragment # 0 - This will show FirstFragment
-                return SearchHubsFragment.newInstance(0, "Page # 1");
-            case 1: // Fragment # 0 - This will show FirstFragment different title
-                return RecentHubsFragment.newInstance(1, "Page # 2");
+            case 0: // Fragment # 0 - This will show FirstFragment different title
+                return RecentHubsFragment.newInstance(0, "Page # 1");
+            case 1: // Fragment # 0 - This will show FirstFragment
+                return SearchHubsFragment.newInstance(1, "Page # 2");
             case 2:
                 return WifiHubsFragment.newInstance(2, "Page # 3");
             case 3: // Fragment # 1 - This will show SecondFragment
@@ -48,9 +48,9 @@ public class HubsFragmentAdapter extends FragmentPagerAdapter {
     public CharSequence getPageTitle(int position) {
         //return "Page " + position;
         if (position == 0) {
-            return "Search";
-        } else if (position == 1) {
             return "Recent Hubs";
+        } else if (position == 1) {
+            return "Search Hubs";
         } else if (position == 2){
             return "WiFi Hubs";
         } else {

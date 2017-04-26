@@ -102,9 +102,9 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         videosFound = (ListView)findViewById(R.id.videos_found);
         viewButton = (ToggleButton) findViewById(R.id.q_view);
 
-        viewButton.setText("USERS");
-        viewButton.setTextOff("USERS");
-        viewButton.setTextOn("QUEUE");
+        viewButton.setText("display USERS");
+        viewButton.setTextOff("display USERS");
+        viewButton.setTextOn("display QUEUE");
 
         handler = new Handler();
         addClickListener();
