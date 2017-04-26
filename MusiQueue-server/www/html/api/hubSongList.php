@@ -66,6 +66,13 @@ while($assoc = mysqli_fetch_assoc($result)) {
     $songs[] = $assoc;
 }
 
+// update last active
+$result = $conn->query("
+    UPDATE Hubs
+    SET time_last_active = NOW()
+    WHERE id = $hubId
+");
+
 // Users
 $result = $conn->query("
     SELECT
