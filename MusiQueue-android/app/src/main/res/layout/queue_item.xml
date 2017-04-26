@@ -8,19 +8,26 @@
     android:background="@drawable/hub_search_item"
     android:focusable="false"
     >
-    <TextView android:id="@+id/queueItem_title"
+    <LinearLayout
+        android:id="@+id/queue_item_title_user"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="match_parent"
+        android:background="@drawable/hub_search_item_title"
+        android:orientation="horizontal"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
-        android:layout_gravity="center_vertical"
-        android:layout_weight="1"
-        android:textSize="20sp"
-        android:padding="5dp"
-        android:lines="1"
-        android:background="@drawable/hub_search_item_title"
-        />
+        >
+        <TextView android:id="@+id/queueItem_title"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center_vertical"
+            android:textSize="20sp"
+            android:padding="5dp"
+            android:background="@drawable/hub_search_item_title"
+            android:lines="1"
+            />
+        </LinearLayout>
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

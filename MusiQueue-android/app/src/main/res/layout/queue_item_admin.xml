@@ -8,20 +8,34 @@
     android:background="@drawable/hub_search_item"
     android:focusable="false"
     >
-    <TextView android:id="@+id/queueItem_title"
+    <LinearLayout
+        android:id="@+id/queue_item_title_bkrnd"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/hub_search_item_title"
+        android:orientation="horizontal"
         android:layout_marginLeft="5dp"
         android:layout_marginRight="5dp"
         android:layout_marginTop="5dp"
-        android:layout_gravity="center_vertical"
-        android:layout_weight="1"
-        android:textSize="20sp"
-        android:padding="5dp"
-        android:lines="1"
-        android:background="@drawable/hub_search_item_title"
-        />
+        >
+        <TextView android:id="@+id/queueItem_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:layout_weight="1"
+            android:textSize="20sp"
+            android:lines="1"
+            />
+        <Button
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:id="@+id/removeSong"
+            android:layout_weight="0"
+            android:background="@drawable/ic_remove_circle_black_24dp"
+            />
+    </LinearLayout>
     <LinearLayout
+        android:id="@+id/queue_item_bkrnd"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -38,15 +52,7 @@
             android:padding="5dp"
             android:background="@drawable/hub_search_time_creator"
             />
-        <Button
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:id="@+id/removeSong"
-            android:layout_marginLeft="10dp"
-            android:layout_marginBottom="5dp"
-            android:layout_marginTop="5dp"
-            android:background="@drawable/ic_remove_circle_black_24dp"
-            />
+
         <View
             android:layout_width="0dp"
             android:layout_height="0dp"
