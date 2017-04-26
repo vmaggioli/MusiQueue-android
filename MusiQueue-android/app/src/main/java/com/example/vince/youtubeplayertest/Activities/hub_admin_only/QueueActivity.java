@@ -128,7 +128,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
             }
         });
 
-        adapter = new VideoItemAdapter(QueueActivity.this, hubSingleton.getEntireList(), new VideoItemAdapter.OnItemClickListener() {
+        adapter = new VideoItemAdapter(QueueActivity.this, hubSingleton.getEntireList(),"owner", new VideoItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(QueueSong videoItem) {
 
