@@ -17,10 +17,10 @@ $phoneId = mysqli_real_escape_string($conn, $_REQUEST['phoneId']);
 $lat = mysqli_real_escape_string($conn, $_REQUEST['lat']);
 $long = mysqli_real_escape_string($conn, $_REQUEST['long']);
 
-$minLat = $lat - 0.001;
-$maxLat = $lat + 0.001;
-$minLong = $long - 0.001;
-$maxLong = $long + 0.001;
+$minLat = $lat - 0.01;
+$maxLat = $lat + 0.01;
+$minLong = $long - 0.01;
+$maxLong = $long + 0.01;
 
 $result = mysqli_query($conn, "
 SELECT
