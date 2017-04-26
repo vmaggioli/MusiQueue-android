@@ -90,6 +90,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
             videoUser.setText(videoItem.getUser());
             upButton.setText(Integer.toString(videoItem.getUpVotes()));
             downButton.setText(Integer.toString(videoItem.getDownVotes()));
+            removeSongButton.setBackgroundResource(R.drawable.ic_remove_circle_black_24dp);
             if(videoItem.getState() == 0) {
                 upButton.setBackgroundResource(R.drawable.ic_thumb_up_black_24dp_2);
                 downButton.setBackgroundResource(R.drawable.ic_thumb_down_black_24dp_2);
