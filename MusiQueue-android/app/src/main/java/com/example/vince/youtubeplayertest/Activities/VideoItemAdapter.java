@@ -92,7 +92,10 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
             downButton = (Button) itemView.findViewById(R.id.button2);
             videoUser = (TextView) itemView.findViewById(R.id.queueItem_user);
             removeSongButton = (Button) itemView.findViewById(R.id.removeSong);
-            queueItemTitleBkrnd = (LinearLayout) itemView.findViewById(R.id.queue_item_title_bkrnd);
+            if (mContext.getClass() == QueueActivity.class)
+                queueItemTitleBkrnd = (LinearLayout) itemView.findViewById(R.id.queue_item_title_bkrnd);
+            else
+                queueItemTitleBkrnd = (LinearLayout) itemView.findViewById(R.id.queue_item_title_user);
         }
         public static int manipulateColor(int color, float factor) {
             int a = Color.alpha(color);
@@ -113,11 +116,11 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
             //bkrnd.setColorFilter(getColor(videoItem.getTitle()), PorterDuff.Mode.SRC_ATOP);
             lightShape.setColor(manipulateColor(getColor(videoItem.getTitle()), 1.25f));
             main.setColor(getColor(videoItem.getTitle()));
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                queueItemTitleBkrnd.setBackground(bkrnd);
-            } else {
-                queueItemTitleBkrnd.setBackgroundColor(getColor(videoItem.getTitle()));
-            }
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                    queueItemTitleBkrnd.setBackground(bkrnd);
+                else
+                    queueItemTitleBkrnd.setBackgroundColor(getColor(videoItem.getTitle()));
+
             videoUser.setText(videoItem.getUser());
             upButton.setText(Integer.toString(videoItem.getUpVotes()));
             downButton.setText(Integer.toString(videoItem.getDownVotes()));
