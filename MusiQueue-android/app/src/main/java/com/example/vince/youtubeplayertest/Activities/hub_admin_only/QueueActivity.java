@@ -370,6 +370,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                 changeAndUpdate("add");
                 videosFound.setVisibility(View.GONE);
                 songListView.setVisibility(View.VISIBLE);
+                userListView.setVisibility(View.GONE);
             }
 
         });
