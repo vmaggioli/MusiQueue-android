@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.vince.youtubeplayertest">
+    package="com.example.musiqueue">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
@@ -71,7 +71,7 @@
         <activity android:name=".Activities.users_only.ConnectToHubActivity"
             android:screenOrientation="portrait"
             />
-        <service android:name=".Activities.PollData" ></service>
+        <service android:name=".HelperClasses.PollData" />
     </application>
 
 </manifest>

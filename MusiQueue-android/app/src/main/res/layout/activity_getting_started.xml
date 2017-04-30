@@ -10,7 +10,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context="com.example.vince.youtubeplayertest.Activities.starting_activities.GettingStarted"
+    tools:context="com.example.musiqueue.Activities.starting_activities.GettingStarted"
     >
 
     <LinearLayout
