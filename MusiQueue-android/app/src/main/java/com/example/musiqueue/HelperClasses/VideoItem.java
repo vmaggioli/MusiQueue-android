@@ -1,4 +1,4 @@
-package com.example.musiqueue.Activities;
+package com.example.musiqueue.HelperClasses;
 
 /**
  * Created by Brian on 1/27/2017.

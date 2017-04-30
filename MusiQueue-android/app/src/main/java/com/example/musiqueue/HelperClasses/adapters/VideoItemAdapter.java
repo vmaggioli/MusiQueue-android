@@ -1,4 +1,4 @@
-package com.example.musiqueue.Activities;
+package com.example.musiqueue.HelperClasses.adapters;
 
 import android.app.AlertDialog;
 import android.content.Context;
@@ -20,6 +20,7 @@ import android.widget.TextView;
 
 import com.example.musiqueue.Activities.hub_admin_only.QueueActivity;
 import com.example.musiqueue.Activities.users_only.QueueSong;
+import com.example.musiqueue.HelperClasses.BackgroundWorker;
 import com.example.musiqueue.HelperClasses.HubSingleton;
 import com.example.musiqueue.R;
 

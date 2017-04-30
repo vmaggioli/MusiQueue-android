@@ -6,8 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.musiqueue.Activities.BackgroundWorker;
 import com.example.musiqueue.Activities.hub_admin_only.QueueActivity;
+import com.example.musiqueue.HelperClasses.BackgroundWorker;
 import com.example.musiqueue.HelperClasses.HubSingleton;
 import com.example.musiqueue.HelperClasses.JoinHubResponse;
 import com.example.musiqueue.R;

@@ -10,11 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.musiqueue.Activities.BackgroundWorker;
+import com.example.musiqueue.HelperClasses.BackgroundWorker;
 import com.example.musiqueue.HelperClasses.HubSingleton;
-import com.example.musiqueue.HelperClasses.HubsListAdapter;
 import com.example.musiqueue.HelperClasses.HubsListItem;
 import com.example.musiqueue.HelperClasses.SearchHubResponse;
+import com.example.musiqueue.HelperClasses.adapters.HubsListAdapter;
 import com.example.musiqueue.R;
 import com.google.gson.Gson;
 

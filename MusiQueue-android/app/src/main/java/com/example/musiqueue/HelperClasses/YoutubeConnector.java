@@ -1,4 +1,4 @@
-package com.example.musiqueue.Activities;
+package com.example.musiqueue.HelperClasses;
 
 
 import android.content.Context;

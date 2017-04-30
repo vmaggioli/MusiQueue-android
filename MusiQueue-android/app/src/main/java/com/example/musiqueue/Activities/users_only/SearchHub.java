@@ -12,8 +12,8 @@ import android.util.TypedValue;
 import android.widget.TextView;
 
 import com.example.musiqueue.HelperClasses.HubSingleton;
-import com.example.musiqueue.HelperClasses.HubsFragmentAdapter;
 import com.example.musiqueue.HelperClasses.HubsListItem;
+import com.example.musiqueue.HelperClasses.adapters.HubsFragmentAdapter;
 import com.example.musiqueue.R;
 
 import java.util.Vector;

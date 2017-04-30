@@ -1,4 +1,4 @@
-package com.example.musiqueue.HelperClasses;
+package com.example.musiqueue.HelperClasses.adapters;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

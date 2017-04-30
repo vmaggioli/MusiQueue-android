@@ -1,4 +1,4 @@
-package com.example.musiqueue.Activities;
+package com.example.musiqueue.HelperClasses.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -8,8 +8,9 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
-import com.example.musiqueue.Activities.hub_admin_only.User;
+import com.example.musiqueue.HelperClasses.BackgroundWorker;
 import com.example.musiqueue.HelperClasses.HubSingleton;
+import com.example.musiqueue.HelperClasses.User;
 import com.example.musiqueue.R;
 
 import org.json.JSONArray;

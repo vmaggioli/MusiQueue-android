@@ -1,10 +1,12 @@
-package com.example.musiqueue.Activities;
+package com.example.musiqueue.HelperClasses;
 
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
+
+import com.example.musiqueue.Activities.BackendTestActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;

@@ -1,4 +1,4 @@
-package com.example.musiqueue.Activities;
+package com.example.musiqueue.HelperClasses;
 
 import android.app.IntentService;
 import android.content.Intent;
@@ -6,8 +6,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.util.Log;
-
-import com.example.musiqueue.HelperClasses.HubSingleton;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;

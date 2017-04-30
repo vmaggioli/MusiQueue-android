@@ -1,12 +1,12 @@
-package com.example.vince.youtubeplayertest.Activities;
+package com.example.musiqueue.Activities.hub_admin_only;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.net.wifi.p2p.WifiP2pManager;
 
-import com.example.vince.youtubeplayertest.Activities.hub_admin_only.CreateHub;
-import com.example.vince.youtubeplayertest.Activities.users_only.SearchHub;
+import com.example.musiqueue.Activities.users_only.SearchHub;
+
 
 /**
  * Created by Brian on 4/23/2017.

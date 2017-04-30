@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import com.example.musiqueue.Activities.hub_admin_only.QueueActivity;
 import com.example.musiqueue.Activities.users_only.ViewQueueActivity;
+import com.example.musiqueue.HelperClasses.VideoItem;
+import com.example.musiqueue.HelperClasses.YoutubeConnector;
 import com.example.musiqueue.R;
 import com.squareup.picasso.Picasso;
 

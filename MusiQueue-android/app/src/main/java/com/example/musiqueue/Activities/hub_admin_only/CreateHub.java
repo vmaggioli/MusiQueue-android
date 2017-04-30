@@ -25,8 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
-import com.example.musiqueue.Activities.BackgroundWorker;
-import com.example.musiqueue.Activities.WiFiBroadcastReceiver;
+import com.example.musiqueue.HelperClasses.BackgroundWorker;
 import com.example.musiqueue.HelperClasses.HubSingleton;
 import com.example.musiqueue.HelperClasses.JoinHubResponse;
 import com.example.musiqueue.R;
@@ -136,46 +135,46 @@ public class CreateHub extends AppCompatActivity  {
                             selectedItems.remove(Integer.valueOf(indexSelected));
                     }
                 })
-                //builder.setMessage("Would You Like To Allow Users To Search Your Hub Based On Your Current Location?")
-                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
+                        //builder.setMessage("Would You Like To Allow Users To Search Your Hub Based On Your Current Location?")
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
 
-                            if (selectedItems.contains(0)) {// Wifi
-                                useWifi = true;
-                                if (!configureWiFi(false)) {
-                                    createHubButton.setEnabled(true);
-                                    return;
+                                if (selectedItems.contains(0)) {// Wifi
+                                    useWifi = true;
+                                    if (!configureWiFi(false)) {
+                                        createHubButton.setEnabled(true);
+                                        return;
+                                    }
                                 }
-                            }
-                            if (selectedItems.contains(1)) {// GPS Location
-                                boolean gps_enabled = false;
-                                configureLocation();
-                                try {
-                                    gps_enabled = locationmanager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-                                } catch(Exception ex) {}
-                                if (gps_enabled)
-                                    setTurnedLocationServicesOn(true);
-                                else
-                                    setTurnedLocationServicesOn(false);
+                                if (selectedItems.contains(1)) {// GPS Location
+                                    boolean gps_enabled = false;
+                                    configureLocation();
+                                    try {
+                                        gps_enabled = locationmanager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+                                    } catch(Exception ex) {}
+                                    if (gps_enabled)
+                                        setTurnedLocationServicesOn(true);
+                                    else
+                                        setTurnedLocationServicesOn(false);
 
-                                if (!isTurnedLocationServicesOn()) {
-                                    promptUserTurnOnLocationServices();
-                                    return;
+                                    if (!isTurnedLocationServicesOn()) {
+                                        promptUserTurnOnLocationServices();
+                                        return;
+                                    }
+                                    globalLocation = getLastKnownLocation();
                                 }
-                                globalLocation = getLastKnownLocation();
+                                startCreate();
                             }
-                            startCreate();
-                        }
-                    })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            dialog.dismiss();
-                            //createHubButton.setEnabled(false);
-                            //startCreate();
-                        }
-                    });
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.dismiss();
+                                //createHubButton.setEnabled(false);
+                                //startCreate();
+                            }
+                        });
 
                 AlertDialog alertDialog = builder.create();
                 alertDialog.show();
@@ -368,7 +367,7 @@ public class CreateHub extends AppCompatActivity  {
                 }
             }
         });
-      
+
         globalLocation = getLastKnownLocation();
         if (useWifi) {
             WifiManager wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);

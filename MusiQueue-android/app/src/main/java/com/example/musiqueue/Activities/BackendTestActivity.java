@@ -7,6 +7,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.example.musiqueue.HelperClasses.BackgroundWorker;
 import com.example.musiqueue.R;
 
 public class BackendTestActivity extends AppCompatActivity {

@@ -10,13 +10,13 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.musiqueue.Activities.BackgroundWorker;
-import com.example.musiqueue.Activities.PollData;
 import com.example.musiqueue.Activities.SearchActivity;
-import com.example.musiqueue.Activities.UpdateResultReceiver;
-import com.example.musiqueue.Activities.VideoItemAdapter;
-import com.example.musiqueue.Activities.hub_admin_only.User;
+import com.example.musiqueue.HelperClasses.BackgroundWorker;
 import com.example.musiqueue.HelperClasses.HubSingleton;
+import com.example.musiqueue.HelperClasses.PollData;
+import com.example.musiqueue.HelperClasses.UpdateResultReceiver;
+import com.example.musiqueue.HelperClasses.User;
+import com.example.musiqueue.HelperClasses.adapters.VideoItemAdapter;
 import com.example.musiqueue.R;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 

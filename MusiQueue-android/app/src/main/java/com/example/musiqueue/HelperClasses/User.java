@@ -1,4 +1,4 @@
-package com.example.musiqueue.Activities.hub_admin_only;
+package com.example.musiqueue.HelperClasses;
 
 public class User {
     public String id;
