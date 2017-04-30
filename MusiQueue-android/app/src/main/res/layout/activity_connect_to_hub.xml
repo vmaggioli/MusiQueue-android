@@ -7,7 +7,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.vince.youtubeplayertest.Activities.users_only.ConnectToHubActivity">
+    tools:context="com.example.musiqueue.youtubeplayertest.Activities.users_only.ConnectToHubActivity">
 
     <TextView
         android:layout_width="match_parent"

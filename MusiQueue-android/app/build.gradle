@@ -23,7 +23,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:24.2.1'
     compile 'com.google.code.gson:gson:2.2.4'
     compile 'com.google.android.gms:play-services-location:9.8.0'
-    compile 'com.android.support:palette-v7:21.0.0'
+    compile 'com.android.support:palette-v7:24.2.1'
 
 
     compile 'com.yqritc:recyclerview-flexibledivider:1.4.0' // requires jcenter()
@@ -37,7 +37,7 @@ android {
     compileSdkVersion 24
     buildToolsVersion '25.0.0'
     defaultConfig {
-        applicationId "com.example.vince.youtubeplayertest"
+        applicationId "com.example.musiqueue"
         minSdkVersion 14
         targetSdkVersion 24
         versionCode 1

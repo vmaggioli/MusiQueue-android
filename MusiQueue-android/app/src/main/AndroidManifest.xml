@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.vince.youtubeplayertest">
+    package="com.example.musiqueue">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
@@ -18,7 +18,7 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/MusiQueue">
-        <activity android:name=".Activities.starting_activities.MainActivity"
+        <activity android:name=".Activities$starting_activities.MainActivity"
             android:screenOrientation="portrait"
             >
             <intent-filter>
@@ -35,28 +35,28 @@
             android:value="@integer/google_play_services_version" />
 
         <activity
-            android:name=".Activities.hub_admin_only.QueueActivity"
+            android:name=".Activities$hub_admin_only.QueueActivity"
             android:label="@string/title_activity_queue"
             android:theme="@style/MusiQueue"
             android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait"
             />
         <activity
-            android:name=".Activities.starting_activities.GettingStarted"
+            android:name=".Activities$starting_activities.GettingStarted"
             android:theme="@style/MusiQueue"
             android:screenOrientation="portrait"
             />
-        <activity android:name=".Activities.hub_admin_only.CreateHub"
+        <activity android:name=".Activities$hub_admin_only.CreateHub"
             android:screenOrientation="portrait"
             />
-        <activity android:name=".Activities.users_only.JoinHub"
+        <activity android:name=".Activities$users_only.JoinHub"
             android:screenOrientation="portrait"
             />
-        <activity android:name=".Activities.users_only.SearchHub"
+        <activity android:name=".Activities$users_only.SearchHub"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden"
             />
-        <activity android:name=".Activities.users_only.ViewQueueActivity"
+        <activity android:name=".Activities$users_only.ViewQueueActivity"
             android:screenOrientation="portrait"
             />
         <activity android:name=".Activities.BackendTestActivity"
@@ -68,10 +68,10 @@
         <activity android:name=".Activities.PlayerActivity"
             android:screenOrientation="portrait"
             />
-        <activity android:name=".Activities.users_only.ConnectToHubActivity"
+        <activity android:name=".Activities$users_only.ConnectToHubActivity"
             android:screenOrientation="portrait"
             />
-        <service android:name=".Activities.PollData" ></service>
+        <service android:name=".Activities.PollData" />
     </application>
 
 </manifest>
