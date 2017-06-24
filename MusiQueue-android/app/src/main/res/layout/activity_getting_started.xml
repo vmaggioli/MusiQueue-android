@@ -76,6 +76,15 @@
                 android:textSize="20sp"
                 android:background="@drawable/gray_bubble_button"
                 />
+            <Button
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/socketTest"
+                android:text="Test Sockets"
+                android:layout_weight="1"
+                android:textSize="20sp"
+                android:onClick="testSockets"
+                />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>
