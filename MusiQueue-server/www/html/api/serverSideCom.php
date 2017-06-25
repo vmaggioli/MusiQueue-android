@@ -4,7 +4,7 @@ require_once "connection.php";
 set_time_limit(0);
 ob_implicit_flush();
 
-$ip = 'localhost';
+$ip = '52.14.50.251';
 $port = 3636;
 
 if (($sock = socket_create(AF_INET, SOCK_STREAM, SOL_TCP)) === false) {
