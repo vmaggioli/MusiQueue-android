@@ -31,7 +31,10 @@ public class SearchHub extends AppCompatActivity {
     FragmentPagerAdapter adapterViewPager;
 
     boolean isWifiP2pEnabled = false;
-    public void setIsWifiP2pEnabled(boolean value) {isWifiP2pEnabled = value;}
+
+    public void setIsWifiP2pEnabled(boolean value) {
+        isWifiP2pEnabled = value;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

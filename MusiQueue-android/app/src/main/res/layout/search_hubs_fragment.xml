@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <LinearLayout
@@ -19,8 +20,7 @@
             android:background="@color/white"
             android:hint="@string/hub_name"
             android:imeOptions="actionSearch"
-            android:inputType="text"
-            />
+            android:inputType="text" />
 
         <Button
             android:id="@+id/hub_name_search_button"
@@ -29,15 +29,13 @@
             android:layout_weight="1"
             android:background="@color/colorPrimaryDark"
             android:text="@string/search"
-            android:onClick="search"
-            />
+            android:onClick="search" />
     </LinearLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/hubs_list"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/search_bar_hubs"
-        android:background="@drawable/getting_started_container"
-        >
-    </android.support.v7.widget.RecyclerView>
+        android:background="@drawable/getting_started_container"></android.support.v7.widget.RecyclerView>
 </LinearLayout>

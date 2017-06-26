@@ -29,27 +29,28 @@ public class YoutubeConnector {
         youtube = new YouTube.Builder(new NetHttpTransport(),
                 new JacksonFactory(), new HttpRequestInitializer() {
             @Override
-            public void initialize(HttpRequest hr) throws IOException {}
+            public void initialize(HttpRequest hr) throws IOException {
+            }
         }).setApplicationName(context.getString(R.string.app_name)).build();
 
-        try{
+        try {
             query = youtube.search().list("id,snippet");
             query.setKey(KEY);
             query.setType("video");
             query.setFields("items(id/videoId,snippet/title,snippet/description,snippet/thumbnails/default/url)");
-        }catch(IOException e){
-            Log.d("YC", "Could not initialize: "+e);
+        } catch (IOException e) {
+            Log.d("YC", "Could not initialize: " + e);
         }
     }
 
-    public List<VideoItem> search(String keywords){
+    public List<VideoItem> search(String keywords) {
         query.setQ(keywords);
-        try{
+        try {
             SearchListResponse response = query.execute();
             List<SearchResult> results = response.getItems();
 
             List<VideoItem> items = new ArrayList<VideoItem>();
-            for(SearchResult result:results){
+            for (SearchResult result : results) {
                 VideoItem item = new VideoItem();
                 item.setTitle(result.getSnippet().getTitle());
                 item.setDescription(result.getSnippet().getDescription());
@@ -58,8 +59,8 @@ public class YoutubeConnector {
                 items.add(item);
             }
             return items;
-        }catch(IOException e){
-            Log.d("YC", "Could not search: "+e);
+        } catch (IOException e) {
+            Log.d("YC", "Could not search: " + e);
             return null;
         }
     }

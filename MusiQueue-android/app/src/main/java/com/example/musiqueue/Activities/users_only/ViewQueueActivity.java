@@ -39,9 +39,11 @@ public class ViewQueueActivity extends AppCompatActivity implements UpdateResult
 
     String title;
     String id;
+
     @Override
     public void onBackPressed() {
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,7 +54,7 @@ public class ViewQueueActivity extends AppCompatActivity implements UpdateResult
         hubNameView = (TextView) findViewById(R.id.hub_name);
         hubNameView.setText(hubSingleton.getHubName());
 
-        adapter = new VideoItemAdapter(ViewQueueActivity.this, hubSingleton.getEntireList(),"notowner", new VideoItemAdapter.OnItemClickListener() {
+        adapter = new VideoItemAdapter(ViewQueueActivity.this, hubSingleton.getEntireList(), "notowner", new VideoItemAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(QueueSong videoItem) {
 
@@ -90,7 +92,7 @@ public class ViewQueueActivity extends AppCompatActivity implements UpdateResult
                     }
                     hubSingleton.clearUsers();
                     User user;
-                    for(int i = 0; i < users.length();i++){
+                    for (int i = 0; i < users.length(); i++) {
                         user = new User();
                         JSONObject name = users.getJSONObject(i);
                         user.setName(name.getString("name"));
@@ -109,7 +111,7 @@ public class ViewQueueActivity extends AppCompatActivity implements UpdateResult
         listBW = new BackgroundWorker(callback);
 
         Intent intent = getIntent();
-        if(intent.hasExtra("title")) {
+        if (intent.hasExtra("title")) {
             title = intent.getStringExtra("title");
             id = intent.getStringExtra("id");
 
@@ -154,7 +156,7 @@ public class ViewQueueActivity extends AppCompatActivity implements UpdateResult
             hubSingleton.clearUsers();
 
             User user;
-            for(int i = 0; i < users.length();i++){
+            for (int i = 0; i < users.length(); i++) {
                 user = new User();
                 JSONObject name = users.getJSONObject(i);
                 user.setName(name.getString("name"));

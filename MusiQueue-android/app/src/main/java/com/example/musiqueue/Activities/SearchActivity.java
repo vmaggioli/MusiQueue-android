@@ -37,8 +37,8 @@ public class SearchActivity extends Activity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_search_song);
 
-        searchInput = (EditText)findViewById(R.id.search_input);
-        videosFound = (ListView)findViewById(R.id.videos_found);
+        searchInput = (EditText) findViewById(R.id.search_input);
+        videosFound = (ListView) findViewById(R.id.videos_found);
 
 
         handler = new Handler();
@@ -47,7 +47,7 @@ public class SearchActivity extends Activity {
         searchInput.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
-                if(actionId == EditorInfo.IME_ACTION_DONE){
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
                     searchOnYoutube(v.getText().toString());
                     return false;
                 }
@@ -56,29 +56,31 @@ public class SearchActivity extends Activity {
         });
 
     }
-    private void searchOnYoutube(final String keywords){
-        new Thread(){
-            public void run(){
+
+    private void searchOnYoutube(final String keywords) {
+        new Thread() {
+            public void run() {
                 YoutubeConnector yc = new YoutubeConnector(SearchActivity.this);
                 searchResults = yc.search(keywords);
-                handler.post(new Runnable(){
-                    public void run(){
+                handler.post(new Runnable() {
+                    public void run() {
                         updateVideosFound();
                     }
                 });
             }
         }.start();
     }
-    private void updateVideosFound(){
-        ArrayAdapter<VideoItem> adapter = new ArrayAdapter<VideoItem>(getApplicationContext(), R.layout.video_item, searchResults){
+
+    private void updateVideosFound() {
+        ArrayAdapter<VideoItem> adapter = new ArrayAdapter<VideoItem>(getApplicationContext(), R.layout.video_item, searchResults) {
             @Override
             public View getView(int position, View convertView, ViewGroup parent) {
-                if(convertView == null){
+                if (convertView == null) {
                     convertView = getLayoutInflater().inflate(R.layout.video_item, parent, false);
                 }
-                ImageView thumbnail = (ImageView)convertView.findViewById(R.id.video_thumbnail);
-                TextView title = (TextView)convertView.findViewById(R.id.video_title);
-                TextView description = (TextView)convertView.findViewById(R.id.video_description);
+                ImageView thumbnail = (ImageView) convertView.findViewById(R.id.video_thumbnail);
+                TextView title = (TextView) convertView.findViewById(R.id.video_title);
+                TextView description = (TextView) convertView.findViewById(R.id.video_description);
 
                 VideoItem searchResult = searchResults.get(position);
 
@@ -92,17 +94,17 @@ public class SearchActivity extends Activity {
 
         videosFound.setAdapter(adapter);
     }
-    private void addClickListener(){
+
+    private void addClickListener() {
         videosFound.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             @Override
             public void onItemClick(AdapterView<?> av, View v, int pos, long id) {
                 Intent i = getIntent();
                 Intent intent;
-                if(i.getStringExtra("view_queue").equals("User")) {
+                if (i.getStringExtra("view_queue").equals("User")) {
                     intent = new Intent(getApplicationContext(), ViewQueueActivity.class);
-                }
-                else {
+                } else {
                     intent = new Intent(getApplicationContext(), QueueActivity.class);
                 }
                 Bundle videoInfo = new Bundle();

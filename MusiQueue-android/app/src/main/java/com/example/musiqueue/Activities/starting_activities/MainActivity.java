@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
         if (username.equals("")) {
             initView();
             usernameText = (EditText) findViewById(R.id.username_entry);
-        }else{
+        } else {
             initView();
             appState.setUsername(username);
             usernameText = (EditText) findViewById(R.id.username_entry);

@@ -34,6 +34,7 @@ import javax.net.ssl.HttpsURLConnection;
 public class BackgroundWorker extends AsyncTask<String, Void, String> {
     // ALLOW ACCESS TO THE ACTIVITY THAT STARTED THE TASK
     Context context;
+
     public BackgroundWorker(Context context) {
         this.context = context;
     }
@@ -42,7 +43,9 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
     public interface AsyncResponse {
         void processFinish(String output);
     }
+
     public AsyncResponse delegate = null;
+
     public BackgroundWorker(AsyncResponse delegate) {
         this.delegate = delegate;
     }
@@ -62,7 +65,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
 
         Vector<String> paramNames = new Vector<>();
 
-        switch(type) {
+        switch (type) {
             case "test":
                 urlEnd = "backendTest.php";
                 paramNames.add("name");
@@ -146,7 +149,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
             Uri.Builder builder = new Uri.Builder();
             int i = 1;
             Log.d("paramNames: ", paramNames.toString());
-            for (String p: paramNames) {
+            for (String p : paramNames) {
                 builder.appendQueryParameter(p, params[i++]);
             }
             String post_data = builder.build().getEncodedQuery();
@@ -194,7 +197,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
         // RECEIVES THE RESULT FROM 'doInBackgroung()' AS ITS PARAMATER
         Log.d("\t\t\tresults: ", result);
 
-        if(result.equals("error")) {
+        if (result.equals("error")) {
             // The request failed. Or something else bad happened. Either way, we shouldn't
             // call processFinish cause it'll probably crash the app.
             Log.e("", "Background Worker Failing.");
@@ -204,7 +207,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
         // check the json for an error message
         try {
             JSONObject json = new JSONObject(result);
-            if(json.getBoolean("error")) {
+            if (json.getBoolean("error")) {
                 String errorCode = json.getString("errorCode");
                 String errorMessage = json.getString("errorMessage");
                 Log.e("Request error code: ", errorCode);

@@ -24,8 +24,6 @@ import java.net.URL;
 public class PollData extends IntentService {
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
-     *
-     *
      */
 
     HubSingleton hubSingleton = HubSingleton.getInstance();

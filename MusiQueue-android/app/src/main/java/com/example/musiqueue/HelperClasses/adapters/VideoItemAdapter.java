@@ -32,13 +32,12 @@ import java.math.BigInteger;
 import java.util.ArrayList;
 
 
-
 public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.ViewHolder> {
 
     private static ArrayList<QueueSong> videos;
     private static Context mContext;
     private OnItemClickListener listener;
-    String caller=null;
+    String caller = null;
 
 
     public interface OnItemClickListener {
@@ -63,10 +62,10 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
         LayerDrawable bkrnd = (LayerDrawable) ContextCompat.getDrawable(mContext, R.drawable.hub_search_item_title);
         GradientDrawable lightShape = (GradientDrawable) bkrnd.findDrawableByLayerId(R.id.lighting);
         GradientDrawable main = (GradientDrawable) bkrnd.findDrawableByLayerId(R.id.main);
-        public String caller=null;
+        public String caller = null;
 
 
-        public int getColor(String title){
+        public int getColor(String title) {
             String hex = String.format("%06x", new BigInteger(1, title.getBytes()));
             int color = Integer.parseInt(hex.substring(1, 2), 16);
             hex = hex.substring(hex.length() - 4, hex.length());
@@ -90,17 +89,19 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
             else
                 queueItemTitleBkrnd = (LinearLayout) itemView.findViewById(R.id.queue_item_title_user);
         }
+
         public static int manipulateColor(int color, float factor) {
             int a = Color.alpha(color);
             int r = Math.round(Color.red(color) * factor);
             int g = Math.round(Color.green(color) * factor);
             int b = Math.round(Color.blue(color) * factor);
             return Color.argb(a,
-                    Math.min(r,255),
-                    Math.min(g,255),
-                    Math.min(b,255));
+                    Math.min(r, 255),
+                    Math.min(g, 255),
+                    Math.min(b, 255));
         }
-        public void bind(final QueueSong videoItem, final OnItemClickListener listener,String caller) {
+
+        public void bind(final QueueSong videoItem, final OnItemClickListener listener, String caller) {
 //            if (videoItem.getTitle().replaceAll("\\s+"," ").length() >= 25)
 //                videoTitle.setText(videoItem.getTitle().trim().substring(0, 28) + "...");
 //            else
@@ -109,34 +110,31 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
             //bkrnd.setColorFilter(getColor(videoItem.getTitle()), PorterDuff.Mode.SRC_ATOP);
             lightShape.setColor(manipulateColor(getColor(videoItem.getTitle()), 1.25f));
             main.setColor(getColor(videoItem.getTitle()));
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
-                    queueItemTitleBkrnd.setBackground(bkrnd);
-                else
-                    queueItemTitleBkrnd.setBackgroundColor(getColor(videoItem.getTitle()));
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
+                queueItemTitleBkrnd.setBackground(bkrnd);
+            else
+                queueItemTitleBkrnd.setBackgroundColor(getColor(videoItem.getTitle()));
 
             videoUser.setText(videoItem.getUser());
             upButton.setText(Integer.toString(videoItem.getUpVotes()));
             downButton.setText(Integer.toString(videoItem.getDownVotes()));
-            if(caller.equals("owner")) {
+            if (caller.equals("owner")) {
                 System.out.println("OWNDER IS IN HUB");
                 removeSongButton.setBackgroundResource(R.drawable.ic_remove_circle_black_24dp);
             }
-            if(videoItem.getState() == 0) {
+            if (videoItem.getState() == 0) {
                 upButton.setBackgroundResource(R.drawable.ic_thumb_up_black_24dp_2);
                 downButton.setBackgroundResource(R.drawable.ic_thumb_down_black_24dp_2);
 
-            }
-            else if(videoItem.getState() == -1) {
+            } else if (videoItem.getState() == -1) {
                 downButton.setBackgroundResource(R.drawable.ic_thumb_down_black_24dp);
                 upButton.setBackgroundResource(R.drawable.ic_thumb_up_black_24dp_2);
 
-            }
-            else {
+            } else {
                 upButton.setBackgroundResource(R.drawable.ic_thumb_up_black_24dp);
                 downButton.setBackgroundResource(R.drawable.ic_thumb_down_black_24dp_2);
 
             }
-
 
 
             callback = new BackgroundWorker.AsyncResponse() {
@@ -183,7 +181,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
 
                     String hub = hubSingleton.getHubId().toString();
                     String phone = hubSingleton.getUserID();
-                    voteUpBW.execute("voteUpSong",hub,phone,String.valueOf(videoItem.getPlace()));
+                    voteUpBW.execute("voteUpSong", hub, phone, String.valueOf(videoItem.getPlace()));
                     //upButton.setClickable(false);
                     upButton.setPressed(true);
 
@@ -219,7 +217,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
 
                     String hub = hubSingleton.getHubId().toString();
                     String phone = hubSingleton.getUserID();
-                    voteDownBW.execute("voteDownSong",hub,phone,String.valueOf(videoItem.getPlace()));
+                    voteDownBW.execute("voteDownSong", hub, phone, String.valueOf(videoItem.getPlace()));
                     //downButton.setClickable(false);
                     downButton.setPressed(true);
 
@@ -271,7 +269,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
         }
     }
 
-    public VideoItemAdapter(Context context, ArrayList<QueueSong> videos,String caller, OnItemClickListener listener) {
+    public VideoItemAdapter(Context context, ArrayList<QueueSong> videos, String caller, OnItemClickListener listener) {
         this.mContext = context;
         this.videos = videos;
         this.listener = listener;
@@ -296,12 +294,16 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         //System.out.println(videos.size() + "pos: " + position);
-        holder.bind(videos.get(position), listener,caller);
+        holder.bind(videos.get(position), listener, caller);
 
     }
 
     @Override
-    public int getItemCount() {return videos.size();}
+    public int getItemCount() {
+        return videos.size();
+    }
 
-    public Context getContext() {return mContext;}
+    public Context getContext() {
+        return mContext;
+    }
 }

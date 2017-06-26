@@ -23,7 +23,7 @@
         <item name="android:actionBarStyle">@style/MusiQueueActionBar</item>
     </style>
 
-    <style name="MusiQueueActionBar" >
+    <style name="MusiQueueActionBar">
         <item name="android:background">@color/white</item>
         <item name="android:textColor">@color/colorPrimaryDark</item>
     </style>

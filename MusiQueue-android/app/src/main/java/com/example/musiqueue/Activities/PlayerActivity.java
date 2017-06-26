@@ -1,4 +1,5 @@
 package com.example.musiqueue.Activities;
+
 import android.os.Bundle;
 import android.widget.Toast;
 
@@ -23,7 +24,7 @@ public class PlayerActivity extends YouTubeBaseActivity implements YouTubePlayer
 
         setContentView(R.layout.activity_player);
 
-        playerView = (YouTubePlayerView)findViewById(R.id.player_view);
+        playerView = (YouTubePlayerView) findViewById(R.id.player_view);
         playerView.initialize(YoutubeConnector.KEY, this);
     }
 
@@ -36,7 +37,7 @@ public class PlayerActivity extends YouTubeBaseActivity implements YouTubePlayer
     @Override
     public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player,
                                         boolean restored) {
-        if(!restored){
+        if (!restored) {
             player.cueVideo(getIntent().getStringExtra("id"));
         }
     }

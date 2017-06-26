@@ -72,7 +72,7 @@ public class WifiHubsFragment extends Fragment {
         // Initialize dataset, this data would usually come from a local content provider or
         // remote server.
 
-        callback = new HubsListAdapter.OnItemClickListener(){
+        callback = new HubsListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(HubsListItem hub) {
                 selectHub(hub);
@@ -82,14 +82,14 @@ public class WifiHubsFragment extends Fragment {
     }
 
     protected void selectHub(HubsListItem hub) {
-        if(hub.getHub_pin_required()) {
+        if (hub.getHub_pin_required()) {
             final Intent i = new Intent(getActivity(), JoinHub.class);
             i.putExtra("hubName", hub.getHub_name());
             startActivity(i);
-        }else{
+        } else {
             final Intent i = new Intent(getActivity(), ConnectToHubActivity.class);
             i.putExtra("hubName", hub.getHub_name());
-            i.putExtra("hubPin","");
+            i.putExtra("hubPin", "");
             startActivity(i);
         }
     }
@@ -127,7 +127,7 @@ public class WifiHubsFragment extends Fragment {
         });
 
 
-                // LinearLayoutManager is used here, this will layout the elements in a similar fashion
+        // LinearLayoutManager is used here, this will layout the elements in a similar fashion
         // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
         // elements are laid out.
         mLayoutManager = new LinearLayoutManager(getActivity());
@@ -224,6 +224,7 @@ public class WifiHubsFragment extends Fragment {
         savedInstanceState.putSerializable(KEY_LAYOUT_MANAGER, mCurrentLayoutManagerType);
         super.onSaveInstanceState(savedInstanceState);
     }
+
     private void configureWiFi() {
         WifiManager wifiManager = (WifiManager) getContext().getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         if (!wifiManager.isWifiEnabled()) {

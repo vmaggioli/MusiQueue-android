@@ -10,8 +10,7 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.musiqueue.Activities.starting_activities.MainActivity"
     android:orientation="vertical"
-    android:gravity="center"
-    >
+    android:gravity="center">
 
     <LinearLayout
         android:layout_width="wrap_content"
@@ -19,22 +18,22 @@
         android:orientation="vertical"
         android:padding="20dp"
         android:gravity="center"
-        android:background="@drawable/getting_started_container"
-        >
+        android:background="@drawable/getting_started_container">
+
         <TextView
             android:id="@+id/create_name_text_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAlignment="center"
             android:text="Create A Name"
-            android:textSize="36sp"
-            />
+            android:textSize="36sp" />
+
         <View
             android:layout_width="match_parent"
             android:layout_height="4dp"
             android:background="@color/gray"
-            android:layout_marginBottom="100dp"
-            />
+            android:layout_marginBottom="100dp" />
+
         <EditText
             android:id="@+id/username_entry"
             android:layout_width="match_parent"
@@ -43,8 +42,7 @@
             android:gravity="center"
             android:layout_marginBottom="60dp"
             android:hint="@string/username"
-            android:lines="1"
-            />
+            android:lines="1" />
 
         <Button
             android:id="@+id/submit_username"
@@ -55,8 +53,7 @@
             android:background="@drawable/gray_bubble_button"
             android:paddingBottom="3dp"
             android:paddingRight="15dp"
-            android:paddingLeft="15dp"
-            />
+            android:paddingLeft="15dp" />
     </LinearLayout>
 
 </LinearLayout>

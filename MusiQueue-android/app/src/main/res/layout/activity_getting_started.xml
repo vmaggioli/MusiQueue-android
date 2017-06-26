@@ -10,15 +10,14 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     android:orientation="vertical"
     android:gravity="center"
-    tools:context="com.example.musiqueue.Activities.starting_activities.GettingStarted"
-    >
+    tools:context="com.example.musiqueue.Activities.starting_activities.GettingStarted">
 
     <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/getting_started_container"
-        android:orientation="vertical"
-        >
+        android:orientation="vertical">
+
         <TextView
             android:id="@+id/getting_started_text"
             android:layout_width="wrap_content"
@@ -30,8 +29,7 @@
             android:textSize="38sp"
             android:paddingTop="2dp"
             android:paddingBottom="10dp"
-            android:background="@drawable/getting_started_title"
-            />
+            android:background="@drawable/getting_started_title" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -39,8 +37,7 @@
             android:background="@drawable/ic_power_settings_new_black_36dp"
             android:layout_marginBottom="50dp"
             android:textAlignment="center"
-            android:layout_gravity="center"
-            />
+            android:layout_gravity="center" />
 
 
         <LinearLayout
@@ -48,8 +45,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:orientation="vertical"
-            android:background="@android:color/transparent"
-            >
+            android:background="@android:color/transparent">
 
             <Button
                 android:layout_marginBottom="32dp"
@@ -61,8 +57,7 @@
                 android:layout_weight="1"
                 android:text="CREATE A HUB"
                 android:textSize="20sp"
-                android:background="@drawable/gray_bubble_button"
-                />
+                android:background="@drawable/gray_bubble_button" />
 
             <Button
                 android:id="@+id/join_hub_button"
@@ -74,8 +69,8 @@
                 android:layout_weight="1"
                 android:text="JOIN EXISTING HUB"
                 android:textSize="20sp"
-                android:background="@drawable/gray_bubble_button"
-                />
+                android:background="@drawable/gray_bubble_button" />
+
             <Button
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -83,8 +78,7 @@
                 android:text="Test Sockets"
                 android:layout_weight="1"
                 android:textSize="20sp"
-                android:onClick="testSockets"
-                />
+                android:onClick="testSockets" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

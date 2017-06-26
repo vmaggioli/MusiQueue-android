@@ -12,15 +12,15 @@ import com.example.musiqueue.Activities.users_only.WifiHubsFragment;
 public class HubsFragmentAdapter extends FragmentPagerAdapter {
     private static int NUM_ITEMS = 4;
 
-   public HubsFragmentAdapter (FragmentManager fragmentManager) {
+    public HubsFragmentAdapter(FragmentManager fragmentManager) {
         super(fragmentManager);
     }
 
     @Override
     public boolean isViewFromObject(android.view.View view, Object object) {
-        if(object != null){
-            return ((Fragment)object).getView() == view;
-        }else{
+        if (object != null) {
+            return ((Fragment) object).getView() == view;
+        } else {
             return false;
         }
     }
@@ -57,7 +57,7 @@ public class HubsFragmentAdapter extends FragmentPagerAdapter {
             return "Recent Hubs";
         } else if (position == 1) {
             return "Search Hubs";
-        } else if (position == 2){
+        } else if (position == 2) {
             return "WiFi Hubs";
         } else {
             return "Nearby Hubs";

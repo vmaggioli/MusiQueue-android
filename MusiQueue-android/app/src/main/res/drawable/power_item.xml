@@ -2,6 +2,5 @@
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:drawable="@drawable/ic_power_settings_new_black_36dp"
-        android:gravity="center"
-        />
+        android:gravity="center" />
 </layer-list>
