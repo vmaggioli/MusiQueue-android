@@ -48,34 +48,57 @@ public class HubSingleton {
         this.userId = id;
     }
 
-    public Integer getHubId() { return hubId; }
+    public Integer getHubId() {
+        return hubId;
+    }
 
-    public void setHubId(Integer hubId) { this.hubId = hubId; }
+    public void setHubId(Integer hubId) {
+        this.hubId = hubId;
+    }
 
-    public void setEntireList(ArrayList<QueueSong> songsList) { this.songsList = songsList; }
+    public void setEntireList(ArrayList<QueueSong> songsList) {
+        this.songsList = songsList;
+    }
 
-    public ArrayList<QueueSong> getEntireList() { return songsList; }
+    public ArrayList<QueueSong> getEntireList() {
+        return songsList;
+    }
 
-    public void removeAt(int pos) { songsList.remove(pos); }
+    public void removeAt(int pos) {
+        songsList.remove(pos);
+    }
 
-    public void insertAt(int pos, QueueSong song) { songsList.add(pos, song); }
+    public void insertAt(int pos, QueueSong song) {
+        songsList.add(pos, song);
+    }
 
-    public void add(QueueSong song) { songsList.add(song); }
+    public void add(QueueSong song) {
+        songsList.add(song);
+    }
 
-    public void clearList() { songsList.clear(); }
+    public void clearList() {
+        songsList.clear();
+    }
 
-    public QueueSong getSongAt(int pos) { return songsList.get(pos); }
+    public QueueSong getSongAt(int pos) {
+        return songsList.get(pos);
+    }
 
-    public int getQueueSize() { return songsList.size();}
+    public int getQueueSize() {
+        return songsList.size();
+    }
 
     public void clearUsers() {
         users.clear();
     }
+
     public void addUser(User name) {
         users.add(name);
     }
 
-    public ArrayList<User> getUsers() {return this.users;}
+    public ArrayList<User> getUsers() {
+        return this.users;
+    }
 
     private String username;
     private String hubName;

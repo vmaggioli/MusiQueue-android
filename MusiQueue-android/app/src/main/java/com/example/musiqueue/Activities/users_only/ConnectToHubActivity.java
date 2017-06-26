@@ -44,10 +44,10 @@ public class ConnectToHubActivity extends AppCompatActivity {
             public void processFinish(String result) {
                 Gson gson = new Gson();
                 JoinHubResponse r = gson.fromJson(result, JoinHubResponse.class);
-                if(r.error) {
+                if (r.error) {
                     connectError(r.errorCode, r.errorMessage);
-                }else{
-                    connectSuccess(r.getHubId(),r.getCreator());
+                } else {
+                    connectSuccess(r.getHubId(), r.getCreator());
 
                 }
             }
@@ -55,16 +55,15 @@ public class ConnectToHubActivity extends AppCompatActivity {
         backgroundWorker.execute("joinHub", hubName, hubPin, phoneId, username);
     }
 
-    private void connectSuccess(Integer hubId,Boolean isCreator) {
+    private void connectSuccess(Integer hubId, Boolean isCreator) {
         Log.d("", "Joined hub successfully!");
         appState.setHubName(hubName);
         appState.setHubId(hubId);
 
         final Intent i;
-        if(isCreator) {
+        if (isCreator) {
             i = new Intent(ConnectToHubActivity.this, QueueActivity.class);
-        }
-        else {
+        } else {
             i = new Intent(ConnectToHubActivity.this, ViewQueueActivity.class);
         }
         i.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);

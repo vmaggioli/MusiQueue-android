@@ -34,7 +34,7 @@ import com.google.gson.Gson;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CreateHub extends AppCompatActivity  {
+public class CreateHub extends AppCompatActivity {
     EditText hubNameText;
     EditText passPin;
     Button createHubButton;
@@ -69,6 +69,7 @@ public class CreateHub extends AppCompatActivity  {
         super.onResume();
         registerReceiver(broadcastReceiver, intentFilter);
     }
+
     /* unregister the broadcast receiver */
     @Override
     protected void onPause() {
@@ -126,7 +127,7 @@ public class CreateHub extends AppCompatActivity  {
                 final CharSequence[] items = {"WiFi", "GPS Location"};
                 final ArrayList selectedItems = new ArrayList();
                 builder.setTitle("Select How You Want Users To Find Your Hub");
-                builder.setMultiChoiceItems(items, null, new DialogInterface.OnMultiChoiceClickListener(){
+                builder.setMultiChoiceItems(items, null, new DialogInterface.OnMultiChoiceClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int indexSelected, boolean isChecked) {
                         if (isChecked)
@@ -152,7 +153,8 @@ public class CreateHub extends AppCompatActivity  {
                                     configureLocation();
                                     try {
                                         gps_enabled = locationmanager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-                                    } catch(Exception ex) {}
+                                    } catch (Exception ex) {
+                                    }
                                     if (gps_enabled)
                                         setTurnedLocationServicesOn(true);
                                     else
@@ -184,14 +186,14 @@ public class CreateHub extends AppCompatActivity  {
 
     private Location getLastKnownLocation() {
 
-        locationmanager = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
+        locationmanager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
         List<String> providers = locationmanager.getProviders(true);
         Location bestLocation = null;
         for (String provider : providers) {
             Location l = null;
-            if ( ContextCompat.checkSelfPermission( this,
-                    android.Manifest.permission.ACCESS_COARSE_LOCATION )
-                    == PackageManager.PERMISSION_GRANTED ) {
+            if (ContextCompat.checkSelfPermission(this,
+                    android.Manifest.permission.ACCESS_COARSE_LOCATION)
+                    == PackageManager.PERMISSION_GRANTED) {
                 l = locationmanager.getLastKnownLocation(provider);
             }
             if (l == null) {
@@ -203,15 +205,17 @@ public class CreateHub extends AppCompatActivity  {
         }
         return bestLocation;
     }
+
     public void promptUserTurnOnLocationServices() {
         runningThrough = true;
-        locationmanager = (LocationManager)getApplicationContext().getSystemService(LOCATION_SERVICE);
+        locationmanager = (LocationManager) getApplicationContext().getSystemService(LOCATION_SERVICE);
         boolean gps_enabled = false;
         try {
             gps_enabled = locationmanager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch(Exception ex) {}
+        } catch (Exception ex) {
+        }
 
-        if(!gps_enabled) {
+        if (!gps_enabled) {
             // notify user
             AlertDialog.Builder dialog = new AlertDialog.Builder(CreateHub.this);
             dialog.setMessage("Your location services aren't enabled.  " +
@@ -234,7 +238,8 @@ public class CreateHub extends AppCompatActivity  {
 
         try {
             gps_enabled = locationmanager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch(Exception ex) {}
+        } catch (Exception ex) {
+        }
         if (gps_enabled)
             setTurnedLocationServicesOn(true);
         else
@@ -280,7 +285,6 @@ public class CreateHub extends AppCompatActivity  {
         });
         return true;
     }
-
 
 
     private void connectSuccess(Integer hubId) {
@@ -383,7 +387,7 @@ public class CreateHub extends AppCompatActivity  {
         else if (globalLocation == null && networkName != null && networkName.length() != 0)
             backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID(), appState.getUsername(),
                     "0", "0", networkName);
-        else if (globalLocation != null &&  networkName != null && networkName.length() != 0)
+        else if (globalLocation != null && networkName != null && networkName.length() != 0)
             backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID(), appState.getUsername(),
                     String.valueOf(globalLocation.getLatitude()), String.valueOf(globalLocation.getLongitude()), networkName);
         appState.setHubName(hubNameText.getText().toString());

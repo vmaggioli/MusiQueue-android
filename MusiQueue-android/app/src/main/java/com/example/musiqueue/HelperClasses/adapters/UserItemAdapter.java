@@ -27,7 +27,6 @@ public class UserItemAdapter extends RecyclerView.Adapter<UserItemAdapter.ViewHo
     HubSingleton hubSingleton = HubSingleton.getInstance();
 
 
-
     public interface OnItemClickListener {
         void onItemClick(User user);
     }
@@ -37,7 +36,6 @@ public class UserItemAdapter extends RecyclerView.Adapter<UserItemAdapter.ViewHo
         public Button removeUser;
         BackgroundWorker.AsyncResponse callback;
         BackgroundWorker rmUser;
-
 
 
         ViewHolder(View itemView) {
@@ -65,7 +63,7 @@ public class UserItemAdapter extends RecyclerView.Adapter<UserItemAdapter.ViewHo
                                 hubSingleton.clearUsers();
 
                                 User user;
-                                for(int i = 0; i < users.length();i++){
+                                for (int i = 0; i < users.length(); i++) {
                                     user = new User();
                                     JSONObject name = users.getJSONObject(i);
                                     user.setName(name.getString("name"));
@@ -80,7 +78,7 @@ public class UserItemAdapter extends RecyclerView.Adapter<UserItemAdapter.ViewHo
                     rmUser = new BackgroundWorker(callback);
 
                     //TODO mlast 2 params may be swapped/wrong
-                    if(!hubSingleton.getUsername().equals(name.getName())) {
+                    if (!hubSingleton.getUsername().equals(name.getName())) {
                         rmUser.execute("removeUser", hubSingleton.getHubId().toString(), hubSingleton.getUserID(), name.getId());
                     }
                 }
@@ -113,6 +111,12 @@ public class UserItemAdapter extends RecyclerView.Adapter<UserItemAdapter.ViewHo
         holder.bind(users.get(position), listener);
 
     }
-    public int getItemCount() {return users.size();}
-    public Context getContext() {return mContext;}
+
+    public int getItemCount() {
+        return users.size();
+    }
+
+    public Context getContext() {
+        return mContext;
+    }
 }

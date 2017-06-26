@@ -72,8 +72,7 @@ public class SearchHubsFragment extends Fragment {
         // remote server.
 
 
-
-        callback = new HubsListAdapter.OnItemClickListener(){
+        callback = new HubsListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(HubsListItem hub) {
                 selectHub(hub);
@@ -110,14 +109,14 @@ public class SearchHubsFragment extends Fragment {
     }
 
     protected void selectHub(HubsListItem hub) {
-        if(hub.getHub_pin_required()) {
+        if (hub.getHub_pin_required()) {
             final Intent i = new Intent(getActivity(), JoinHub.class);
             i.putExtra("hubName", hub.getHub_name());
             startActivity(i);
-        }else{
+        } else {
             final Intent i = new Intent(getActivity(), ConnectToHubActivity.class);
             i.putExtra("hubName", hub.getHub_name());
-            i.putExtra("hubPin","");
+            i.putExtra("hubPin", "");
             startActivity(i);
         }
     }

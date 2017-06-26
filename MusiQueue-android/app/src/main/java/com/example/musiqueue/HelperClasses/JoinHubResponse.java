@@ -5,15 +5,18 @@ public class JoinHubResponse {
     public String errorCode;
     public String errorMessage;
 
-    private static class Result{
+    private static class Result {
         private Integer hub_id;
         private Boolean is_creator;
     }
 
     private Result result;
 
-    public Integer getHubId(){
+    public Integer getHubId() {
         return result.hub_id;
     }
-    public Boolean getCreator(){return this.result.is_creator;}
+
+    public Boolean getCreator() {
+        return this.result.is_creator;
+    }
 }

@@ -14,8 +14,8 @@
         android:textAlignment="center"
         android:paddingTop="10dp"
         android:paddingBottom="20dp"
-        android:background="@drawable/double_end_container"
-        />
+        android:background="@drawable/double_end_container" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -27,8 +27,7 @@
         android:paddingBottom="4dp"
         android:paddingLeft="9dp"
         android:paddingRight="13dp"
-        android:background="@drawable/blue_bubble_button"
-        />
+        android:background="@drawable/blue_bubble_button" />
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/song_List"
@@ -38,9 +37,7 @@
         android:layout_centerVertical="true"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
-        android:background="@drawable/getting_started_container"
-        >
-    </android.support.v7.widget.RecyclerView>
+        android:background="@drawable/getting_started_container"></android.support.v7.widget.RecyclerView>
 
 
 </LinearLayout>

@@ -62,7 +62,7 @@ public class RecentHubsFragment extends Fragment {
         // Initialize dataset, this data would usually come from a local content provider or
         // remote server.
 
-        callback = new HubsListAdapter.OnItemClickListener(){
+        callback = new HubsListAdapter.OnItemClickListener() {
             @Override
             public void onItemClick(HubsListItem hub) {
                 selectHub(hub);
@@ -73,14 +73,14 @@ public class RecentHubsFragment extends Fragment {
     }
 
     protected void selectHub(HubsListItem hub) {
-        if(hub.getHub_pin_required()) {
+        if (hub.getHub_pin_required()) {
             final Intent i = new Intent(getActivity(), JoinHub.class);
             i.putExtra("hubName", hub.getHub_name());
             startActivity(i);
-        }else{
+        } else {
             final Intent i = new Intent(getActivity(), ConnectToHubActivity.class);
             i.putExtra("hubName", hub.getHub_name());
-            i.putExtra("hubPin","");
+            i.putExtra("hubPin", "");
             startActivity(i);
         }
     }
@@ -121,7 +121,8 @@ public class RecentHubsFragment extends Fragment {
                 mAdapter = new HubsListAdapter(getActivity(), r.result, callback);
                 mRecyclerView.setLayoutManager(mLayoutManager);
                 // Set CustomAdapter as the adapter for RecyclerView.
-                mRecyclerView.setAdapter(mAdapter);            }
+                mRecyclerView.setAdapter(mAdapter);
+            }
         });
 
         //String userId = getArguments().getString("userId");

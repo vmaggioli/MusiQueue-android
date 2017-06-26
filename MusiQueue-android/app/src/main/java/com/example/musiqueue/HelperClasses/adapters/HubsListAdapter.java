@@ -38,7 +38,8 @@ public class HubsListAdapter extends RecyclerView.Adapter<HubsListAdapter.ViewHo
             creatorName.setText("Created by " + item.getHub_creator_name());
 
             itemView.setOnClickListener(new View.OnClickListener() {
-                @Override public void onClick(View v) {
+                @Override
+                public void onClick(View v) {
                     listener.onItemClick(item);
                 }
             });
@@ -67,7 +68,11 @@ public class HubsListAdapter extends RecyclerView.Adapter<HubsListAdapter.ViewHo
 
 
     @Override
-    public int getItemCount() {return hubs.size();}
+    public int getItemCount() {
+        return hubs.size();
+    }
 
-    public Context getContext() {return mContext;}
+    public Context getContext() {
+        return mContext;
+    }
 }

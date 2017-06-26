@@ -1,32 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
-    >
+    android:gravity="center">
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="50dp"
         android:id="@+id/send_edit"
         android:hint="Talk To Server"
-        android:textAlignment="center"
-        />
+        android:textAlignment="center" />
+
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/send_button"
         android:textAlignment="center"
         android:text="Send To Serve"
-        android:onClick="sendMessage"
-        />
+        android:onClick="sendMessage" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:id="@+id/response_text"
         android:textSize="20sp"
         android:textAlignment="center"
-        android:text="Response: "
-        />
+        android:text="Response: " />
 
 </LinearLayout>

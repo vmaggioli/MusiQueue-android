@@ -5,8 +5,7 @@
     android:orientation="vertical"
     android:layout_marginBottom="16dp"
     android:layout_marginTop="16dp"
-    android:background="@drawable/hub_search_item"
-    >
+    android:background="@drawable/hub_search_item">
 
     <TextView
         android:id="@+id/hub_name"
@@ -19,8 +18,7 @@
         android:layout_weight="1"
         android:textSize="24sp"
         android:padding="5dp"
-        android:background="@drawable/hub_search_item_title"
-        />
+        android:background="@drawable/hub_search_item_title" />
 
     <TextView
         android:id="@+id/hub_creator_name"
@@ -32,7 +30,6 @@
         android:layout_weight="1"
         android:textSize="18sp"
         android:padding="5dp"
-        android:background="@drawable/hub_search_time_creator"
-        />
+        android:background="@drawable/hub_search_time_creator" />
 
 </LinearLayout>
