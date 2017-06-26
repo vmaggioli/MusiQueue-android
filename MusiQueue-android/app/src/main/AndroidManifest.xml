@@ -2,15 +2,18 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.musiqueue">
 
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
     <uses-sdk android:minSdkVersion="14" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
     <application
         android:allowBackup="true"
@@ -18,14 +21,16 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/MusiQueue">
-        <activity android:name=".Activities.starting_activities.MainActivity"
-            android:screenOrientation="portrait"
-            >
+        <activity
+            android:name=".Activities.starting_activities.MainActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-                    </activity>
+        </activity>
+
         <!--
  ATTENTION: This was auto-generated to add Google Play services to your project for
      App Indexing.  See https://g.co/AppIndexing/AndroidStudio for more information.
@@ -37,44 +42,41 @@
         <activity
             android:name=".Activities.hub_admin_only.QueueActivity"
             android:label="@string/title_activity_queue"
-            android:theme="@style/MusiQueue"
-            android:windowSoftInputMode="stateHidden"
             android:screenOrientation="portrait"
-            />
+            android:theme="@style/MusiQueue"
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".Activities.starting_activities.GettingStarted"
-            android:theme="@style/MusiQueue"
             android:screenOrientation="portrait"
-            />
-        <activity android:name=".Activities.hub_admin_only.CreateHub"
+            android:theme="@style/MusiQueue" />
+        <activity
+            android:name=".Activities.hub_admin_only.CreateHub"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.users_only.JoinHub"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.users_only.SearchHub"
             android:screenOrientation="portrait"
-            />
-        <activity android:name=".Activities.users_only.JoinHub"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".Activities.users_only.SearchHub"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden"
-            />
-        <activity android:name=".Activities.users_only.ViewQueueActivity"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".Activities.BackendTestActivity"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".Activities.SearchActivity"
-            android:screenOrientation="portrait">
-        </activity>
-        <activity android:name=".Activities.PlayerActivity"
-            android:screenOrientation="portrait"
-            />
-        <activity android:name=".Activities.users_only.ConnectToHubActivity"
-            android:screenOrientation="portrait"
-            />
-
+            android:windowSoftInputMode="stateHidden" />
+        <activity
+            android:name=".Activities.users_only.ViewQueueActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.BackendTestActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.SearchActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.PlayerActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".Activities.users_only.ConnectToHubActivity"
+            android:screenOrientation="portrait" />
         <activity android:name=".Activities.ClientSideCom" />
 
-        <service android:name=".HelperClasses.PollData" ></service>
+        <service android:name=".HelperClasses.PollData" />
 
     </application>
 
