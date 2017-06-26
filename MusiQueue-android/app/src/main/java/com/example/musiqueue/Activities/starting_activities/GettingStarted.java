@@ -7,6 +7,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.musiqueue.Activities.ClientSideCom;
 import com.example.musiqueue.Activities.hub_admin_only.CreateHub;
 import com.example.musiqueue.Activities.users_only.SearchHub;
 import com.example.musiqueue.HelperClasses.HubSingleton;
@@ -16,6 +17,8 @@ public class GettingStarted extends AppCompatActivity {
     Button createHub;
     Button joinHub;
     TextView gettingStarted;
+
+    Button testSocketButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,5 +51,10 @@ public class GettingStarted extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         startActivity(new Intent(GettingStarted.this, MainActivity.class));
+    }
+
+    public void testSockets(View view) {
+        testSocketButton = (Button) findViewById(R.id.socketTest);
+        startActivity(new Intent(GettingStarted.this, ClientSideCom.class));
     }
 }

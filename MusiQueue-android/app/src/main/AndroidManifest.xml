@@ -71,7 +71,11 @@
         <activity android:name=".Activities.users_only.ConnectToHubActivity"
             android:screenOrientation="portrait"
             />
-        <service android:name=".HelperClasses.PollData" />
+
+        <activity android:name=".Activities.ClientSideCom" />
+
+        <service android:name=".HelperClasses.PollData" ></service>
+
     </application>
 
 </manifest>

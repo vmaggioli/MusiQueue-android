@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/activity_join_hub"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
+    tools:context="com.example.musiqueue.Activities.users_only.JoinHub">
+
+    <TextView
+        android:id="@+id/create_a_hub_text"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textAlignment="center"
+        android:textSize="32sp"
+        android:padding="20dp"
+        android:layout_marginBottom="100dp"
+        />
+
+    <LinearLayout
+        android:id="@+id/coordinator_and_pin_input"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingBottom="100dp"
+        >
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:paddingTop="15dp"
+            android:paddingBottom="25dp"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="8dp"
+                android:text="Pin Required"
+                android:textSize="24sp" />
+
+            <EditText
+                android:id="@+id/pass_pin"
+                android:layout_width="100sp"
+                android:layout_height="wrap_content"
+                android:background="@color/white"
+                android:hint=""
+                android:gravity="center"
+                android:padding="7sp"
+                android:inputType="numberPassword"
+                tools:ignore="TextFields"
+                />
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="17dp"
+        android:paddingBottom="23dp"
+        android:orientation="vertical"
+        >
+
+        <Button
+            android:id="@+id/join_hub_button"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/gray_bubble_button"
+            android:textAlignment="center"
+            android:text="@string/join"
+            android:layout_gravity="center"
+            android:textSize="20sp"
+            android:onClick="joinHub"
+            />
+    </LinearLayout>
+
+</LinearLayout>
