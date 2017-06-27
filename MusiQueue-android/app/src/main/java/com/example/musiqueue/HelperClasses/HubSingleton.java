@@ -1,26 +1,37 @@
 package com.example.musiqueue.HelperClasses;
 
 import com.example.musiqueue.Activities.users_only.QueueSong;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import java.util.ArrayList;
 
 public class HubSingleton {
-    private static HubSingleton ourInstance = new HubSingleton();
-
-    public static HubSingleton getInstance() {
-        return ourInstance;
-    }
+    private static final HubSingleton ourInstance = new HubSingleton();
+    private final ArrayList<User> users;
+    private String hubName;
+    private String passPin;
+    private Integer hubId;
+    private ArrayList<QueueSong> songsList;
+    private GoogleSignInAccount account;
 
     private HubSingleton() {
         songsList = new ArrayList<QueueSong>();
         users = new ArrayList<User>();
     }
 
+    public static HubSingleton getInstance() {
+        return ourInstance;
+    }
+
+    public void setUserAccount(final GoogleSignInAccount account) {
+        this.account = account;
+    }
+
     public String getHubName() {
         return hubName;
     }
 
-    public void setHubName(String hubName) {
+    public void setHubName(final String hubName) {
         this.hubName = hubName;
     }
 
@@ -28,61 +39,68 @@ public class HubSingleton {
         return passPin;
     }
 
-    public void setPassPin(String passPin) {
+    public void setPassPin(final String passPin) {
         this.passPin = passPin;
     }
 
     public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+        return account.getDisplayName();
     }
 
     public String getUserID() {
-        return userId;
+        return account.getId();
     }
 
-    public void setUserID(String id) {
-        this.userId = id;
+    public Integer getHubId() {
+        return hubId;
     }
 
-    public Integer getHubId() { return hubId; }
+    public void setHubId(final Integer hubId) {
+        this.hubId = hubId;
+    }
 
-    public void setHubId(Integer hubId) { this.hubId = hubId; }
+    public ArrayList<QueueSong> getEntireList() {
+        return songsList;
+    }
 
-    public void setEntireList(ArrayList<QueueSong> songsList) { this.songsList = songsList; }
+    public void setEntireList(final ArrayList<QueueSong> songsList) {
+        this.songsList = songsList;
+    }
 
-    public ArrayList<QueueSong> getEntireList() { return songsList; }
+    public void removeAt(final int pos) {
+        songsList.remove(pos);
+    }
 
-    public void removeAt(int pos) { songsList.remove(pos); }
+    public void insertAt(final int pos, final QueueSong song) {
+        songsList.add(pos, song);
+    }
 
-    public void insertAt(int pos, QueueSong song) { songsList.add(pos, song); }
+    public void add(final QueueSong song) {
+        songsList.add(song);
+    }
 
-    public void add(QueueSong song) { songsList.add(song); }
+    public void clearList() {
+        songsList.clear();
+    }
 
-    public void clearList() { songsList.clear(); }
+    public QueueSong getSongAt(final int pos) {
+        return songsList.get(pos);
+    }
 
-    public QueueSong getSongAt(int pos) { return songsList.get(pos); }
-
-    public int getQueueSize() { return songsList.size();}
+    public int getQueueSize() {
+        return songsList.size();
+    }
 
     public void clearUsers() {
         users.clear();
     }
-    public void addUser(User name) {
+
+    public void addUser(final User name) {
         users.add(name);
     }
 
-    public ArrayList<User> getUsers() {return this.users;}
-
-    private String username;
-    private String hubName;
-    private String passPin;
-    private String userId;
-    private Integer hubId;
-    private ArrayList<QueueSong> songsList;
-    private ArrayList<User> users;
+    public ArrayList<User> getUsers() {
+        return this.users;
+    }
 
 }

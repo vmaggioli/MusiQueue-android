@@ -10,7 +10,6 @@ import android.widget.TextView;
 import com.example.musiqueue.Activities.ClientSideCom;
 import com.example.musiqueue.Activities.hub_admin_only.CreateHub;
 import com.example.musiqueue.Activities.users_only.SearchHub;
-import com.example.musiqueue.HelperClasses.HubSingleton;
 import com.example.musiqueue.R;
 
 public class GettingStarted extends AppCompatActivity {
@@ -21,7 +20,7 @@ public class GettingStarted extends AppCompatActivity {
     Button testSocketButton;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_getting_started);
 
@@ -33,19 +32,17 @@ public class GettingStarted extends AppCompatActivity {
         joinHub = (Button) findViewById(R.id.join_hub_button);
         createHub.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 startActivity(new Intent(GettingStarted.this, CreateHub.class));
             }
         });
 
         joinHub.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(final View v) {
                 startActivity(new Intent(getApplicationContext(), SearchHub.class));
             }
         });
-
-        final HubSingleton appState = HubSingleton.getInstance();
     }
 
     @Override
@@ -53,7 +50,7 @@ public class GettingStarted extends AppCompatActivity {
         startActivity(new Intent(GettingStarted.this, MainActivity.class));
     }
 
-    public void testSockets(View view) {
+    public void testSockets(final View view) {
         testSocketButton = (Button) findViewById(R.id.socketTest);
         startActivity(new Intent(GettingStarted.this, ClientSideCom.class));
     }

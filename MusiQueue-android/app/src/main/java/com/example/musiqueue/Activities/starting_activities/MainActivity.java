@@ -3,22 +3,34 @@ package com.example.musiqueue.Activities.starting_activities;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.musiqueue.HelperClasses.HubSingleton;
 import com.example.musiqueue.R;
+import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.SignInButton;
+import com.google.android.gms.common.api.GoogleApiClient;
 
-public class MainActivity extends AppCompatActivity {
-    TextView createName;
-    EditText usernameText;
-    Button usernameButton;
-    HubSingleton appState;
+public class MainActivity extends AppCompatActivity implements GoogleApiClient.OnConnectionFailedListener {
+    private static final int RC_SIGN_IN = 9001;
+    private static final String TAG = "GoogleSignInTest";
+    private TextView createName;
+    private EditText usernameText;
+    private Button usernameButton;
+    private HubSingleton appState;
+    private GoogleApiClient mGoogleApiClient;
+    private SignInButton signInButton;
+    private GoogleSignInAccount acct;
 
     /*
         UPON ENTERING THIS ACTIVITY, WE NEED TO CHECK IF THE USER'S
@@ -28,27 +40,14 @@ public class MainActivity extends AppCompatActivity {
      */
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         // get global application for global variables
         appState = HubSingleton.getInstance();
-        String android_id = Settings.Secure.getString(getContentResolver(), Settings.Secure.ANDROID_ID);
-        appState.setUserID(android_id);
-
-        SharedPreferences settings = getPreferences(MODE_PRIVATE);
-        String username = settings.getString("username", "");
-
-        if (username.equals("")) {
-            initView();
-            usernameText = (EditText) findViewById(R.id.username_entry);
-        }else{
-            initView();
-            appState.setUsername(username);
-            usernameText = (EditText) findViewById(R.id.username_entry);
-            usernameText.setText(username);
-        }
+        final SharedPreferences settings = getPreferences(MODE_PRIVATE);
+        initView();
     }
 
     protected void initView() {
@@ -56,28 +55,66 @@ public class MainActivity extends AppCompatActivity {
         // set textView and editText
         createName = (TextView) findViewById(R.id.create_name_text_view);
 
-        // set username button
-        usernameButton = (Button) findViewById(R.id.submit_username);
-        usernameButton.setOnClickListener(new View.OnClickListener() {
+        // Configure sign-in to request the user's ID, email address, and basic
+        // profile. ID and basic profile are included in DEFAULT_SIGN_IN.
+        final GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+
+        // Build a GoogleApiClient with access to the Google Sign-In API and the
+        // options specified by gso.
+        mGoogleApiClient = new GoogleApiClient.Builder(this)
+                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+
+        signInButton = (SignInButton) findViewById(R.id.google_sign_in_button);
+        signInButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                // PROMPT USER IF S/HE HAS NOT INPUT A USERNAME
-                if (usernameText.getText().length() == 0) {
-                    Toast.makeText(getApplicationContext(), "Must Have Username", Toast.LENGTH_LONG).show();
-                    return;
-                }
+            public void onClick(final View view) {
+                signIn();
+            }
+        });
+    }
 
-                // sets username to global app
-                appState.setUsername(usernameText.getText().toString());
+    private void signIn() {
+        final Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
 
-                SharedPreferences settings = getPreferences(MODE_PRIVATE);
-                SharedPreferences.Editor editor = settings.edit();
+    @Override
+    public void onActivityResult(final int requestCode, final int resultCode, final Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            final GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            handleSignInResult(result);
+        }
+    }
+
+    private void handleSignInResult(final GoogleSignInResult result) {
+        Log.d(TAG, "handleSignInResult:" + result.isSuccess());
+        if (result.isSuccess()) {
+            // Signed in successfully, show authenticated UI.
+            acct = result.getSignInAccount();
+            if (acct != null) {
+                appState.setUserAccount(acct);
+
+                // TODO: Not sure if this code is still needed, but saved it just in case
+                final SharedPreferences settings = getPreferences(MODE_PRIVATE);
+                final SharedPreferences.Editor editor = settings.edit();
                 editor.putString("username", appState.getUsername());
                 editor.apply();
 
                 startActivity(new Intent(MainActivity.this, GettingStarted.class));
                 finish();
             }
-        });
+        }
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull final ConnectionResult connectionResult) {
+
     }
 }
