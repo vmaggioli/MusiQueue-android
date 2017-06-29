@@ -1,6 +1,7 @@
 package com.example.musiqueue.HelperClasses;
 
 import com.example.musiqueue.Activities.users_only.QueueSong;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 
 import java.util.ArrayList;
 
@@ -16,6 +17,14 @@ public class HubSingleton {
         users = new ArrayList<User>();
     }
 
+    public GoogleSignInAccount getCurrentUser() {
+        return currentUser;
+    }
+
+    public void setCurrentUser(GoogleSignInAccount user) {
+        currentUser = user;
+    }
+
     public String getHubName() {
         return hubName;
     }
@@ -28,61 +37,62 @@ public class HubSingleton {
         return passPin;
     }
 
-    public void setPassPin(String passPin) {
-        this.passPin = passPin;
-    }
-
     public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
+        return currentUser.getDisplayName();
     }
 
     public String getUserID() {
-        return userId;
+        return currentUser.getId();
     }
 
-    public void setUserID(String id) {
-        this.userId = id;
+    public Integer getHubId() {
+        return hubId;
     }
 
-    public Integer getHubId() { return hubId; }
+    public void setHubId(Integer hubId) {
+        this.hubId = hubId;
+    }
 
-    public void setHubId(Integer hubId) { this.hubId = hubId; }
+    public ArrayList<QueueSong> getEntireList() {
+        return songsList;
+    }
 
-    public void setEntireList(ArrayList<QueueSong> songsList) { this.songsList = songsList; }
+    public void add(QueueSong song) {
+        songsList.add(song);
+    }
 
-    public ArrayList<QueueSong> getEntireList() { return songsList; }
+    public void clearList() {
+        songsList.clear();
+    }
 
-    public void removeAt(int pos) { songsList.remove(pos); }
+    public QueueSong getSongAt(int pos) {
+        return songsList.get(pos);
+    }
 
-    public void insertAt(int pos, QueueSong song) { songsList.add(pos, song); }
+    public void removeAt(int pos) {
+        songsList.remove(pos);
+    }
 
-    public void add(QueueSong song) { songsList.add(song); }
-
-    public void clearList() { songsList.clear(); }
-
-    public QueueSong getSongAt(int pos) { return songsList.get(pos); }
-
-    public int getQueueSize() { return songsList.size();}
+    public int getQueueSize() {
+        return songsList.size();
+    }
 
     public void clearUsers() {
         users.clear();
     }
+
     public void addUser(User name) {
         users.add(name);
     }
 
-    public ArrayList<User> getUsers() {return this.users;}
+    public ArrayList<User> getUsers() {
+        return this.users;
+    }
 
-    private String username;
     private String hubName;
     private String passPin;
-    private String userId;
     private Integer hubId;
     private ArrayList<QueueSong> songsList;
     private ArrayList<User> users;
-
+    private static GoogleSignInAccount currentUser = null;
 }

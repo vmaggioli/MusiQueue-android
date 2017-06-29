@@ -30,8 +30,8 @@ public class CreateNewHubTest {
     @Test
     public void createHubTest() throws Exception {
         HubSingleton hubSingleton = HubSingleton.getInstance();
-        hubSingleton.setUserID("ba6e6ecebee2c145");
-        hubSingleton.setUsername("bd");
+        //hubSingleton.setUserID("ba6e6ecebee2c145");
+        //hubSingleton.setUsername("bd");
         onView(withId(R.id.hub_name))
             .perform(typeText("uniqueName"+ String.valueOf(Calendar.getInstance().get(Calendar.SECOND))), closeSoftKeyboard());
         onView(withId(R.id.pass_pin))

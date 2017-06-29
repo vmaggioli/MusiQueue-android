@@ -39,8 +39,8 @@ public class MultipleUsersTest {
     @Test
     public void multipleUsersTest() throws Exception {
         HubSingleton hubSingleton = HubSingleton.getInstance();
-        hubSingleton.setUserID("ba6e6ecebee2c145");
-        hubSingleton.setUsername("bd");
+        //hubSingleton.setUserID("ba6e6ecebee2c145");
+        //hubSingleton.setUsername("bd");
         onView(withId(R.id.create_hub_button))
                 .perform(click());
         intended(hasComponent(CreateHub.class.getName()));
@@ -65,8 +65,8 @@ public class MultipleUsersTest {
         testMultipleUsersRule.getActivity().startActivity(intent);
         intended(hasComponent(GettingStarted.class.getName()));
 
-        hubSingleton.setUserID("de873375dc0515f2");
-        hubSingleton.setUsername("skuhns");
+        //hubSingleton.setUserID("de873375dc0515f2");
+        //hubSingleton.setUsername("skuhns");
 
         onView(withId(R.id.join_hub_button))
                 .perform(click());
@@ -98,8 +98,8 @@ public class MultipleUsersTest {
         testMultipleUsersRule.getActivity().startActivity(new Intent(testMultipleUsersRule.getActivity().getApplicationContext(), GettingStarted.class));
 
         hubSingleton = HubSingleton.getInstance();
-        hubSingleton.setUserID("ba6e6ecebee2c145");
-        hubSingleton.setUsername("bd");
+        //hubSingleton.setUserID("ba6e6ecebee2c145");
+        //hubSingleton.setUsername("bd");
 
         onView(withId(R.id.join_hub_button))
                 .perform(click());
@@ -114,8 +114,8 @@ public class MultipleUsersTest {
         intent = new Intent(testMultipleUsersRule.getActivity().getApplicationContext(), GettingStarted.class);
         testMultipleUsersRule.getActivity().startActivity(intent);
 
-        hubSingleton.setUserID("de873375dc0515f2");
-        hubSingleton.setUsername("skuhns");
+        //hubSingleton.setUserID("de873375dc0515f2");
+        //hubSingleton.setUsername("skuhns");
 
         onView(withId(R.id.join_hub_button))
                 .perform(click());

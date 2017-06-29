@@ -41,8 +41,8 @@ public class HubSingletonCreatorTest {
         intended(hasComponent(QueueActivity.class.getName()));
         HubSingleton hubSingleton = HubSingleton.getInstance();
         if (hubSingleton.getUserID() == null || hubSingleton.getUsername() == null) {
-            hubSingleton.setUserID(Settings.Secure.getString(checkHubSingletonTest.getActivity().getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID));
-            hubSingleton.setUsername("Richard");
+            //hubSingleton.setUserID(Settings.Secure.getString(checkHubSingletonTest.getActivity().getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID));
+            //hubSingleton.setUsername("Richard");
         }
         if (hubSingleton.getEntireList() == null) {
             System.out.println("List Is Null");

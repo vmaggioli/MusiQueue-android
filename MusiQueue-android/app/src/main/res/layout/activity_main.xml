@@ -29,34 +29,11 @@
             android:text="Create A Name"
             android:textSize="36sp"
             />
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="4dp"
-            android:background="@color/gray"
-            android:layout_marginBottom="100dp"
-            />
-        <EditText
-            android:id="@+id/username_entry"
-            android:layout_width="match_parent"
-            android:layout_height="40dp"
-            android:background="#FFFFFF"
-            android:gravity="center"
-            android:layout_marginBottom="60dp"
-            android:hint="@string/username"
-            android:lines="1"
-            />
-
-        <Button
-            android:id="@+id/submit_username"
+        <com.google.android.gms.common.SignInButton
+            android:id="@+id/sign_in_button"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/submit"
-            android:textSize="22sp"
-            android:background="@drawable/gray_bubble_button"
-            android:paddingBottom="3dp"
-            android:paddingRight="15dp"
-            android:paddingLeft="15dp"
-            />
+            android:layout_height="wrap_content"/>
+
     </LinearLayout>
 
 </LinearLayout>

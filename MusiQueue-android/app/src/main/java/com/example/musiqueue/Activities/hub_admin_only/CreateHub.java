@@ -29,6 +29,8 @@ import com.example.musiqueue.HelperClasses.BackgroundWorker;
 import com.example.musiqueue.HelperClasses.HubSingleton;
 import com.example.musiqueue.HelperClasses.JoinHubResponse;
 import com.example.musiqueue.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.google.gson.Gson;
 
 import java.util.ArrayList;
@@ -375,18 +377,39 @@ public class CreateHub extends AppCompatActivity  {
             networkName = wifiInfo.getSSID();
         }
 
-        if (globalLocation == null && (networkName == null || networkName.length() == 0))
+        if (globalLocation == null && (networkName == null || networkName.length() == 0)) {
             backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID(), appState.getUsername(), "0", "0", "0");
-        else if (globalLocation != null && (networkName == null || networkName.length() == 0))
+            createHubFirebase(0, 0, null);
+        }
+        else if (globalLocation != null && (networkName == null || networkName.length() == 0)) {
             backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID(), appState.getUsername(),
                     String.valueOf(globalLocation.getLatitude()), String.valueOf(globalLocation.getLongitude()), "0");
-        else if (globalLocation == null && networkName != null && networkName.length() != 0)
+            createHubFirebase(globalLocation.getLatitude(), globalLocation.getLongitude(), null);
+        }
+        else if (globalLocation == null && networkName != null && networkName.length() != 0) {
             backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID(), appState.getUsername(),
                     "0", "0", networkName);
-        else if (globalLocation != null &&  networkName != null && networkName.length() != 0)
+            createHubFirebase(0, 0, networkName);
+        }
+        else if (globalLocation != null && networkName != null && networkName.length() != 0) {
             backgroundWorker.execute("createHub", hubNameText.getText().toString(), passPin.getText().toString(), appState.getUserID(), appState.getUsername(),
                     String.valueOf(globalLocation.getLatitude()), String.valueOf(globalLocation.getLongitude()), networkName);
+            createHubFirebase(globalLocation.getLatitude(), globalLocation.getLongitude(), networkName);
+        }
         appState.setHubName(hubNameText.getText().toString());
+    }
+
+    private void createHubFirebase(double latitude, double longitude, String networkName) {
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Hubs").child(hubNameText.getText().toString()).child("owner");
+        ref.setValue(appState.getUserID());
+        ref.child("pin").setValue(appState.getPassPin());
+        ref.child("location").child("latitude").setValue(latitude);
+        ref.child("location").child("longitude").setValue(longitude);
+        ref = FirebaseDatabase.getInstance().getReference().child("Hubs").child(hubNameText.getText().toString()).child("network name");
+        if (networkName != null)
+            ref.setValue(networkName);
+        else
+            ref.setValue("");
     }
 }
 

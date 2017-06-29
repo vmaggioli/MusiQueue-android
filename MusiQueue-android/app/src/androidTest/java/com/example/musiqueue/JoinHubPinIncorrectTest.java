@@ -33,7 +33,7 @@ public class JoinHubPinIncorrectTest {
     @Test
     public void correctJoinTest() throws Exception {
         HubSingleton hubSingleton = HubSingleton.getInstance();
-        if (hubSingleton.getUserID() == null) hubSingleton.setUserID(Settings.Secure.getString(checkCorrectJoin.getActivity().getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID));
+        //if (hubSingleton.getUserID() == null) hubSingleton.setUserID(Settings.Secure.getString(checkCorrectJoin.getActivity().getApplicationContext().getContentResolver(), Settings.Secure.ANDROID_ID));
 
         onView(withId(R.id.hub_name_search))
                 .perform(typeText("test"), closeSoftKeyboard());

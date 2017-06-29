@@ -27,8 +27,8 @@ public class InvalidHubSearchTest {
     @Test
     public void invalidHubSearchTest() throws Exception {
         HubSingleton hubSingleton = HubSingleton.getInstance();
-        hubSingleton.setUserID("ba6e6ecebee2c145");
-        hubSingleton.setUsername("bd");
+        //hubSingleton.setUserID("ba6e6ecebee2c145");
+        //hubSingleton.setUsername("bd");
         onView(withId(R.id.join_hub_button))
                 .perform(click());
         intended(hasComponent(SearchHub.class.getName()));

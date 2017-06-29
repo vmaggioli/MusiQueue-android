@@ -1,35 +1,43 @@
 {
   "project_info": {
-    "project_number": "87323731569",
-    "firebase_url": "https://musiqueue-android.firebaseio.com",
-    "project_id": "musiqueue-android",
-    "storage_bucket": "musiqueue-android.appspot.com"
+    "project_number": "972176989032",
+    "firebase_url": "https://musiqueue-5aa8d.firebaseio.com",
+    "project_id": "musiqueue-5aa8d",
+    "storage_bucket": "musiqueue-5aa8d.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:87323731569:android:489efe3f09dca715",
+        "mobilesdk_app_id": "1:972176989032:android:a2934ab5a3f0c6f5",
         "android_client_info": {
-          "package_name": "com.example.vince.youtubeplayertest"
+          "package_name": "com.example.musiqueue"
         }
       },
       "oauth_client": [
         {
-          "client_id": "87323731569-nq7rf4l74lmnmec17c3estg96d2fe3n9.apps.googleusercontent.com",
+          "client_id": "972176989032-qrdsdufg6r4c90frg94cp4e2pq1n1lun.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
-            "package_name": "com.example.vince.youtubeplayertest",
-            "certificate_hash": "bced157d99d374cb677d237955a5a3cc8260baaa"
+            "package_name": "com.example.musiqueue",
+            "certificate_hash": "f91ccc6873a789c1162dad211b4643b28aa0ad65"
           }
         },
         {
-          "client_id": "87323731569-p8dj8a8uglf2tc5mnbhfp5e3h2rlm2r8.apps.googleusercontent.com",
+          "client_id": "972176989032-vm4lbqd7co6rkmbldvjo27jg1tsdoag4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.musiqueue",
+            "certificate_hash": "6900aefabb07d2dca866b7bd653869206b6bd010"
+          }
+        },
+        {
+          "client_id": "972176989032-s76iea8fs3c7jc1ipe004j8fk03v5v7s.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyBcIvIi5qdnPwf3Rz2dfVIAByVNBOa6Y5w"
+          "current_key": "AIzaSyA4Fwy1lX5hnWjafZcaYGDF2eNzFrmoufU"
         }
       ],
       "services": {
@@ -40,7 +48,7 @@
           "status": 2,
           "other_platform_oauth_client": [
             {
-              "client_id": "87323731569-p8dj8a8uglf2tc5mnbhfp5e3h2rlm2r8.apps.googleusercontent.com",
+              "client_id": "972176989032-s76iea8fs3c7jc1ipe004j8fk03v5v7s.apps.googleusercontent.com",
               "client_type": 3
             }
           ]

@@ -38,6 +38,12 @@ import com.example.musiqueue.R;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
+import com.google.firebase.database.ChildEventListener;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
@@ -72,6 +78,17 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
     private List<VideoItem> searchResults;
     private ListView videosFound;
     private Handler handler;
+    private ValueEventListener voteListener = new ValueEventListener() {
+        @Override
+        public void onDataChange(DataSnapshot dataSnapshot) {
+            // TODO
+        }
+
+        @Override
+        public void onCancelled(DatabaseError databaseError) {
+            // TODO
+        }
+    };
 
 
     @Override
@@ -158,7 +175,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
 
         initPlayer();
         updateView();
-
+        initFirebase();
 
         userListView = (RecyclerView) findViewById(R.id.userList);
         userListView.setVisibility(View.GONE);
@@ -167,6 +184,47 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         userListView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).color(Color.LTGRAY).sizeResId(R.dimen.divider).marginResId(R.dimen.margin5dp, R.dimen.margin5dp).build());
 
 
+    }
+
+    public void initFirebase() {
+        // Don't need to create hub, done in CreateHub
+        // Add user to user list for this hub
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("User Lists")
+                .child(hubSingleton.getHubName()).child(hubSingleton.getUserID());
+        DatabaseReference userSubRef = userRef.child("User Name");
+        userSubRef.setValue(hubSingleton.getUsername());
+        // TODO add more fields
+
+        // Create song list
+        DatabaseReference songListRef = FirebaseDatabase.getInstance().getReference().child("Song Lists")
+                .child(hubSingleton.getHubName());
+        // This listener is to update the view when something is added
+        songListRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                // TODO
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                // TODO
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                // TODO
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                // TODO
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+                // TODO
+            }
+        });
     }
 
     public void initPlayer() {
@@ -222,6 +280,11 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                                 initPlayer();
                             currentlyPlaying = "";
                         }
+
+                        // Firebase logic
+                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Song Lists")
+                                .child(hubSingleton.getHubName()).child(currentlyPlaying);
+                        ref.removeValue();
                     }
 
                     @Override
@@ -371,7 +434,19 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                 changeAndUpdate("add");
                 videosFound.setVisibility(View.GONE);
                 songListView.setVisibility(View.VISIBLE);
-                userListView.setVisibility(View.GONE);
+
+                // Firebase logic
+                // Adds song to child of proper song list
+                DatabaseReference songRef = FirebaseDatabase.getInstance().getReference().child("Song Lists")
+                        .child(hubSingleton.getHubName()).child(searchResults.get(position).getId());
+                songRef.child("Title").setValue(searchResults.get(position).getTitle());
+                songRef.child("Up-votes").setValue(0);
+                songRef.child("Down-votes").setValue(0);
+                // TODO: add time added and playing variables
+
+                songRef.child("Up-votes").addValueEventListener(voteListener);
+                songRef.child("Down-votes").addValueEventListener(voteListener);
+
             }
 
         });

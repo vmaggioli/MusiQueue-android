@@ -29,7 +29,7 @@ public class JoinHubPinCorrectTest {
     @Test
     public void correctJoinTest() throws Exception {
         HubSingleton hubSingleton = HubSingleton.getInstance();
-        if (hubSingleton.getUserID() == null) hubSingleton.setUserID("ba6e6ecebee2c145");
+        //if (hubSingleton.getUserID() == null) hubSingleton.setUserID("ba6e6ecebee2c145");
 
         onView(withId(R.id.hub_name_search))
                 .perform(typeText("friday"), closeSoftKeyboard());

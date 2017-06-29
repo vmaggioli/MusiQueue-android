@@ -29,8 +29,8 @@ public class SearchVideoButtonTest {
     @Test
     public void testSearchVideoButton() throws Exception {
         HubSingleton hubSingleton = HubSingleton.getInstance();
-        hubSingleton.setUserID("ba6e6ecebee2c145");
-        hubSingleton.setUsername("bd");
+       // hubSingleton.setUserID("ba6e6ecebee2c145");
+        //hubSingleton.setUsername("bd");
 
         onView(withId(R.id.hub_name_search))
                 .perform(typeText("friday"), closeSoftKeyboard());
