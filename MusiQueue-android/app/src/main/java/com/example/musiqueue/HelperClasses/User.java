@@ -4,6 +4,13 @@ public class User {
     public String id;
     public String name;
 
+    public User(String name, String id) {
+        this.name = name;
+        this.id = id;
+    }
+
+    public User() { }
+
     public String getId() {
         return id;
     }

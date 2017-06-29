@@ -2,12 +2,24 @@ package com.example.musiqueue.Activities.users_only;
 
 public class QueueSong {
     private String title;
-    private int upVotes = 0;
-    private int downVotes=0;
+    private long upVotes = 0;
+    private long downVotes=0;
     private String id;
     private String user;
     private int place;
     private int state;
+
+    public QueueSong() {
+
+    }
+
+    public QueueSong(String id, String title, String user, long upVotes, long downVotes) {
+        this.id = id;
+        this.title = title;
+        this.user = user;
+        this.upVotes = upVotes;
+        this.downVotes = downVotes;
+    }
 
     public String getTitle() {
         return this.title;
@@ -15,13 +27,13 @@ public class QueueSong {
     public void setTitle(String title) {
         this.title = title;
     }
-    public int getUpVotes() {
+    public long getUpVotes() {
         return this.upVotes;
     }
     public void setUpVotes(int upVotes) {
         this.upVotes = upVotes;
     }
-    public int getDownVotes() {
+    public long getDownVotes() {
         return this.downVotes;
     }
     public void setDownVotes(int downVotes) {

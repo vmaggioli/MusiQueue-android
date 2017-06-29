@@ -115,8 +115,8 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                     queueItemTitleBkrnd.setBackgroundColor(getColor(videoItem.getTitle()));
 
             videoUser.setText(videoItem.getUser());
-            upButton.setText(Integer.toString(videoItem.getUpVotes()));
-            downButton.setText(Integer.toString(videoItem.getDownVotes()));
+            upButton.setText(Long.toString(videoItem.getUpVotes()));
+            downButton.setText(Long.toString(videoItem.getDownVotes()));
             if(caller.equals("owner")) {
                 System.out.println("OWNDER IS IN HUB");
                 removeSongButton.setBackgroundResource(R.drawable.ic_remove_circle_black_24dp);

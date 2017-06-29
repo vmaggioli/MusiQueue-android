@@ -51,22 +51,16 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class QueueActivity extends AppCompatActivity implements UpdateResultReceiver.Receiver {
+public class QueueActivity extends AppCompatActivity {
     final public String API_KEY = "AIzaSyDtCJTBSLt9M1Xi_EBr49Uk4W8q4HhFHPU";
     private YouTubePlayer mYouTubePlayer = null;
 
     EditText searchEdit;
     Button searchButton;
 
-    BackgroundWorker.AsyncResponse callback;
-    BackgroundWorker addBW;
-    BackgroundWorker listBW;
-    BackgroundWorker removeBW;
-    String id;
-    String title;
-    String removeId;
     RecyclerView songListView;
     RecyclerView userListView;
     HubSingleton hubSingleton;
@@ -174,7 +168,6 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
         songListView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).color(Color.LTGRAY).sizeResId(R.dimen.divider).marginResId(R.dimen.margin5dp, R.dimen.margin5dp).build());
 
         initPlayer();
-        updateView();
         initFirebase();
 
         userListView = (RecyclerView) findViewById(R.id.userList);
@@ -193,38 +186,99 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                 .child(hubSingleton.getHubName()).child(hubSingleton.getUserID());
         DatabaseReference userSubRef = userRef.child("User Name");
         userSubRef.setValue(hubSingleton.getUsername());
+        userSubRef = userRef.child("ID");
+        userSubRef.setValue(hubSingleton.getUserID());
         // TODO add more fields
 
-        // Create song list
-        DatabaseReference songListRef = FirebaseDatabase.getInstance().getReference().child("Song Lists")
+        // set up listener for user list
+        DatabaseReference userListRef = FirebaseDatabase.getInstance().getReference().child("User Lists")
                 .child(hubSingleton.getHubName());
-        // This listener is to update the view when something is added
-        songListRef.addChildEventListener(new ChildEventListener() {
+        userListRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                // TODO
+                updateUserList(dataSnapshot);
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                // TODO
+                updateUserList(dataSnapshot);
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                // TODO
+                updateUserList(dataSnapshot);
             }
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                // TODO
+                updateUserList(dataSnapshot);
             }
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-                // TODO
+
             }
         });
+
+        // Create song list
+        DatabaseReference songListRef = FirebaseDatabase.getInstance().getReference().child("Song Lists")
+                .child(hubSingleton.getHubName());
+        // This listener is to update the view when a song is added/removed
+        songListRef.addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+                updateQueue(dataSnapshot);
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+                updateQueue(dataSnapshot);
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+                updateQueue(dataSnapshot);
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+                updateQueue(dataSnapshot);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private void updateUserList(DataSnapshot snapshot) {
+        hubSingleton.clearUsers();
+        for (DataSnapshot ds : snapshot.getChildren()) {
+            hubSingleton.addUser(new User((String) ds.getValue(), (String) ds.child("ID").getValue()));
+        }
+        userAdapter.notifyDataSetChanged();
+    }
+
+    private void updateQueue(DataSnapshot snapshot) {
+        hubSingleton.clearList();
+        // each ds is a song item
+        for (DataSnapshot ds : snapshot.getChildren()) {
+            String id = "";
+            String title = "";
+            long upVotes = 0;
+            long downVotes = 0;
+            if (ds.getValue() != null)
+                id = ds.getValue().toString();
+            if (ds.child("Title").getValue() != null)
+                title = ds.child("Title").getValue().toString();
+            if (ds.child("Up-votes").getValue() != null)
+                upVotes = Long.parseLong((String) ds.child("Up-votes").getValue());
+            if (ds.child("Down-votes").getValue() != null)
+                downVotes = Long.parseLong((String) ds.child("Down-votes").getValue());
+            hubSingleton.add(new QueueSong(id, title, hubSingleton.getUsername(), upVotes, downVotes));
+        }
+        adapter.notifyDataSetChanged();
     }
 
     public void initPlayer() {
@@ -243,7 +297,6 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                     youTubePlayer.loadVideo(hubSingleton.getSongAt(0).getId()); //getIntent().getStringExtra("id"));
                 }
                 mYouTubePlayer = youTubePlayer;
-                //mYouTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.CHROMELESS);
                 mYouTubePlayer.setPlayerStateChangeListener(new YouTubePlayer.PlayerStateChangeListener() {
 
                     @Override
@@ -273,10 +326,7 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                             DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Song Lists")
                                     .child(hubSingleton.getHubName()).child(currentlyPlaying);
                             ref.removeValue();
-                            
-                            removeId = String.valueOf(hubSingleton.getSongAt(0).getPlace());
-                            hubSingleton.removeAt(0);
-                            changeAndUpdate("remove");
+
                             adapter.notifyDataSetChanged();
                             if (hubSingleton.getEntireList().size() != 0 && mYouTubePlayer != null) {
                                 mYouTubePlayer.loadVideo(hubSingleton.getSongAt(0).getId());
@@ -299,81 +349,6 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                 });
             }
         });
-    }
-
-    public void changeAndUpdate(String type) {
-        callback = new BackgroundWorker.AsyncResponse() {
-            @Override
-            public void processFinish(String result) {
-                Boolean reInit = false;
-                try {
-                    if (hubSingleton.getEntireList().size() == 0) {
-                        reInit = true;
-                    }
-                    hubSingleton.clearList();
-                    JSONObject json = new JSONObject(result);
-                    JSONObject jsonArray = json.getJSONObject("result");
-                    JSONArray songs = jsonArray.getJSONArray("songs");
-                    JSONArray users = jsonArray.getJSONArray("users");
-                    for (int i = 0; i < songs.length(); i++) {
-                        QueueSong item = new QueueSong();
-                        JSONObject jObj = songs.getJSONObject(i);
-
-                        item.setTitle(jObj.getString("song_title"));
-                        item.setUpVotes(jObj.getInt("up_votes"));
-                        item.setDownVotes(jObj.getInt("down_votes"));
-                        item.setId(jObj.getString("song_id"));
-                        item.setUser(jObj.getString("user_name"));
-                        item.setPlace(jObj.getInt("id"));
-                        item.setState(jObj.getInt("voted"));
-
-                        hubSingleton.add(item);
-                    }
-                    hubSingleton.clearUsers();
-
-                    User user;
-                    for(int i = 0; i < users.length();i++){
-                        user = new User();
-                        JSONObject name = users.getJSONObject(i);
-                        user.setName(name.getString("name"));
-                        user.setId(name.getString("id"));
-                        hubSingleton.addUser(user);
-                    }
-
-
-                    adapter.notifyDataSetChanged();
-                    userAdapter.notifyDataSetChanged();
-                    if (currentlyPlaying.equals("") && hubSingleton.getQueueSize() != 0)
-                        queueIfNothingPlaying(hubSingleton.getSongAt(0).getId());
-                    else if (reInit && mYouTubePlayer != null && hubSingleton.getEntireList() != null && hubSingleton.getEntireList().size() != 0)
-                        mYouTubePlayer.loadVideo(hubSingleton.getSongAt(0).getId());
-                    else if (reInit && mYouTubePlayer == null)
-                        initPlayer();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-        addBW = new BackgroundWorker(callback);
-        listBW = new BackgroundWorker(callback);
-        removeBW = new BackgroundWorker(callback);
-
-        Intent intent = getIntent();
-        if(type.equals("add") && intent.hasExtra("title")) {
-            title = intent.getStringExtra("title");
-            id = intent.getStringExtra("id");
-            QueueSong song = new QueueSong();
-            song.setId(id);
-            song.setTitle(title);
-
-            addBW.execute("addSong", hubSingleton.getHubId().toString(), hubSingleton.getUserID(), id, title);
-        } else if (type.equals("remove"))
-            removeBW.execute("removeSong", hubSingleton.getHubId().toString(), hubSingleton.getUserID(), removeId);
-        if (hubSingleton.getEntireList().size() == 0) {
-            listBW.execute("hubSongList", hubSingleton.getHubId().toString(), hubSingleton.getUserID());
-        }
-        //listBW.execute("hubSongList", hubSingleton.getHubId().toString(), hubSingleton.getUserID());
-        //queueIfNothingPlaying(id);
     }
 
     public void searchVideo(View view) {
@@ -432,13 +407,6 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long ident) {
-                Intent intent = getIntent();
-                intent.putExtra("title", searchResults.get(position).getTitle());
-                intent.putExtra("id", searchResults.get(position).getId());
-                changeAndUpdate("add");
-                videosFound.setVisibility(View.GONE);
-                songListView.setVisibility(View.VISIBLE);
-
                 // Firebase logic
                 // Adds song to child of proper song list
                 DatabaseReference songRef = FirebaseDatabase.getInstance().getReference().child("Song Lists")
@@ -451,72 +419,12 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
                 songRef.child("Up-votes").addValueEventListener(voteListener);
                 songRef.child("Down-votes").addValueEventListener(voteListener);
 
+                videosFound.setVisibility(View.GONE);
+                songListView.setVisibility(View.VISIBLE);
+                userListView.setVisibility(View.GONE);
             }
 
         });
-    }
-
-    public void updateView() {
-        receiver = new UpdateResultReceiver(new Handler());
-        receiver.setReceiver(this);
-
-        Intent intent = new Intent(this, PollData.class);
-        intent.putExtra("receiver", receiver);
-        startService(intent);
-    }
-
-    @Override
-    public void onReceiveResult(int resultCode, Bundle resultData) {
-        if (resultCode != 0) return;
-        String result = resultData.getString("result");
-        Boolean reInit = false;
-        try {
-
-            if (hubSingleton.getEntireList().size() == 0) {
-                reInit = true;
-            }
-            hubSingleton.clearList();
-            JSONObject json = new JSONObject(result);
-            JSONObject jsonArray = json.getJSONObject("result");
-            JSONArray songs = jsonArray.getJSONArray("songs");
-            JSONArray users = jsonArray.getJSONArray("users");
-            for (int i = 0; i < songs.length(); i++) {
-                QueueSong item = new QueueSong();
-                JSONObject jObj = songs.getJSONObject(i);
-
-                item.setTitle(jObj.getString("song_title"));
-                item.setUpVotes(jObj.getInt("up_votes"));
-                item.setDownVotes(jObj.getInt("down_votes"));
-                item.setId(jObj.getString("song_id"));
-                item.setUser(jObj.getString("user_name"));
-                item.setPlace(jObj.getInt("id"));
-                item.setState(jObj.getInt("voted"));
-
-                hubSingleton.add(item);
-            }
-            hubSingleton.clearUsers();
-            User user;
-            for(int i = 0; i < users.length();i++){
-                user = new User();
-                JSONObject name = users.getJSONObject(i);
-                user.setName(name.getString("name"));
-                user.setId(name.getString("id"));
-                hubSingleton.addUser(user);
-
-                //System.out.println(name.getString("name"));
-
-            }
-
-            adapter.notifyDataSetChanged();
-            userAdapter.notifyDataSetChanged();
-            if (currentlyPlaying.equals("") && hubSingleton.getQueueSize() != 0)
-                queueIfNothingPlaying(hubSingleton.getSongAt(0).getId());
-            else if (reInit && mYouTubePlayer != null && hubSingleton.getEntireList() != null && hubSingleton.getEntireList().size() != 0)
-                mYouTubePlayer.loadVideo(hubSingleton.getSongAt(0).getId());
-            updateView();
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
     }
 
     public void queueIfNothingPlaying(String video_id) {
