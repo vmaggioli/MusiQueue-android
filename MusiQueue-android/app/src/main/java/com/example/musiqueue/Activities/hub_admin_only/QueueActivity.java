@@ -263,28 +263,32 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
 
                     @Override
                     public void onVideoStarted() {
-                        if (hubSingleton.getEntireList() != null && hubSingleton.getEntireList().size() > 0)
-                            currentlyPlaying = hubSingleton.getSongAt(0).getId();
+
                     }
 
                     @Override
                     public void onVideoEnded() {
                         if (hubSingleton.getEntireList() != null && hubSingleton.getEntireList().size() != 0) {
+                            // Firebase logic
+                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Song Lists")
+                                    .child(hubSingleton.getHubName()).child(currentlyPlaying);
+                            ref.removeValue();
+                            
                             removeId = String.valueOf(hubSingleton.getSongAt(0).getPlace());
                             hubSingleton.removeAt(0);
                             changeAndUpdate("remove");
                             adapter.notifyDataSetChanged();
-                            if (hubSingleton.getEntireList().size() != 0 && mYouTubePlayer != null)
+                            if (hubSingleton.getEntireList().size() != 0 && mYouTubePlayer != null) {
                                 mYouTubePlayer.loadVideo(hubSingleton.getSongAt(0).getId());
-                            else if (hubSingleton.getEntireList().size() != 0 && mYouTubePlayer == null)
+                                currentlyPlaying = hubSingleton.getSongAt(0).getId();
+                            }
+                            else if (hubSingleton.getEntireList().size() != 0 && mYouTubePlayer == null) {
                                 initPlayer();
-                            currentlyPlaying = "";
+                                queueIfNothingPlaying(hubSingleton.getSongAt(0).getId());
+                            } else {
+                                currentlyPlaying = "";
+                            }
                         }
-
-                        // Firebase logic
-                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Song Lists")
-                                .child(hubSingleton.getHubName()).child(currentlyPlaying);
-                        ref.removeValue();
                     }
 
                     @Override
@@ -516,8 +520,10 @@ public class QueueActivity extends AppCompatActivity implements UpdateResultRece
     }
 
     public void queueIfNothingPlaying(String video_id) {
-        if (currentlyPlaying.equals("") && video_id != null && mYouTubePlayer != null)
-                mYouTubePlayer.loadVideo(video_id);
+        if (currentlyPlaying.equals("") && video_id != null && mYouTubePlayer != null) {
+            mYouTubePlayer.loadVideo(video_id);
+            currentlyPlaying = video_id;
+        }
     }
 
 }

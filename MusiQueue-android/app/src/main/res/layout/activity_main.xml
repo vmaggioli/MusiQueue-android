@@ -26,7 +26,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAlignment="center"
-            android:text="Create A Name"
+            android:text="Sign In"
             android:textSize="36sp"
             />
         <com.google.android.gms.common.SignInButton

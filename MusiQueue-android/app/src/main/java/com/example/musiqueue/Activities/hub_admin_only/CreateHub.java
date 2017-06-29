@@ -400,8 +400,8 @@ public class CreateHub extends AppCompatActivity  {
     }
 
     private void createHubFirebase(double latitude, double longitude, String networkName) {
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Hubs").child(hubNameText.getText().toString()).child("owner");
-        ref.setValue(appState.getUserID());
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Hubs").child(hubNameText.getText().toString());
+        ref.child("owner").setValue(appState.getUserID());
         ref.child("pin").setValue(appState.getPassPin());
         ref.child("location").child("latitude").setValue(latitude);
         ref.child("location").child("longitude").setValue(longitude);

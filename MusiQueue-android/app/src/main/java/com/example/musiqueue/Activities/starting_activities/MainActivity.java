@@ -109,6 +109,7 @@ public class MainActivity extends AppCompatActivity implements
                 GoogleSignInAccount account = result.getSignInAccount();
                 appState.setCurrentUser(account);
                 firebaseAuthWithGoogle(account);
+                startActivity(new Intent(MainActivity.this, GettingStarted.class));
             } else {
                 // Google Sign In failed, update UI appropriately
                 // ...
