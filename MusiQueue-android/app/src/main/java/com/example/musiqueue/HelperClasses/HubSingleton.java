@@ -85,6 +85,9 @@ public class HubSingleton {
         users.add(name);
     }
 
+    public void removeUser(User name) {
+        users.remove(name); }
+
     public ArrayList<User> getUsers() {
         return this.users;
     }

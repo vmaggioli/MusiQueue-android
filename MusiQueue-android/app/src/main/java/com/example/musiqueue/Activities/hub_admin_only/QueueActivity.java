@@ -66,7 +66,6 @@ public class QueueActivity extends AppCompatActivity {
     HubSingleton hubSingleton;
     VideoItemAdapter adapter;
     UserItemAdapter userAdapter;
-    UpdateResultReceiver receiver;
     String currentlyPlaying;
     ToggleButton viewButton;
     private List<VideoItem> searchResults;
@@ -227,22 +226,22 @@ public class QueueActivity extends AppCompatActivity {
         songListRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                updateQueue(dataSnapshot);
+                addToQueue(dataSnapshot);
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                updateQueue(dataSnapshot);
+                modifyQueue(dataSnapshot);
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                updateQueue(dataSnapshot);
+
             }
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                updateQueue(dataSnapshot);
+                switchQueue(dataSnapshot);
             }
 
             @Override
@@ -260,25 +259,30 @@ public class QueueActivity extends AppCompatActivity {
         userAdapter.notifyDataSetChanged();
     }
 
-    private void updateQueue(DataSnapshot snapshot) {
-        hubSingleton.clearList();
-        // each ds is a song item
-        for (DataSnapshot ds : snapshot.getChildren()) {
-            String id = "";
-            String title = "";
-            long upVotes = 0;
-            long downVotes = 0;
-            if (ds.getValue() != null)
-                id = ds.getValue().toString();
-            if (ds.child("Title").getValue() != null)
-                title = ds.child("Title").getValue().toString();
-            if (ds.child("Up-votes").getValue() != null)
-                upVotes = Long.parseLong((String) ds.child("Up-votes").getValue());
-            if (ds.child("Down-votes").getValue() != null)
-                downVotes = Long.parseLong((String) ds.child("Down-votes").getValue());
-            hubSingleton.add(new QueueSong(id, title, hubSingleton.getUsername(), upVotes, downVotes));
+    private void addToQueue(DataSnapshot snapshot) {
+        String title = "";
+        long upVotes = 0;
+        long downVotes = 0;
+        String id = snapshot.getKey();
+        for (DataSnapshot snap : snapshot.getChildren()) {
+            if (snap.getKey().equals("Title") && snap.getValue() != null)
+                title = snap.getValue().toString();
+            else if (snap.getKey().equals("Up-votes") && snap.getValue() != null)
+                upVotes = Long.parseLong(snap.getValue().toString());
+            else if (snap.getKey().equals("Down-votes") && snap.getValue() != null)
+                downVotes = Long.parseLong(snap.getValue().toString());
         }
+        hubSingleton.add(new QueueSong(id, title, hubSingleton.getUsername(), upVotes, downVotes));
         adapter.notifyDataSetChanged();
+        queueIfNothingPlaying(id);
+    }
+
+    private void modifyQueue(DataSnapshot snapshot) {
+
+    }
+
+    private void switchQueue(DataSnapshot snapshot) {
+
     }
 
     public void initPlayer() {
@@ -327,7 +331,9 @@ public class QueueActivity extends AppCompatActivity {
                                     .child(hubSingleton.getHubName()).child(currentlyPlaying);
                             ref.removeValue();
 
+                            hubSingleton.removeAt(0);
                             adapter.notifyDataSetChanged();
+
                             if (hubSingleton.getEntireList().size() != 0 && mYouTubePlayer != null) {
                                 mYouTubePlayer.loadVideo(hubSingleton.getSongAt(0).getId());
                                 currentlyPlaying = hubSingleton.getSongAt(0).getId();
