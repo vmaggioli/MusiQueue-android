@@ -14,10 +14,13 @@ import com.example.musiqueue.Activities.SearchActivity;
 import com.example.musiqueue.HelperClasses.BackgroundWorker;
 import com.example.musiqueue.HelperClasses.HubSingleton;
 import com.example.musiqueue.HelperClasses.PollData;
+import com.example.musiqueue.HelperClasses.QueueSong;
 import com.example.musiqueue.HelperClasses.UpdateResultReceiver;
 import com.example.musiqueue.HelperClasses.User;
 import com.example.musiqueue.HelperClasses.adapters.VideoItemAdapter;
 import com.example.musiqueue.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
 import org.json.JSONArray;
@@ -42,6 +45,7 @@ public class ViewQueueActivity extends AppCompatActivity implements UpdateResult
     @Override
     public void onBackPressed() {
     }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -64,60 +68,69 @@ public class ViewQueueActivity extends AppCompatActivity implements UpdateResult
 
         songListView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).color(Color.LTGRAY).sizeResId(R.dimen.divider).marginResId(R.dimen.margin5dp, R.dimen.margin5dp).build());
 
-        callback = new BackgroundWorker.AsyncResponse() {
+//        callback = new BackgroundWorker.AsyncResponse() {
+//
+//            @Override
+//            public void processFinish(String result) {
+//                try {
+//                    hubSingleton.clearList();
+//                    JSONObject json = new JSONObject(result);
+//                    JSONObject jsonArray = json.getJSONObject("result");
+//                    JSONArray songs = jsonArray.getJSONArray("songs");
+//                    JSONArray users = jsonArray.getJSONArray("users");
+//                    for (int i = 0; i < songs.length(); i++) {
+//                        QueueSong item = new QueueSong();
+//                        JSONObject jObj = songs.getJSONObject(i);
+//
+//                        item.setTitle(jObj.getString("song_title"));
+//                        item.setUpVotes(jObj.getInt("up_votes"));
+//                        item.setDownVotes(jObj.getInt("down_votes"));
+//                        item.setId(jObj.getString("song_id"));
+//                        item.setUser(jObj.getString("user_name"));
+//                        item.setPlace(jObj.getInt("id"));
+//                        item.setState(jObj.getInt("voted"));
+//
+//                        hubSingleton.add(item);
+//                    }
+//                    hubSingleton.clearUsers();
+//                    User user;
+//                    for(int i = 0; i < users.length();i++){
+//                        user = new User();
+//                        JSONObject name = users.getJSONObject(i);
+//                        user.setName(name.getString("name"));
+//                        user.setId(name.getString("id"));
+//                        hubSingleton.addUser(user);
+//
+//                    }
+//                    adapter.notifyDataSetChanged();
+//                } catch (JSONException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//
+//        };
+//        addBW = new BackgroundWorker(callback);
+//        listBW = new BackgroundWorker(callback);
+//
+//        Intent intent = getIntent();
+//        if(intent.hasExtra("title")) {
+//            title = intent.getStringExtra("title");
+//            id = intent.getStringExtra("id");
+//
+//            addBW.execute("addSong", hubSingleton.getHubId().toString(), hubSingleton.getUserID(), id, title);
+//        }
+//        listBW.execute("hubSongList", hubSingleton.getHubId().toString(), hubSingleton.getUserID());
 
-            @Override
-            public void processFinish(String result) {
-                try {
-                    hubSingleton.clearList();
-                    JSONObject json = new JSONObject(result);
-                    JSONObject jsonArray = json.getJSONObject("result");
-                    JSONArray songs = jsonArray.getJSONArray("songs");
-                    JSONArray users = jsonArray.getJSONArray("users");
-                    for (int i = 0; i < songs.length(); i++) {
-                        QueueSong item = new QueueSong();
-                        JSONObject jObj = songs.getJSONObject(i);
-
-                        item.setTitle(jObj.getString("song_title"));
-                        item.setUpVotes(jObj.getInt("up_votes"));
-                        item.setDownVotes(jObj.getInt("down_votes"));
-                        item.setId(jObj.getString("song_id"));
-                        item.setUser(jObj.getString("user_name"));
-                        item.setPlace(jObj.getInt("id"));
-                        item.setState(jObj.getInt("voted"));
-
-                        hubSingleton.add(item);
-                    }
-                    hubSingleton.clearUsers();
-                    User user;
-                    for(int i = 0; i < users.length();i++){
-                        user = new User();
-                        JSONObject name = users.getJSONObject(i);
-                        user.setName(name.getString("name"));
-                        user.setId(name.getString("id"));
-                        hubSingleton.addUser(user);
-
-                    }
-                    adapter.notifyDataSetChanged();
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        };
-        addBW = new BackgroundWorker(callback);
-        listBW = new BackgroundWorker(callback);
-
-        Intent intent = getIntent();
-        if(intent.hasExtra("title")) {
-            title = intent.getStringExtra("title");
-            id = intent.getStringExtra("id");
-
-            addBW.execute("addSong", hubSingleton.getHubId().toString(), hubSingleton.getUserID(), id, title);
-        }
-        listBW.execute("hubSongList", hubSingleton.getHubId().toString(), hubSingleton.getUserID());
-
+        initFirebase();
         updateView();
+    }
+
+    private void initFirebase() {
+        // Add user to users list for this hub
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("/User Lists/"
+            + hubSingleton.getHubName() + "/" + hubSingleton.getUserID());
+        ref.child("User name").setValue(hubSingleton.getUsername());
+        // TODO: add more values
     }
 
     public void searchVideo(View view) {
@@ -146,7 +159,6 @@ public class ViewQueueActivity extends AppCompatActivity implements UpdateResult
                 item.setDownVotes(jObj.getInt("down_votes"));
                 item.setId(jObj.getString("song_id"));
                 item.setUser(jObj.getString("user_name"));
-                item.setPlace(jObj.getInt("id"));
                 item.setState(jObj.getInt("voted"));
 
                 hubSingleton.add(item);

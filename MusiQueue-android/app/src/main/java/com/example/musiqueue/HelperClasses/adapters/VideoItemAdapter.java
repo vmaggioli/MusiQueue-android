@@ -19,7 +19,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.musiqueue.Activities.hub_admin_only.QueueActivity;
-import com.example.musiqueue.Activities.users_only.QueueSong;
+import com.example.musiqueue.HelperClasses.QueueSong;
 import com.example.musiqueue.HelperClasses.BackgroundWorker;
 import com.example.musiqueue.HelperClasses.HubSingleton;
 import com.example.musiqueue.R;
@@ -141,36 +141,36 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
 
 
 
-            callback = new BackgroundWorker.AsyncResponse() {
-                @Override
-                public void processFinish(String result) {
-                    try {
-                        JSONObject json = new JSONObject(result);
-                        Log.d("foobar", json.toString());
-                        //hubSingleton.clearList();
-                        JSONArray jsonArray = json.getJSONArray("result");
-                        for (int i = 0; i < jsonArray.length(); i++) {
-
-                            QueueSong item = new QueueSong();
-
-                            JSONObject jObj = jsonArray.getJSONObject(i);
-
-                            item.setTitle(jObj.getString("song_title"));
-                            item.setUpVotes(jObj.getInt("up_votes"));
-                            item.setDownVotes(jObj.getInt("down_votes"));
-                            item.setId(jObj.getString("song_id"));
-                            item.setUser(jObj.getString("user_name"));
-                            item.setPlace(jObj.getInt("id"));
-                            //hubSingleton.add(item);
-                        }
-
-                        voteBW = new BackgroundWorker(callback);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                }
-            };
+//            callback = new BackgroundWorker.AsyncResponse() {
+//                @Override
+//                public void processFinish(String result) {
+//                    try {
+//                        JSONObject json = new JSONObject(result);
+//                        Log.d("foobar", json.toString());
+//                        //hubSingleton.clearList();
+//                        JSONArray jsonArray = json.getJSONArray("result");
+//                        for (int i = 0; i < jsonArray.length(); i++) {
+//
+//                            QueueSong item = new QueueSong();
+//
+//                            JSONObject jObj = jsonArray.getJSONObject(i);
+//
+//                            item.setTitle(jObj.getString("song_title"));
+//                            item.setUpVotes(jObj.getInt("up_votes"));
+//                            item.setDownVotes(jObj.getInt("down_votes"));
+//                            item.setId(jObj.getString("song_id"));
+//                            item.setUser(jObj.getString("user_name"));
+//                            item.setPlace(jObj.getInt("id"));
+//                            //hubSingleton.add(item);
+//                        }
+//
+//                        voteBW = new BackgroundWorker(callback);
+//
+//                    } catch (JSONException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            };
 
             upButton.setOnTouchListener(new View.OnTouchListener() {
                 @Override
@@ -209,18 +209,21 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                     // don't handle event unless its ACTION_UP so "doSomething()" only runs once.
                     //if (event.getAction() != MotionEvent.ACTION_UP) return false;
 
-                    voteDownBW = new BackgroundWorker(callback);
+                    // Firebase logic
+                    String songId = "";
+                    Long currentValue = Long.parseLong(downButton.getText().toString());
+                    for (QueueSong song : videos) {
+                        if (song.getTitle().equals(videoTitle.getText().toString()))
+                            songId = song.getId();
+                        break;
+                    }
+                    DatabaseReference downRef = FirebaseDatabase.getInstance().getReference()
+                            .child("/Song Lists/" + hubSingleton.getHubName() + "/"
+                                    + songId + "/Up-votes");
+                    downRef.setValue((++currentValue).toString());
 
-                    String hub = hubSingleton.getHubId().toString();
-                    String phone = hubSingleton.getUserID();
-                    voteDownBW.execute("voteDownSong",hub,phone,String.valueOf(videoItem.getPlace()));
-                    //downButton.setClickable(false);
                     downButton.setPressed(true);
-
-                    //upButton.setClickable(true);
                     upButton.setPressed(false);
-
-                    //downButton.setEnabled(false);
                     return true;
                 }
             });
@@ -235,14 +238,12 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                                         @Override
                                         public void onClick(DialogInterface dialog, int which) {
                                             dialog.dismiss();
-                                            removeSongBW = new BackgroundWorker(callback);
-                                            String hubId = hubSingleton.getHubId().toString();
-                                            String songId = String.valueOf(videoItem.getPlace());
-                                            String phoneId = hubSingleton.getUserID();
-                                            videos.remove(videoItem);
-                                            removeSongBW.execute("removeSong", hubId, phoneId, songId);
-                                            //removeSongButton.setPressed(true);
 
+                                            // Firebase logic
+                                            DatabaseReference toRemove = FirebaseDatabase.getInstance()
+                                                    .getReference().child("/Song Lists/" + hubSingleton.getHubName()
+                                                    + "/" + videoItem.getId());
+                                            toRemove.removeValue();
                                         }
                                     })
                                     .setNegativeButton("NO", new DialogInterface.OnClickListener() {
@@ -257,8 +258,6 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
 
                         }
                     });
-                } else {
-                    //removeSongButton.setVisibility(View.GONE);
                 }
             }
 
@@ -266,7 +265,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
     }
 
     public VideoItemAdapter(Context context, ArrayList<QueueSong> videos,String caller, OnItemClickListener listener) {
-        this.mContext = context;
+        mContext = context;
         this.videos = videos;
         this.listener = listener;
         this.caller = caller;

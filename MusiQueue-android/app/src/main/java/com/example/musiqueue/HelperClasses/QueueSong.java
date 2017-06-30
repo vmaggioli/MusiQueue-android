@@ -1,4 +1,4 @@
-package com.example.musiqueue.Activities.users_only;
+package com.example.musiqueue.HelperClasses;
 
 public class QueueSong {
     private String title;
@@ -43,12 +43,6 @@ public class QueueSong {
     public void setId(String id) {this.id = id;}
     public void setUser(String user) {this.user= user;}
     public String getUser(){return this.user;}
-    public int getPlace() {
-        return place;
-    }
-    public void setPlace(int place) {
-        this.place = place;
-    }
 
     public int getState() {
         return state;

@@ -1,7 +1,6 @@
 package com.example.musiqueue.Activities.hub_admin_only;
 
 import android.app.Activity;
-import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,7 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
-import com.example.musiqueue.Activities.users_only.QueueSong;
+import com.example.musiqueue.HelperClasses.QueueSong;
 import com.example.musiqueue.HelperClasses.HubSingleton;
 import com.example.musiqueue.HelperClasses.User;
 import com.example.musiqueue.HelperClasses.VideoItem;
@@ -162,7 +161,7 @@ public class QueueActivity extends AppCompatActivity {
         // Don't need to create hub, done in CreateHub
 
         // set up listener for user list
-        DatabaseReference userListRef = FirebaseDatabase.getInstance().getReference().child("User Lists")
+        final DatabaseReference userListRef = FirebaseDatabase.getInstance().getReference().child("User Lists")
                 .child(hubSingleton.getHubName());
         userListRef.addChildEventListener(new ChildEventListener() {
             @Override
@@ -174,6 +173,7 @@ public class QueueActivity extends AppCompatActivity {
                     }
                 }
                 hubSingleton.addUser(new User(dataSnapshot.getKey(), name));
+                userAdapter.notifyDataSetChanged();
             }
 
             @Override
@@ -183,7 +183,7 @@ public class QueueActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+                // TODO
             }
 
             @Override
@@ -228,7 +228,14 @@ public class QueueActivity extends AppCompatActivity {
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                // Covered in method onVideoEnded()
+                List<QueueSong> list = hubSingleton.getEntireList();
+                for (int i = 0; i < list.size(); i++) {
+                    if (list.get(i).getId().equals(dataSnapshot.getKey())) {
+                        hubSingleton.removeAt(i);
+                        break;
+                    }
+                }
+                adapter.notifyDataSetChanged();
             }
 
             @Override
@@ -308,9 +315,6 @@ public class QueueActivity extends AppCompatActivity {
                             DatabaseReference ref = FirebaseDatabase.getInstance().getReference().child("Song Lists")
                                     .child(hubSingleton.getHubName()).child(currentlyPlaying);
                             ref.removeValue();
-
-                            hubSingleton.removeAt(0);
-                            adapter.notifyDataSetChanged();
 
                             if (hubSingleton.getEntireList().size() != 0 && mYouTubePlayer != null) {
                                 mYouTubePlayer.loadVideo(hubSingleton.getSongAt(0).getId());
@@ -407,8 +411,12 @@ public class QueueActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (QueueSong song : hubSingleton.getEntireList()) {
-                            if (song.getId().equals(songRef.getKey()))
-                                song.setUpVotes(Long.parseLong(dataSnapshot.getValue().toString()));
+                            if (song.getId().equals(songRef.getKey())) {
+                                if (dataSnapshot.getValue() != null)
+                                    song.setUpVotes(Long.parseLong(dataSnapshot.getValue().toString()));
+                                else
+                                    song.setUpVotes(0);
+                            }
                         }
                         adapter.notifyDataSetChanged();
                     }
@@ -422,8 +430,12 @@ public class QueueActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (QueueSong song : hubSingleton.getEntireList()) {
-                            if (song.getId().equals(songRef.getKey()))
-                                song.setDownVotes(Long.parseLong(dataSnapshot.getValue().toString()));
+                            if (song.getId().equals(songRef.getKey())) {
+                                if (dataSnapshot.getValue() != null)
+                                    song.setDownVotes(Long.parseLong(dataSnapshot.getValue().toString()));
+                                else
+                                    song.setDownVotes(0);
+                            }
                         }
                         adapter.notifyDataSetChanged();
                     }
