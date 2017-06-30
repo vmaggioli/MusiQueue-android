@@ -1,12 +1,9 @@
 package com.example.musiqueue.HelperClasses;
 
 import android.content.Context;
-import android.content.Intent;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.util.Log;
-
-import com.example.musiqueue.Activities.BackendTestActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -63,11 +60,6 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
         Vector<String> paramNames = new Vector<>();
 
         switch(type) {
-            case "test":
-                urlEnd = "backendTest.php";
-                paramNames.add("name");
-                paramNames.add("addr");
-                break;
             case "searchHub":
                 paramNames.add("hubName");
                 paramNames.add("phoneId");
@@ -87,16 +79,6 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                 paramNames.add("phoneId");
                 paramNames.add("username");
                 break;
-            case "hubSongList":
-                paramNames.add("hubId");
-                paramNames.add("phoneId");
-                break;
-            case "addSong":
-                paramNames.add("hubId");
-                paramNames.add("phoneId");
-                paramNames.add("songId");
-                paramNames.add("songTitle");
-                break;
             case "nearestHubs":
                 paramNames.add("phoneId");
                 paramNames.add("lat");
@@ -109,26 +91,6 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
                 paramNames.add("phoneId");
                 paramNames.add("networkName");
                 break;
-            case "removeSong":
-                paramNames.add("hubId");
-                paramNames.add("phoneId");
-                paramNames.add("songId");
-                break;
-            case "voteUpSong":
-            case "voteDownSong":
-                paramNames.add("hubId");
-                paramNames.add("phoneId");
-                paramNames.add("songId");
-                break;
-            case "hubUsers":
-                paramNames.add("hubId");
-                paramNames.add("phoneId");
-                break;
-            case "removeUser":
-                paramNames.add("hubId");
-                paramNames.add("phoneId");
-                paramNames.add("userId");
-
         }
 
         // setup and make the request
@@ -213,16 +175,7 @@ public class BackgroundWorker extends AsyncTask<String, Void, String> {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-
-        // TODO: remove the debug print statements from each condition
-        if (type.equals("test")) {
-            Log.d("\t\t\tresults: ", result);
-            Intent intent = new Intent(context, BackendTestActivity.class);
-            intent.putExtra("result", result);
-            context.startActivity(intent);
-        } else {
-            delegate.processFinish(result);
-        }
+        delegate.processFinish(result);
 
     }
 

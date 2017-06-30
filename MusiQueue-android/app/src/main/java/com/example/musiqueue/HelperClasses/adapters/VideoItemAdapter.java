@@ -48,17 +48,12 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
     }
 
     static class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView videoTitle;
-        public Button upButton;
-        public Button downButton;
-        public Button removeSongButton;
-        public TextView videoUser;
+        private TextView videoTitle;
+        private Button upButton;
+        private Button downButton;
+        private Button removeSongButton;
+        private TextView videoUser;
         HubSingleton hubSingleton = HubSingleton.getInstance();
-        public BackgroundWorker voteUpBW;
-        public BackgroundWorker voteDownBW;
-        public BackgroundWorker removeSongBW;
-        BackgroundWorker voteBW;
-        BackgroundWorker.AsyncResponse callback;
         LinearLayout queueItemTitleBkrnd;
         LayerDrawable base = (LayerDrawable) ContextCompat.getDrawable(mContext, R.drawable.hub_search_item);
         GradientDrawable baseColor = (GradientDrawable) base.findDrawableByLayerId(R.id.base);
@@ -68,7 +63,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
         public String caller=null;
 
 
-        public int getColor(String title){
+        private int getColor(String title){
             String hex = String.format("%06x", new BigInteger(1, title.getBytes()));
             int color = Integer.parseInt(hex.substring(1, 2), 16);
             hex = hex.substring(hex.length() - 4, hex.length());
@@ -92,7 +87,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
             else
                 queueItemTitleBkrnd = (LinearLayout) itemView.findViewById(R.id.queue_item_title_user);
         }
-        public static int manipulateColor(int color, float factor) {
+        private static int manipulateColor(int color, float factor) {
             int a = Color.alpha(color);
             int r = Math.round(Color.red(color) * factor);
             int g = Math.round(Color.green(color) * factor);
@@ -102,13 +97,9 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                     Math.min(g,255),
                     Math.min(b,255));
         }
-        public void bind(final QueueSong videoItem, final OnItemClickListener listener,String caller) {
-//            if (videoItem.getTitle().replaceAll("\\s+"," ").length() >= 25)
-//                videoTitle.setText(videoItem.getTitle().trim().substring(0, 28) + "...");
-//            else
+        private void bind(final QueueSong videoItem, final OnItemClickListener listener,String caller) {
             videoTitle.setText(videoItem.getTitle());
             videoTitle.setBackgroundColor(Color.TRANSPARENT);
-            //bkrnd.setColorFilter(getColor(videoItem.getTitle()), PorterDuff.Mode.SRC_ATOP);
             lightShape.setColor(manipulateColor(getColor(videoItem.getTitle()), 1.25f));
             main.setColor(getColor(videoItem.getTitle()));
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN)
@@ -139,39 +130,6 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
 
             }
 
-
-
-//            callback = new BackgroundWorker.AsyncResponse() {
-//                @Override
-//                public void processFinish(String result) {
-//                    try {
-//                        JSONObject json = new JSONObject(result);
-//                        Log.d("foobar", json.toString());
-//                        //hubSingleton.clearList();
-//                        JSONArray jsonArray = json.getJSONArray("result");
-//                        for (int i = 0; i < jsonArray.length(); i++) {
-//
-//                            QueueSong item = new QueueSong();
-//
-//                            JSONObject jObj = jsonArray.getJSONObject(i);
-//
-//                            item.setTitle(jObj.getString("song_title"));
-//                            item.setUpVotes(jObj.getInt("up_votes"));
-//                            item.setDownVotes(jObj.getInt("down_votes"));
-//                            item.setId(jObj.getString("song_id"));
-//                            item.setUser(jObj.getString("user_name"));
-//                            item.setPlace(jObj.getInt("id"));
-//                            //hubSingleton.add(item);
-//                        }
-//
-//                        voteBW = new BackgroundWorker(callback);
-//
-//                    } catch (JSONException e) {
-//                        e.printStackTrace();
-//                    }
-//                }
-//            };
-
             upButton.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
@@ -185,14 +143,18 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                     String songId = "";
                     Long currentValue = Long.parseLong(upButton.getText().toString());
                     for (QueueSong song : videos) {
-                        if (song.getTitle().equals(videoTitle.getText().toString()))
+                        if (song.getTitle().equals(videoTitle.getText().toString())) {
                             songId = song.getId();
-                        break;
+                            break;
+                        }
                     }
-                    DatabaseReference upRef = FirebaseDatabase.getInstance().getReference()
+                    DatabaseReference songRef = FirebaseDatabase.getInstance().getReference()
                             .child("/Song Lists/" + hubSingleton.getHubName() + "/"
-                                    + songId + "/Up-votes");
-                    upRef.setValue((++currentValue).toString());
+                                    + songId);
+                    songRef.child("Up-votes").setValue(++currentValue);
+                    // set score value
+                    FirebaseDatabase.getInstance().getReference().child("/Song Scores/" + hubSingleton.getHubName()
+                        + "/" + songId).setValue(currentValue - Long.parseLong(downButton.getText().toString()));
 
                     upButton.setPressed(true);
                     downButton.setPressed(false);
@@ -213,14 +175,19 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                     String songId = "";
                     Long currentValue = Long.parseLong(downButton.getText().toString());
                     for (QueueSong song : videos) {
-                        if (song.getTitle().equals(videoTitle.getText().toString()))
+                        if (song.getTitle().equals(videoTitle.getText().toString())) {
                             songId = song.getId();
-                        break;
+                            break;
+                        }
                     }
                     DatabaseReference downRef = FirebaseDatabase.getInstance().getReference()
                             .child("/Song Lists/" + hubSingleton.getHubName() + "/"
                                     + songId + "/Up-votes");
                     downRef.setValue((++currentValue).toString());
+
+                    // set score value
+                    FirebaseDatabase.getInstance().getReference().child("/Song Scores/" + hubSingleton.getHubName()
+                            + "/" + songId).setValue(Long.parseLong(upButton.getText().toString()) - currentValue);
 
                     downButton.setPressed(true);
                     upButton.setPressed(false);
@@ -282,8 +249,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
         } else {
             hubsListItemView = lf.inflate(R.layout.queue_item, parent, false);
         }
-        ViewHolder vh = new ViewHolder(hubsListItemView);
-        return vh;
+        return new ViewHolder(hubsListItemView);
     }
 
     @Override

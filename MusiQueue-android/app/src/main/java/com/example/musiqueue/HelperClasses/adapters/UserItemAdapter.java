@@ -12,6 +12,8 @@ import com.example.musiqueue.HelperClasses.BackgroundWorker;
 import com.example.musiqueue.HelperClasses.HubSingleton;
 import com.example.musiqueue.HelperClasses.User;
 import com.example.musiqueue.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -24,9 +26,6 @@ public class UserItemAdapter extends RecyclerView.Adapter<UserItemAdapter.ViewHo
     private static Context mContext;
     private UserItemAdapter.OnItemClickListener listener;
     ArrayList<User> users = null;
-    HubSingleton hubSingleton = HubSingleton.getInstance();
-
-
 
     public interface OnItemClickListener {
         void onItemClick(User user);
@@ -35,8 +34,6 @@ public class UserItemAdapter extends RecyclerView.Adapter<UserItemAdapter.ViewHo
     static class ViewHolder extends RecyclerView.ViewHolder {
         public TextView user;
         public Button removeUser;
-        BackgroundWorker.AsyncResponse callback;
-        BackgroundWorker rmUser;
 
 
 
@@ -54,35 +51,9 @@ public class UserItemAdapter extends RecyclerView.Adapter<UserItemAdapter.ViewHo
 
             removeUser.setOnClickListener(new View.OnClickListener() {
                 public void onClick(View v) {
-                    callback = new BackgroundWorker.AsyncResponse() {
-                        @Override
-                        public void processFinish(String result) {
-                            try {
-                                JSONObject json = new JSONObject(result);
-                                JSONObject jsonArray = json.getJSONObject("result");
-                                JSONArray users = jsonArray.getJSONArray("users");
-
-                                hubSingleton.clearUsers();
-
-                                User user;
-                                for(int i = 0; i < users.length();i++){
-                                    user = new User();
-                                    JSONObject name = users.getJSONObject(i);
-                                    user.setName(name.getString("name"));
-                                    user.setId(name.getString("id"));
-
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    };
-                    rmUser = new BackgroundWorker(callback);
-
-                    //TODO mlast 2 params may be swapped/wrong
-                    if(!hubSingleton.getUsername().equals(name.getName())) {
-                        rmUser.execute("removeUser", hubSingleton.getHubId().toString(), hubSingleton.getUserID(), name.getId());
-                    }
+                    DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("User Lists")
+                            .child(hubSingleton.getHubName()).child(hubSingleton.getUserID());
+                    userRef.removeValue();
                 }
             });
         }
@@ -90,7 +61,7 @@ public class UserItemAdapter extends RecyclerView.Adapter<UserItemAdapter.ViewHo
     }
 
     public UserItemAdapter(Context context, ArrayList<User> users, OnItemClickListener listener) {
-        this.mContext = context;
+        mContext = context;
         this.listener = listener;
         this.users = users;
         System.out.println(users);
@@ -103,8 +74,7 @@ public class UserItemAdapter extends RecyclerView.Adapter<UserItemAdapter.ViewHo
         LayoutInflater lf = LayoutInflater.from(context);
         View usersListItemView;
         usersListItemView = lf.inflate(R.layout.user_item, parent, false);
-        ViewHolder vh = new UserItemAdapter.ViewHolder(usersListItemView);
-        return vh;
+        return new UserItemAdapter.ViewHolder(usersListItemView);
     }
 
     @Override

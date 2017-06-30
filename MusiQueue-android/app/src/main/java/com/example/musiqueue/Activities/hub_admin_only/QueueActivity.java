@@ -34,6 +34,7 @@ import com.example.musiqueue.R;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerFragment;
+import com.google.api.client.util.Data;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -43,22 +44,21 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class QueueActivity extends AppCompatActivity {
     final public String API_KEY = "AIzaSyDtCJTBSLt9M1Xi_EBr49Uk4W8q4HhFHPU";
     private YouTubePlayer mYouTubePlayer = null;
 
-    EditText searchEdit;
-    Button searchButton;
-
-    RecyclerView songListView;
-    RecyclerView userListView;
-    HubSingleton hubSingleton;
-    VideoItemAdapter adapter;
-    UserItemAdapter userAdapter;
-    String currentlyPlaying;
-    ToggleButton viewButton;
+    private EditText searchEdit;
+    private RecyclerView songListView;
+    private RecyclerView userListView;
+    private HubSingleton hubSingleton;
+    private VideoItemAdapter adapter;
+    private UserItemAdapter userAdapter;
+    private String currentlyPlaying;
+    private ToggleButton viewButton;
     private List<VideoItem> searchResults;
     private ListView videosFound;
     private Handler handler;
@@ -88,7 +88,6 @@ public class QueueActivity extends AppCompatActivity {
         setContentView(R.layout.activity_queue);
         currentlyPlaying = "";
         searchEdit = (EditText) findViewById(R.id.search_edit);
-        searchButton = (Button) findViewById(R.id.search_button);
         videosFound = (ListView)findViewById(R.id.videos_found);
         viewButton = (ToggleButton) findViewById(R.id.q_view);
 
@@ -168,7 +167,7 @@ public class QueueActivity extends AppCompatActivity {
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 String name = "";
                 for (DataSnapshot child : dataSnapshot.getChildren()) {
-                    if (child.getKey().equals("User Name")) {
+                    if (child.getKey().equals("User Name") && child.getValue() != null) {
                         name = child.getValue().toString();
                     }
                 }
@@ -197,26 +196,27 @@ public class QueueActivity extends AppCompatActivity {
             }
         });
 
-        // Create song list
-        DatabaseReference songListRef = FirebaseDatabase.getInstance().getReference().child("Song Lists")
+        // Set up listener for song list
+        final DatabaseReference songListRef = FirebaseDatabase.getInstance().getReference().child("Song Lists")
                 .child(hubSingleton.getHubName());
         // This listener is to update the view when a song is added/removed
         songListRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
                 String title = "";
-                long upVotes = 0;
-                long downVotes = 0;
+                int upVotes = 0;
+                int downVotes = 0;
                 String id = dataSnapshot.getKey();
                 for (DataSnapshot snap : dataSnapshot.getChildren()) {
                     if (snap.getKey().equals("Title") && snap.getValue() != null)
                         title = snap.getValue().toString();
                     else if (snap.getKey().equals("Up-votes") && snap.getValue() != null)
-                        upVotes = Long.parseLong(snap.getValue().toString());
+                        upVotes = Integer.parseInt(snap.getValue().toString());
                     else if (snap.getKey().equals("Down-votes") && snap.getValue() != null)
-                        downVotes = Long.parseLong(snap.getValue().toString());
+                        downVotes = Integer.parseInt(snap.getValue().toString());
                 }
-                hubSingleton.add(new QueueSong(id, title, hubSingleton.getUsername(), upVotes, downVotes));
+                hubSingleton.add(new QueueSong(id, title, hubSingleton.getUsername(), upVotes, downVotes, 0));
+                songListRef.orderByValue();
                 adapter.notifyDataSetChanged();
                 queueIfNothingPlaying(id);
             }
@@ -240,7 +240,11 @@ public class QueueActivity extends AppCompatActivity {
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-
+                List<DataSnapshot> children = new ArrayList<>();
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    children.add(child);
+                }
+                reorderQueue(children);
             }
 
             @Override
@@ -400,24 +404,35 @@ public class QueueActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long ident) {
                 // Firebase logic
                 // Adds song to child of proper song list
-                final DatabaseReference songRef = FirebaseDatabase.getInstance().getReference().child("Song Lists")
-                        .child(hubSingleton.getHubName()).child(searchResults.get(position).getId());
+                final DatabaseReference songListRef = FirebaseDatabase.getInstance().getReference().child("Song Lists");
+                final DatabaseReference songRef = songListRef.child(hubSingleton.getHubName())
+                        .child(searchResults.get(position).getId());
                 songRef.child("Title").setValue(searchResults.get(position).getTitle());
+                songRef.child("User").setValue(hubSingleton.getUsername());
                 songRef.child("Up-votes").setValue(0);
                 songRef.child("Down-votes").setValue(0);
+                FirebaseDatabase.getInstance().getReference().child("/Song Scores/"
+                        + hubSingleton.getHubName() + "/" + songRef.getKey()).setValue(0);
                 // TODO: add time added and playing variables
 
                 songRef.child("Up-votes").addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
+                        // find song in Firebase and update vote count
                         for (QueueSong song : hubSingleton.getEntireList()) {
                             if (song.getId().equals(songRef.getKey())) {
-                                if (dataSnapshot.getValue() != null)
+                                if (dataSnapshot.getValue() != null) {
                                     song.setUpVotes(Long.parseLong(dataSnapshot.getValue().toString()));
+                                    songRef.setValue(song.getUpVotes() - song.getDownVotes());
+                                }
                                 else
                                     song.setUpVotes(0);
+                                break;
                             }
                         }
+                        // Reorder
+                        if (hubSingleton.getQueueSize() > 2)
+                            // TODO: reorder by score
                         adapter.notifyDataSetChanged();
                     }
 
@@ -431,12 +446,18 @@ public class QueueActivity extends AppCompatActivity {
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (QueueSong song : hubSingleton.getEntireList()) {
                             if (song.getId().equals(songRef.getKey())) {
-                                if (dataSnapshot.getValue() != null)
+                                if (dataSnapshot.getValue() != null) {
                                     song.setDownVotes(Long.parseLong(dataSnapshot.getValue().toString()));
+                                    songRef.setValue(song.getUpVotes() - song.getDownVotes());
+                                }
                                 else
                                     song.setDownVotes(0);
+                                break;
                             }
                         }
+                        // Reorder
+                        if (hubSingleton.getQueueSize() > 2)
+                           // TODO: reorder by score
                         adapter.notifyDataSetChanged();
                     }
 
@@ -452,6 +473,43 @@ public class QueueActivity extends AppCompatActivity {
             }
 
         });
+    }
+
+    private void reorderQueue(List<DataSnapshot> songs) {
+        if (songs.size() < 3)
+            return;
+        // Reorder based on voting scores
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
+                .child("/Song Lists/" + hubSingleton.getHubName());
+        ref.limitToLast(songs.size() - 1).orderByValue();
+        // Removing entire list in hub singleton and rewriting in new order based on Firebase
+        // Outer loop snapshots are of each song, inner loop is details of each song
+        List<QueueSong> oldList = new ArrayList<>(hubSingleton.getEntireList());
+        hubSingleton.clearList();
+        for (DataSnapshot song : songs) {
+            String id = song.getKey();
+            String title = "";
+            String user = "";
+            int upVotes = 0;
+            int downVotes = 0;
+            int state = 0;
+            for (DataSnapshot detail : song.getChildren()) {
+                if (detail.getKey().equals("Title") && detail.getValue() != null)
+                    title = detail.getValue().toString();
+                else if (detail.getKey().equals("User") && detail.getValue() != null)
+                    user = detail.getValue().toString();
+                else if (detail.getKey().equals("Up-votes") && detail.getValue() != null)
+                    upVotes = Integer.parseInt(detail.getValue().toString());
+                else if (detail.getKey().equals("Down-votes") && detail.getValue() != null)
+                    downVotes = Integer.parseInt(detail.getValue().toString());
+            }
+            // find state in old list, can't keep track of in back end since state is unique per person
+            for (QueueSong oldSong : oldList) {
+                if (oldSong.getId().equals(id))
+                    state = oldSong.getState();
+            }
+            hubSingleton.add(new QueueSong(id, title, user, upVotes, downVotes, state));
+        }
     }
 
     public void queueIfNothingPlaying(String video_id) {

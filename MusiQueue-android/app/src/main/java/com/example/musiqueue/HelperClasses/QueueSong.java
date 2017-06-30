@@ -6,19 +6,19 @@ public class QueueSong {
     private long downVotes=0;
     private String id;
     private String user;
-    private int place;
     private int state;
 
     public QueueSong() {
 
     }
 
-    public QueueSong(String id, String title, String user, long upVotes, long downVotes) {
+    public QueueSong(String id, String title, String user, long upVotes, long downVotes, int state) {
         this.id = id;
         this.title = title;
         this.user = user;
         this.upVotes = upVotes;
         this.downVotes = downVotes;
+        this.state = state;
     }
 
     public String getTitle() {

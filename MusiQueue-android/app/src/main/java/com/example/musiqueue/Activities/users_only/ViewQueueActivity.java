@@ -3,7 +3,6 @@ package com.example.musiqueue.Activities.users_only;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -11,9 +10,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.example.musiqueue.Activities.SearchActivity;
-import com.example.musiqueue.HelperClasses.BackgroundWorker;
 import com.example.musiqueue.HelperClasses.HubSingleton;
-import com.example.musiqueue.HelperClasses.PollData;
 import com.example.musiqueue.HelperClasses.QueueSong;
 import com.example.musiqueue.HelperClasses.UpdateResultReceiver;
 import com.example.musiqueue.HelperClasses.User;
@@ -33,15 +30,9 @@ public class ViewQueueActivity extends AppCompatActivity implements UpdateResult
     String flag = "User";
     HubSingleton hubSingleton;
     RecyclerView songListView;
-    BackgroundWorker addBW;
-    BackgroundWorker listBW;
-    BackgroundWorker.AsyncResponse callback;
     VideoItemAdapter adapter;
     UpdateResultReceiver receiver;
 
-
-    String title;
-    String id;
     @Override
     public void onBackPressed() {
     }
@@ -68,61 +59,7 @@ public class ViewQueueActivity extends AppCompatActivity implements UpdateResult
 
         songListView.addItemDecoration(new HorizontalDividerItemDecoration.Builder(this).color(Color.LTGRAY).sizeResId(R.dimen.divider).marginResId(R.dimen.margin5dp, R.dimen.margin5dp).build());
 
-//        callback = new BackgroundWorker.AsyncResponse() {
-//
-//            @Override
-//            public void processFinish(String result) {
-//                try {
-//                    hubSingleton.clearList();
-//                    JSONObject json = new JSONObject(result);
-//                    JSONObject jsonArray = json.getJSONObject("result");
-//                    JSONArray songs = jsonArray.getJSONArray("songs");
-//                    JSONArray users = jsonArray.getJSONArray("users");
-//                    for (int i = 0; i < songs.length(); i++) {
-//                        QueueSong item = new QueueSong();
-//                        JSONObject jObj = songs.getJSONObject(i);
-//
-//                        item.setTitle(jObj.getString("song_title"));
-//                        item.setUpVotes(jObj.getInt("up_votes"));
-//                        item.setDownVotes(jObj.getInt("down_votes"));
-//                        item.setId(jObj.getString("song_id"));
-//                        item.setUser(jObj.getString("user_name"));
-//                        item.setPlace(jObj.getInt("id"));
-//                        item.setState(jObj.getInt("voted"));
-//
-//                        hubSingleton.add(item);
-//                    }
-//                    hubSingleton.clearUsers();
-//                    User user;
-//                    for(int i = 0; i < users.length();i++){
-//                        user = new User();
-//                        JSONObject name = users.getJSONObject(i);
-//                        user.setName(name.getString("name"));
-//                        user.setId(name.getString("id"));
-//                        hubSingleton.addUser(user);
-//
-//                    }
-//                    adapter.notifyDataSetChanged();
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//
-//        };
-//        addBW = new BackgroundWorker(callback);
-//        listBW = new BackgroundWorker(callback);
-//
-//        Intent intent = getIntent();
-//        if(intent.hasExtra("title")) {
-//            title = intent.getStringExtra("title");
-//            id = intent.getStringExtra("id");
-//
-//            addBW.execute("addSong", hubSingleton.getHubId().toString(), hubSingleton.getUserID(), id, title);
-//        }
-//        listBW.execute("hubSongList", hubSingleton.getHubId().toString(), hubSingleton.getUserID());
-
         initFirebase();
-        updateView();
     }
 
     private void initFirebase() {
@@ -175,19 +112,8 @@ public class ViewQueueActivity extends AppCompatActivity implements UpdateResult
 
             }
             adapter.notifyDataSetChanged();
-            updateView();
         } catch (JSONException e) {
             e.printStackTrace();
         }
-    }
-
-    public void updateView() {
-        System.out.println("Update my view please");
-        receiver = new UpdateResultReceiver(new Handler());
-        receiver.setReceiver(this);
-
-        Intent intent = new Intent(this, PollData.class);
-        intent.putExtra("receiver", receiver);
-        startService(intent);
     }
 }

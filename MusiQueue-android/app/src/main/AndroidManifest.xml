@@ -59,9 +59,6 @@
         <activity android:name=".Activities.users_only.ViewQueueActivity"
             android:screenOrientation="portrait"
             />
-        <activity android:name=".Activities.BackendTestActivity"
-            android:screenOrientation="portrait"
-            />
         <activity android:name=".Activities.SearchActivity"
             android:screenOrientation="portrait">
         </activity>
@@ -73,8 +70,6 @@
             />
 
         <activity android:name=".Activities.ClientSideCom" />
-
-        <service android:name=".HelperClasses.PollData" ></service>
 
     </application>
 
