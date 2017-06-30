@@ -180,14 +180,6 @@ public class QueueActivity extends AppCompatActivity {
 
     public void initFirebase() {
         // Don't need to create hub, done in CreateHub
-        // Add user to user list for this hub
-        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("User Lists")
-                .child(hubSingleton.getHubName()).child(hubSingleton.getUserID());
-        DatabaseReference userSubRef = userRef.child("User Name");
-        userSubRef.setValue(hubSingleton.getUsername());
-        userSubRef = userRef.child("ID");
-        userSubRef.setValue(hubSingleton.getUserID());
-        // TODO add more fields
 
         // set up listener for user list
         DatabaseReference userListRef = FirebaseDatabase.getInstance().getReference().child("User Lists")
@@ -195,22 +187,28 @@ public class QueueActivity extends AppCompatActivity {
         userListRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                updateUserList(dataSnapshot);
+                String name = "";
+                for (DataSnapshot child : dataSnapshot.getChildren()) {
+                    if (child.getKey().equals("User Name")) {
+                        name = child.getValue().toString();
+                    }
+                }
+                hubSingleton.addUser(new User(dataSnapshot.getKey(), name));
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                updateUserList(dataSnapshot);
+
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-                updateUserList(dataSnapshot);
+
             }
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                updateUserList(dataSnapshot);
+
             }
 
             @Override
@@ -226,22 +224,36 @@ public class QueueActivity extends AppCompatActivity {
         songListRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(DataSnapshot dataSnapshot, String s) {
-                addToQueue(dataSnapshot);
+                String title = "";
+                long upVotes = 0;
+                long downVotes = 0;
+                String id = dataSnapshot.getKey();
+                for (DataSnapshot snap : dataSnapshot.getChildren()) {
+                    if (snap.getKey().equals("Title") && snap.getValue() != null)
+                        title = snap.getValue().toString();
+                    else if (snap.getKey().equals("Up-votes") && snap.getValue() != null)
+                        upVotes = Long.parseLong(snap.getValue().toString());
+                    else if (snap.getKey().equals("Down-votes") && snap.getValue() != null)
+                        downVotes = Long.parseLong(snap.getValue().toString());
+                }
+                hubSingleton.add(new QueueSong(id, title, hubSingleton.getUsername(), upVotes, downVotes));
+                adapter.notifyDataSetChanged();
+                queueIfNothingPlaying(id);
             }
 
             @Override
             public void onChildChanged(DataSnapshot dataSnapshot, String s) {
-                modifyQueue(dataSnapshot);
+
             }
 
             @Override
             public void onChildRemoved(DataSnapshot dataSnapshot) {
-
+                // Covered in method onVideoEnded()
             }
 
             @Override
             public void onChildMoved(DataSnapshot dataSnapshot, String s) {
-                switchQueue(dataSnapshot);
+
             }
 
             @Override
@@ -251,38 +263,24 @@ public class QueueActivity extends AppCompatActivity {
         });
     }
 
-    private void updateUserList(DataSnapshot snapshot) {
-        hubSingleton.clearUsers();
-        for (DataSnapshot ds : snapshot.getChildren()) {
-            hubSingleton.addUser(new User((String) ds.getValue(), (String) ds.child("ID").getValue()));
-        }
-        userAdapter.notifyDataSetChanged();
+    // adding user in onStart because it always executes after onStop()
+    @Override
+    protected void onStart() {
+        // Add user to user list for this hub
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("User Lists")
+                .child(hubSingleton.getHubName()).child(hubSingleton.getUserID());
+        DatabaseReference userSubRef = userRef.child("User Name");
+        userSubRef.setValue(hubSingleton.getUsername());
+        // TODO add more fields
+        super.onStart();
     }
 
-    private void addToQueue(DataSnapshot snapshot) {
-        String title = "";
-        long upVotes = 0;
-        long downVotes = 0;
-        String id = snapshot.getKey();
-        for (DataSnapshot snap : snapshot.getChildren()) {
-            if (snap.getKey().equals("Title") && snap.getValue() != null)
-                title = snap.getValue().toString();
-            else if (snap.getKey().equals("Up-votes") && snap.getValue() != null)
-                upVotes = Long.parseLong(snap.getValue().toString());
-            else if (snap.getKey().equals("Down-votes") && snap.getValue() != null)
-                downVotes = Long.parseLong(snap.getValue().toString());
-        }
-        hubSingleton.add(new QueueSong(id, title, hubSingleton.getUsername(), upVotes, downVotes));
-        adapter.notifyDataSetChanged();
-        queueIfNothingPlaying(id);
-    }
-
-    private void modifyQueue(DataSnapshot snapshot) {
-
-    }
-
-    private void switchQueue(DataSnapshot snapshot) {
-
+    @Override
+    protected void onStop() {
+        DatabaseReference userRef = FirebaseDatabase.getInstance().getReference().child("User Lists")
+                .child(hubSingleton.getHubName()).child(hubSingleton.getUserID());
+        userRef.removeValue();
+        super.onStop();
     }
 
     public void initPlayer() {
@@ -385,6 +383,9 @@ public class QueueActivity extends AppCompatActivity {
             }
         }.start();
     }
+
+
+
     private void updateVideosFound(){
         ArrayAdapter<VideoItem> adapter = new ArrayAdapter<VideoItem>(getApplicationContext(), R.layout.video_item, searchResults){
             @Override

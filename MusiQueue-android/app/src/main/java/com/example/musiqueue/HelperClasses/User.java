@@ -4,9 +4,9 @@ public class User {
     public String id;
     public String name;
 
-    public User(String name, String id) {
-        this.name = name;
+    public User(String id, String name) {
         this.id = id;
+        this.name = name;
     }
 
     public User() { }
