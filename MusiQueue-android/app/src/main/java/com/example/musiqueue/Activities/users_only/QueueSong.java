@@ -30,13 +30,13 @@ public class QueueSong {
     public long getUpVotes() {
         return this.upVotes;
     }
-    public void setUpVotes(int upVotes) {
+    public void setUpVotes(long upVotes) {
         this.upVotes = upVotes;
     }
     public long getDownVotes() {
         return this.downVotes;
     }
-    public void setDownVotes(int downVotes) {
+    public void setDownVotes(long downVotes) {
         this.downVotes = downVotes;
     }
     public String getId() {return this.id;}

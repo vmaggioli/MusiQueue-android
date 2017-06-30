@@ -25,10 +25,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.example.musiqueue.Activities.users_only.QueueSong;
-import com.example.musiqueue.HelperClasses.BackgroundWorker;
 import com.example.musiqueue.HelperClasses.HubSingleton;
-import com.example.musiqueue.HelperClasses.PollData;
-import com.example.musiqueue.HelperClasses.UpdateResultReceiver;
 import com.example.musiqueue.HelperClasses.User;
 import com.example.musiqueue.HelperClasses.VideoItem;
 import com.example.musiqueue.HelperClasses.YoutubeConnector;
@@ -47,11 +44,6 @@ import com.google.firebase.database.ValueEventListener;
 import com.squareup.picasso.Picasso;
 import com.yqritc.recyclerviewflexibledivider.HorizontalDividerItemDecoration;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.util.ArrayList;
 import java.util.List;
 
 public class QueueActivity extends AppCompatActivity {
@@ -71,18 +63,6 @@ public class QueueActivity extends AppCompatActivity {
     private List<VideoItem> searchResults;
     private ListView videosFound;
     private Handler handler;
-    private ValueEventListener voteListener = new ValueEventListener() {
-        @Override
-        public void onDataChange(DataSnapshot dataSnapshot) {
-            // TODO
-        }
-
-        @Override
-        public void onCancelled(DatabaseError databaseError) {
-            // TODO
-        }
-    };
-
 
     @Override
     public void onBackPressed() {
@@ -416,15 +396,43 @@ public class QueueActivity extends AppCompatActivity {
             public void onItemClick(AdapterView<?> parent, View view, int position, long ident) {
                 // Firebase logic
                 // Adds song to child of proper song list
-                DatabaseReference songRef = FirebaseDatabase.getInstance().getReference().child("Song Lists")
+                final DatabaseReference songRef = FirebaseDatabase.getInstance().getReference().child("Song Lists")
                         .child(hubSingleton.getHubName()).child(searchResults.get(position).getId());
                 songRef.child("Title").setValue(searchResults.get(position).getTitle());
                 songRef.child("Up-votes").setValue(0);
                 songRef.child("Down-votes").setValue(0);
                 // TODO: add time added and playing variables
 
-                songRef.child("Up-votes").addValueEventListener(voteListener);
-                songRef.child("Down-votes").addValueEventListener(voteListener);
+                songRef.child("Up-votes").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (QueueSong song : hubSingleton.getEntireList()) {
+                            if (song.getId().equals(songRef.getKey()))
+                                song.setUpVotes(Long.parseLong(dataSnapshot.getValue().toString()));
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+                songRef.child("Down-votes").addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (QueueSong song : hubSingleton.getEntireList()) {
+                            if (song.getId().equals(songRef.getKey()))
+                                song.setDownVotes(Long.parseLong(dataSnapshot.getValue().toString()));
+                        }
+                        adapter.notifyDataSetChanged();
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
 
                 videosFound.setVisibility(View.GONE);
                 songListView.setVisibility(View.VISIBLE);

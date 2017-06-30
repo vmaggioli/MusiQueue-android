@@ -23,6 +23,8 @@ import com.example.musiqueue.Activities.users_only.QueueSong;
 import com.example.musiqueue.HelperClasses.BackgroundWorker;
 import com.example.musiqueue.HelperClasses.HubSingleton;
 import com.example.musiqueue.R;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -118,7 +120,7 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
             upButton.setText(Long.toString(videoItem.getUpVotes()));
             downButton.setText(Long.toString(videoItem.getDownVotes()));
             if(caller.equals("owner")) {
-                System.out.println("OWNDER IS IN HUB");
+                System.out.println("OWNER IS IN HUB");
                 removeSongButton.setBackgroundResource(R.drawable.ic_remove_circle_black_24dp);
             }
             if(videoItem.getState() == 0) {
@@ -179,33 +181,25 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                     // don't handle event unless its ACTION_UP so "doSomething()" only runs once.
                     if (event.getAction() != MotionEvent.ACTION_UP) return false;
 
-                    voteUpBW = new BackgroundWorker(callback);
+                    // Firebase logic
+                    String songId = "";
+                    Long currentValue = Long.parseLong(upButton.getText().toString());
+                    for (QueueSong song : videos) {
+                        if (song.getTitle().equals(videoTitle.getText().toString()))
+                            songId = song.getId();
+                        break;
+                    }
+                    DatabaseReference upRef = FirebaseDatabase.getInstance().getReference()
+                            .child("/Song Lists/" + hubSingleton.getHubName() + "/"
+                                    + songId + "/Up-votes");
+                    upRef.setValue((++currentValue).toString());
 
-                    String hub = hubSingleton.getHubId().toString();
-                    String phone = hubSingleton.getUserID();
-                    voteUpBW.execute("voteUpSong",hub,phone,String.valueOf(videoItem.getPlace()));
-                    //upButton.setClickable(false);
                     upButton.setPressed(true);
-
-
-                    //downButton.setClickable(true);
                     downButton.setPressed(false);
-
-                    //upButton.setEnabled(false);
                     return true;
                 }
             });
-            /*downButton.setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
 
-                    String hub = hubSingleton.getHubId().toString();
-                    String phone = hubSingleton.getUserID();
-                    voteBW.execute("voteDownSong",hub,phone,String.valueOf(videoItem.getPlace()));
-                    downButton.setPressed(true);
-                    upButton.setPressed(false);
-
-                }
-            });*/
             downButton.setOnTouchListener(new View.OnTouchListener() {
                 public boolean onTouch(View v, MotionEvent event) {
 
