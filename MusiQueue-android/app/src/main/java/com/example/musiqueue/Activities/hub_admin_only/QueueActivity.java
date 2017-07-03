@@ -206,6 +206,7 @@ public class QueueActivity extends AppCompatActivity {
                 String title = "";
                 int upVotes = 0;
                 int downVotes = 0;
+                int score = 0;
                 String id = dataSnapshot.getKey();
                 for (DataSnapshot snap : dataSnapshot.getChildren()) {
                     if (snap.getKey().equals("Title") && snap.getValue() != null)
@@ -214,9 +215,18 @@ public class QueueActivity extends AppCompatActivity {
                         upVotes = Integer.parseInt(snap.getValue().toString());
                     else if (snap.getKey().equals("Down-votes") && snap.getValue() != null)
                         downVotes = Integer.parseInt(snap.getValue().toString());
+                    else if (snap.getKey().equals("Score") && snap.getValue() != null)
+                        score = Integer.parseInt(snap.getValue().toString());
                 }
-                hubSingleton.add(new QueueSong(id, title, hubSingleton.getUsername(), upVotes, downVotes, 0));
-                songListRef.orderByValue();
+                hubSingleton.add(new QueueSong(id, title, hubSingleton.getUsername(), upVotes,
+                        downVotes, 0, score));
+                songListRef.orderByChild("Score");
+
+                List<DataSnapshot> children = new ArrayList<>();
+                for (DataSnapshot child : dataSnapshot.getChildren())
+                    children.add(child);
+                reorderQueue(children);
+
                 adapter.notifyDataSetChanged();
                 queueIfNothingPlaying(id);
             }
@@ -245,6 +255,34 @@ public class QueueActivity extends AppCompatActivity {
                     children.add(child);
                 }
                 reorderQueue(children);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        FirebaseDatabase.getInstance().getReference().child("Song Scores").child(hubSingleton
+                .getHubName()).addChildEventListener(new ChildEventListener() {
+            @Override
+            public void onChildAdded(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildChanged(DataSnapshot dataSnapshot, String s) {
+
+            }
+
+            @Override
+            public void onChildRemoved(DataSnapshot dataSnapshot) {
+
+            }
+
+            @Override
+            public void onChildMoved(DataSnapshot dataSnapshot, String s) {
+
             }
 
             @Override
@@ -405,14 +443,12 @@ public class QueueActivity extends AppCompatActivity {
                 // Firebase logic
                 // Adds song to child of proper song list
                 final DatabaseReference songListRef = FirebaseDatabase.getInstance().getReference().child("Song Lists");
-                final DatabaseReference songRef = songListRef.child(hubSingleton.getHubName())
-                        .child(searchResults.get(position).getId());
+                final DatabaseReference songRef = songListRef.child(hubSingleton.getHubName()
+                        + "/" + searchResults.get(position).getId());
                 songRef.child("Title").setValue(searchResults.get(position).getTitle());
                 songRef.child("User").setValue(hubSingleton.getUsername());
                 songRef.child("Up-votes").setValue(0);
                 songRef.child("Down-votes").setValue(0);
-                FirebaseDatabase.getInstance().getReference().child("/Song Scores/"
-                        + hubSingleton.getHubName() + "/" + songRef.getKey()).setValue(0);
                 // TODO: add time added and playing variables
 
                 songRef.child("Up-votes").addValueEventListener(new ValueEventListener() {
@@ -421,18 +457,17 @@ public class QueueActivity extends AppCompatActivity {
                         // find song in Firebase and update vote count
                         for (QueueSong song : hubSingleton.getEntireList()) {
                             if (song.getId().equals(songRef.getKey())) {
-                                if (dataSnapshot.getValue() != null) {
+                                if (dataSnapshot.getValue() != null)
                                     song.setUpVotes(Long.parseLong(dataSnapshot.getValue().toString()));
-                                    songRef.setValue(song.getUpVotes() - song.getDownVotes());
-                                }
-                                else
-                                    song.setUpVotes(0);
+                                FirebaseDatabase.getInstance().getReference().child("Song Scores")
+                                        .child(hubSingleton.getHubName()).child(song.getId())
+                                        .setValue(song.getUpVotes() - song.getDownVotes());
                                 break;
                             }
                         }
-                        // Reorder
-                        if (hubSingleton.getQueueSize() > 2)
-                            // TODO: reorder by score
+                        //songListRef.orderByValue("Score");
+                        FirebaseDatabase.getInstance().getReference().child("Song Scores")
+                                .child(hubSingleton.getHubName()).orderByValue();
                         adapter.notifyDataSetChanged();
                     }
 
@@ -448,16 +483,16 @@ public class QueueActivity extends AppCompatActivity {
                             if (song.getId().equals(songRef.getKey())) {
                                 if (dataSnapshot.getValue() != null) {
                                     song.setDownVotes(Long.parseLong(dataSnapshot.getValue().toString()));
-                                    songRef.setValue(song.getUpVotes() - song.getDownVotes());
                                 }
-                                else
-                                    song.setDownVotes(0);
+                                FirebaseDatabase.getInstance().getReference().child("Song Scores")
+                                        .child(hubSingleton.getHubName()).child(song.getId())
+                                        .setValue(song.getUpVotes() - song.getDownVotes());
                                 break;
                             }
                         }
-                        // Reorder
-                        if (hubSingleton.getQueueSize() > 2)
-                           // TODO: reorder by score
+                        //songListRef.orderByValue("Score");
+                        FirebaseDatabase.getInstance().getReference().child("Song Scores")
+                                .child(hubSingleton.getHubName()).orderByValue();
                         adapter.notifyDataSetChanged();
                     }
 
@@ -466,6 +501,9 @@ public class QueueActivity extends AppCompatActivity {
 
                     }
                 });
+
+                FirebaseDatabase.getInstance().getReference().child("/Song Scores/"
+                        + hubSingleton.getHubName() + "/" + songRef.getKey()).setValue(0);
 
                 videosFound.setVisibility(View.GONE);
                 songListView.setVisibility(View.VISIBLE);
@@ -478,6 +516,14 @@ public class QueueActivity extends AppCompatActivity {
     private void reorderQueue(List<DataSnapshot> songs) {
         if (songs.size() < 3)
             return;
+
+        // Testing implementation only for song scores
+        DatabaseReference listRef = FirebaseDatabase.getInstance().getReference()
+                .child("/Song Scores/" + hubSingleton.getHubName());
+        listRef.limitToLast(songs.size() - 1).orderByValue();
+        listRef.orderByValue();
+
+
         // Reorder based on voting scores
         DatabaseReference ref = FirebaseDatabase.getInstance().getReference()
                 .child("/Song Lists/" + hubSingleton.getHubName());
@@ -508,8 +554,9 @@ public class QueueActivity extends AppCompatActivity {
                 if (oldSong.getId().equals(id))
                     state = oldSong.getState();
             }
-            hubSingleton.add(new QueueSong(id, title, user, upVotes, downVotes, state));
+            hubSingleton.add(new QueueSong(id, title, user, upVotes, downVotes, state, upVotes - downVotes));
         }
+        adapter.notifyDataSetChanged();
     }
 
     public void queueIfNothingPlaying(String video_id) {

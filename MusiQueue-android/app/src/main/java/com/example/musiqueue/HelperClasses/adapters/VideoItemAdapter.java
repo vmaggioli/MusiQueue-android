@@ -133,6 +133,9 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
             upButton.setOnTouchListener(new View.OnTouchListener() {
                 @Override
                 public boolean onTouch(View v, MotionEvent event) {
+                    if (upButton.isPressed())
+                        return true;
+
                     // show interest in events resulting from ACTION_DOWN
                     if (event.getAction() == MotionEvent.ACTION_DOWN) return true;
 
@@ -148,14 +151,23 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                             break;
                         }
                     }
-                    DatabaseReference songRef = FirebaseDatabase.getInstance().getReference()
+                    DatabaseReference downRef = FirebaseDatabase.getInstance().getReference()
                             .child("/Song Lists/" + hubSingleton.getHubName() + "/"
-                                    + songId);
-                    songRef.child("Up-votes").setValue(++currentValue);
+                                    + songId + "/Down-votes");
+                    DatabaseReference upRef = FirebaseDatabase.getInstance().getReference()
+                            .child("/Song Lists/" + hubSingleton.getHubName() + "/"
+                                    + songId + "/Up-votes");
+                    int downVotes = Integer.parseInt(downButton.getText().toString());
+                    int upVotes = Integer.parseInt(upButton.getText().toString());
+                    if (downVotes > 0)
+                        downRef.setValue(--downVotes);
+                    upRef.setValue(++upVotes);
+
                     // set score value
                     FirebaseDatabase.getInstance().getReference().child("/Song Scores/" + hubSingleton.getHubName()
                         + "/" + songId).setValue(currentValue - Long.parseLong(downButton.getText().toString()));
 
+                    videoItem.setState(1);
                     upButton.setPressed(true);
                     downButton.setPressed(false);
                     return true;
@@ -164,6 +176,8 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
 
             downButton.setOnTouchListener(new View.OnTouchListener() {
                 public boolean onTouch(View v, MotionEvent event) {
+                    if (downButton.isPressed())
+                        return true;
 
                     // show interest in events resulting from ACTION_DOWN
                     //if (event.getAction() == MotionEvent.ACTION_DOWN) return true;
@@ -173,7 +187,6 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
 
                     // Firebase logic
                     String songId = "";
-                    Long currentValue = Long.parseLong(downButton.getText().toString());
                     for (QueueSong song : videos) {
                         if (song.getTitle().equals(videoTitle.getText().toString())) {
                             songId = song.getId();
@@ -182,13 +195,22 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                     }
                     DatabaseReference downRef = FirebaseDatabase.getInstance().getReference()
                             .child("/Song Lists/" + hubSingleton.getHubName() + "/"
+                                    + songId + "/Down-votes");
+                    DatabaseReference upRef = FirebaseDatabase.getInstance().getReference()
+                            .child("/Song Lists/" + hubSingleton.getHubName() + "/"
                                     + songId + "/Up-votes");
-                    downRef.setValue((++currentValue).toString());
+                    int downVotes = Integer.parseInt(downButton.getText().toString());
+                    int upVotes = Integer.parseInt(upButton.getText().toString());
+                    downRef.setValue(++downVotes);
+                    if (upVotes > 0)
+                        upRef.setValue(--upVotes);
 
                     // set score value
                     FirebaseDatabase.getInstance().getReference().child("/Song Scores/" + hubSingleton.getHubName()
-                            + "/" + songId).setValue(Long.parseLong(upButton.getText().toString()) - currentValue);
+                            + "/" + songId).setValue(Integer.parseInt(upButton.getText().toString()) -
+                           Integer.parseInt(downButton.getText().toString()));
 
+                    videoItem.setState(-1);
                     downButton.setPressed(true);
                     upButton.setPressed(false);
                     return true;
@@ -209,6 +231,10 @@ public class VideoItemAdapter extends RecyclerView.Adapter<VideoItemAdapter.View
                                             // Firebase logic
                                             DatabaseReference toRemove = FirebaseDatabase.getInstance()
                                                     .getReference().child("/Song Lists/" + hubSingleton.getHubName()
+                                                    + "/" + videoItem.getId());
+                                            toRemove.removeValue();
+                                            toRemove = FirebaseDatabase.getInstance().getReference()
+                                                    .child("/Song Scores/" + hubSingleton.getHubName()
                                                     + "/" + videoItem.getId());
                                             toRemove.removeValue();
                                         }

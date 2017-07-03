@@ -88,18 +88,20 @@ public class CreateHub extends AppCompatActivity  {
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
         intentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
         wifiP2pManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
-        channel = wifiP2pManager.initialize(this, getMainLooper(), null);
-        WifiP2pManager.PeerListListener peerListener = new WifiP2pManager.PeerListListener() {
-            @Override
-            public void onPeersAvailable(WifiP2pDeviceList peerList) {
-                List<WifiP2pDevice> refreshedPeers = (List<WifiP2pDevice>) peerList.getDeviceList();
-                if (!refreshedPeers.equals(peers)) {
-                    peers.clear();
-                    peers.addAll(refreshedPeers);
+        if (wifiP2pManager != null) {
+            channel = wifiP2pManager.initialize(this, getMainLooper(), null);
+            WifiP2pManager.PeerListListener peerListener = new WifiP2pManager.PeerListListener() {
+                @Override
+                public void onPeersAvailable(WifiP2pDeviceList peerList) {
+                    List<WifiP2pDevice> refreshedPeers = (List<WifiP2pDevice>) peerList.getDeviceList();
+                    if (!refreshedPeers.equals(peers)) {
+                        peers.clear();
+                        peers.addAll(refreshedPeers);
+                    }
                 }
-            }
-        };
-        broadcastReceiver = new WiFiBroadcastReceiver(wifiP2pManager, channel, peerListener, this);
+            };
+            broadcastReceiver = new WiFiBroadcastReceiver(wifiP2pManager, channel, peerListener, this);
+        }
 
         globalLocation = null;
         // set editTexts
@@ -142,7 +144,7 @@ public class CreateHub extends AppCompatActivity  {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
 
-                                if (selectedItems.contains(0)) {// Wifi
+                                if (selectedItems.contains(0) && wifiP2pManager != null) {// Wifi
                                     useWifi = true;
                                     if (!configureWiFi(false)) {
                                         createHubButton.setEnabled(true);

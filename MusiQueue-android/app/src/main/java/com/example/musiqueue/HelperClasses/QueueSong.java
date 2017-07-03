@@ -7,12 +7,13 @@ public class QueueSong {
     private String id;
     private String user;
     private int state;
+    private int score;
 
     public QueueSong() {
 
     }
 
-    public QueueSong(String id, String title, String user, long upVotes, long downVotes, int state) {
+    public QueueSong(String id, String title, String user, long upVotes, long downVotes, int state, int score) {
         this.id = id;
         this.title = title;
         this.user = user;
@@ -39,16 +40,26 @@ public class QueueSong {
     public void setDownVotes(long downVotes) {
         this.downVotes = downVotes;
     }
-    public String getId() {return this.id;}
-    public void setId(String id) {this.id = id;}
-    public void setUser(String user) {this.user= user;}
+    public String getId() {
+        return this.id;
+    }
+    public void setId(String id) {
+        this.id = id;
+    }
+    public void setUser(String user) {
+        this.user= user;
+    }
     public String getUser(){return this.user;}
-
     public int getState() {
         return state;
     }
-
     public void setState(int state) {
         this.state = state;
+    }
+    public void setScore(int score) {
+        this.score = score;
+    }
+    public int getScore() {
+        return score;
     }
 }
